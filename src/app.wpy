@@ -1,0 +1,308 @@
+<script>
+  /* eslint-disable no-undef,no-useless-return,no-unneeded-ternary,no-unused-vars,no-unused-expressions */
+
+  import wepy from 'wepy'
+  import mitt from 'mitt'
+  import 'wepy-async-function'
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index',
+        'pages/detail',
+        'pages/me'
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: 'WeChat',
+        navigationBarTextStyle: 'black'
+      }
+//    tabBar: {
+//      color: '#4A4A4A',
+//      selectedColor: '#56abe4',
+//      backgroundColor: '#fff',
+//      borderStyle: 'white',
+//      list: [{
+//        pagePath: 'pages/index',
+//        text: '首页',
+//        iconPath: 'images/home.png',
+//        selectedIconPath: 'images/home_on.png'
+//      }, {
+//        pagePath: 'pages/podcast',
+//        text: '柚道',
+//        iconPath: 'images/podcast.png',
+//        selectedIconPath: 'images/podcast_on.png'
+//      }, {
+//        pagePath: 'pages/ask',
+//        text: '柚答',
+//        iconPath: 'images/ask.png',
+//        selectedIconPath: 'images/ask_on.png'
+//      }, {
+//        pagePath: 'pages/me',
+//        text: '我的',
+//        iconPath: 'images/user.png',
+//        selectedIconPath: 'images/user_on.png'
+//      }]
+//    }
+    }
+    emitter = mitt()
+    globalData = {
+      userInfo: null,
+      hasLogin: false,
+      hide: false,
+      playlist: [],
+      album: {},
+      playindex: 0,
+      list_am: [],
+      index_am: 0,
+      playing: false,
+      playtype: 1,
+      curplay: {
+        id: '2',
+        anchor: {
+          name: '叶青',
+          avatar: 'https://media.alearning.com.cn/podcast/book/2/anchor.jpg'
+        },
+        songname: '交流密码：我说的你听懂了吗？（3-6岁）',
+        status: 'stop',
+        src: 'https://media.alearning.com.cn/podcast/book/2/202.mp3'
+      },
+      shuffle: 1,
+      globalStop: true,
+      currentPosition: 0,
+      staredList: [],
+      cookie: '',
+      user: {}
+    }
+
+    constructor() {
+      super()
+      this.use('requestfix')
+    }
+    onLaunch() {
+      const cookie = wx.getStorageSync('cookie') || ''
+      const gb = wx.getStorageSync('globalData')
+      gb && (this.globalData = gb)
+      this.globalData.cookie = cookie
+      const that = this
+      // 播放列表中下一首
+      wx.onBackgroundAudioStop(() => {
+        if (that.globalData.globalStop) {
+//          console.log('stop')
+          return
+        }
+        that.playNext()
+      })
+
+      wx.onBackgroundAudioPause(() => {
+//        nt.postNotificationName('music_toggle', {
+//          playing: false,
+//          playtype: that.globalData.playtype,
+//          music: that.globalData.curplay || {}
+//        })
+        this.emitter.emit('playing_pause', {
+          playing: false,
+          curplay: this.globalData.curplay || {}
+        })
+//        console.log('pause')
+        that.globalData.playing = false
+        this.globalData.globalStop = false
+//        that.globalData.globalStop = that.globalData.hide ? true : false
+        wx.getBackgroundAudioPlayerState({
+          complete(res) {
+            that.globalData.currentPosition = res.currentPosition ? res.currentPosition : 0
+//            console.log(that.globalData.currentPosition)
+          }
+        })
+      })
+    }
+
+    stopMusic(type, cb) {
+      wx.pauseBackgroundAudio()
+    }
+
+    seekMusic(type, seek, cb) {
+//      const that = this
+//      const m = this.globalData.curplay
+//      if (!m.id) return
+//      this.globalData.playtype = type
+      this.playing(type, cb, seek)
+    }
+
+    playing(type, cb, seek) {
+      const that = this
+      const m = that.globalData.curplay
+//      console.log(m.id + '----')
+      wx.playBackgroundAudio({
+        dataUrl: m.src,
+        title: m.songname,
+        success(res) {
+          if (seek !== undefined) {
+            wx.seekBackgroundAudio({position: seek})
+          }
+          that.globalData.globalStop = false
+          that.globalData.playing = true
+//          nt.postNotificationName('music_toggle', {
+//            playing: true,
+//            music: that.globalData.curplay
+//          })
+          cb && cb()
+        },
+        fail() {
+          console.log('fail --- play next')
+//          that
+        }
+      })
+    }
+
+    onShow() {
+      this.globalData.hide = false
+    }
+
+    onHide() {
+      this.globalData.hide = true
+      console.log('Home hide')
+      wx.setStorageSync('globalData', this.globalData)
+    }
+
+    sleep(s) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('promise resolved')
+        }, s * 1000)
+      })
+    }
+
+    playStatus(that) {
+      if (this.globalData.globalStop) {
+        that.percent = 0.1
+        that.playing = false
+        that.downloadPercent = 0
+        return
+      }
+      const _that = this
+      wx.getBackgroundAudioPlayerState({
+        complete (res) {
+          let { time, playtime, downloadPercent } = 0
+          let playing = false
+          if (res.status !== 2) {
+            time = res.currentPosition / res.duration * 100
+            playtime = res.currentPosition
+            downloadPercent = res.downloadPercent
+//            console.log(time + ':' + playtime)
+          }
+          if (res.status === 1) {
+            playing = true
+          }
+          _that.globalData.playing = playing
+          that.playtime = _that.formatDuration(playtime * 1000)
+          that.percent = time
+//          console.log(time)
+          that.playing = playing
+          that.downloadPercent = downloadPercent
+          that.$apply()
+        }
+      })
+    }
+    prePlay() {
+      // 歌曲切换，停止当前音乐
+      this.globalData.playing = false
+      this.globalData.globalStop = true
+      wx.pauseBackgroundAudio()
+    }
+    playNext(cb, pos) {
+      // 播放列表中下一首
+      this.prePlay()
+      const list = this.globalData.album.list
+      let index = this.globalData.playindex
+//      console.log(JSON.stringify(list))
+//      if (t === 1) {
+      index++
+//      } else {
+//        index--
+//      }
+      index = index > list.length - 1 ? 0 : (index < 0 ? list.length - 1 : index)
+      index = pos !== undefined ? pos : index
+      this.globalData.curplay = list[index] || this.globalData.curplay
+      this.globalData.playindex = index
+      this.globalData.curplay.anchor = this.globalData.album.anchor
+      this.globalData.curplay.author = this.globalData.album.author
+      this.globalData.curplay.id = this.globalData.album.id
+//      console.log(this.globalData.curplay)
+      // 发出播放事件
+//      this.seekMuskc()
+      this.emitter.emit('playing')
+      this.playing()
+      cb && cb()
+    }
+    playAlrc(that) {
+      if (this.globalData.globalStop) {
+        that.playtime = '00:00'
+        that.duration = '00:00'
+        that.percent = 0.1
+        that.playing = false
+        that.downloadPercent = 0
+        return
+      }
+//      console.log(this.globalData.curplay.src)
+      if (that.src !== this.globalData.curplay.src) {
+        that.curplay = this.globalData.curplay
+//        that.duration = this.formatDuration(this.globalData.curplay.duration || this.globalData.curplay.dt)
+//        console.log(that.duration + 'duration ----')
+//        wx.setNavigationBarTitle({ title: this.globalData.curplay.name })
+        that.$apply()
+      }
+      const _that = this
+      wx.getBackgroundAudioPlayerState({
+        complete (res) {
+          let { time, playtime, downloadPercent } = 0
+          let playing = false
+//          console.log(res.status)
+//          console.log(res.duration)
+          if (res.status !== 2) {
+            time = res.currentPosition / res.duration * 100
+            playtime = res.currentPosition
+            downloadPercent = res.downloadPercent
+//            console.log(time + ':' + playtime)
+          }
+          if (res.status === 1) {
+            playing = true
+          }
+          _that.globalData.playing = playing
+          that.playtime = _that.formatDuration(playtime * 1000)
+          that.percent = time
+//          console.log(time)
+          that.playing = playing
+          that.downloadPercent = downloadPercent
+          that.$apply()
+        }
+      })
+    }
+
+    formatNumber(n) {
+      n = n.toString()
+      return n[1] ? n : '0' + n
+    }
+    formatDuration (duration) {
+      duration = new Date(duration)
+      return this.formatNumber(duration.getMinutes()) + ':' + this.formatNumber(duration.getSeconds())
+    }
+    async testAsync() {
+      const data = await this.sleep(3)
+      console.log(data)
+    }
+
+    async getUserInfo(cb) {
+      const that = this
+      if (this.globalData.userInfo) {
+        return this.globalData.userInfo
+      }
+      wepy.getUserInfo({
+        success (res) {
+          that.globalData.userInfo = res.userInfo
+          cb && cb(res.userInfo)
+        }
+      })
+    }
+  }
+</script>
