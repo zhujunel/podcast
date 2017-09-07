@@ -114,8 +114,8 @@
       <!--<setting :list="dEmoji"/>-->
     </view>
 
-    <recommend :option="swiper" hidden="{{currentTab != 0}}"/>
-    <tab :active="currentTab" :curplay.sync="curplay"/>
+    <recommend :option.sync="swiper" hidden="{{currentTab != 0}}"/>
+    <tab :active.sync="currentTab" :curplay.sync="curplay"/>
     <toast/>
   </view>
 </template>
@@ -283,10 +283,10 @@
       }
       $wxapp.globalData.curplay = this.curplay
       $wxapp.emitter.emit('onload')
-      $wxapp.emitter.on('tab-change', (active) => {
-        self.currentTab = active
-        self.$apply()
-      })
+//      $wxapp.emitter.on('tab-change', (active) => {
+//        self.currentTab = active
+//        self.$apply()
+//      })
     }
     onShow() {
       this.currentTab = 0

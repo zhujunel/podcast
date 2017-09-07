@@ -8,8 +8,7 @@
     config = {
       pages: [
         'pages/index',
-        'pages/detail',
-        'pages/me'
+        'pages/detail'
       ],
       window: {
         backgroundTextStyle: 'light',

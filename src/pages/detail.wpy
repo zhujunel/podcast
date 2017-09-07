@@ -340,8 +340,8 @@
     </view>
     <view class="quick">
       <!--<image class="share" src="../images/quick/share.png" @tap="share"></image>-->
-      <image class="player" src="../images/quick/play_big.png" wx:if="{{!playing}}" @tap="playAll"></image>
-      <image class="player" src="../images/quick/pause_big.png" wx:if="{{playing}}" @tap="pauseAll"></image>
+      <image class="player" src="../images/quick/play_big.png" hidden="{{playing}}" @tap="playAll"></image>
+      <image class="player" src="../images/quick/pause_big.png" hidden="{{!playing}}" @tap="pauseAll"></image>
     </view>
   </view>
 </template>

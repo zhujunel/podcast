@@ -10,7 +10,7 @@ module.exports = [{
     name: '海姆·G·吉诺特',
     detail: '海姆·G·吉诺特，心理学博士、临床心理家、儿童心理学家、儿科医生；纽约大学研究生院兼职心理教授、艾德尔菲大学博士后指导教授。 吉诺特博士的一生并不长，他将其短短的一生致力于儿童心理的研究以及对父母和教师的教育。他依靠他的职明才智做了很多创造性的工作，取得了巨大的成就。他在他的书中、演讲中、专栏中宣传的如何跟孩子沟通的创新思想不仅在美国，甚至在全世界都获得巨大反响。'
   },
-  cover: 'https://media.alearning.com.cn/podcast/book/2/cover.jpg',
+  cover: 'https://media.alearning.com.cn/podcast/book/2/cover2.jpg',
   name: '孩子，把你的手给我',
   title: '孩子，把你的手给我',
   type: 'book',
@@ -56,7 +56,7 @@ module.exports = [{
   status: '',
   name: '好妈妈胜过好老师',
   title: '好妈妈胜过好老师',
-  cover: 'https://media.alearning.com.cn/podcast/book/1/cover.jpg',
+  cover: 'https://media.alearning.com.cn/podcast/book/1/cover1.jpg',
   detail: '',
   author: {
     name: '尹建莉',
@@ -110,7 +110,7 @@ module.exports = [{
   status: '',
   name: '我祝你经历不公、遭遇背叛，感受孤独',
   title: '我祝你经历不公、遭遇背叛，感受孤独',
-  cover: 'https://media.alearning.com.cn/podcast/article/1/cover.jpg',
+  cover: 'https://media.alearning.com.cn/podcast/article/1/cover2.jpg',
   detail: '',
   author: {
     avatar: 'https://media.alearning.com.cn/podcast/article/1/author.jpg',
@@ -133,7 +133,7 @@ module.exports = [{
   status: '',
   name: '忍不住吼孩子',
   title: '忍不住吼孩子',
-  cover: 'https://media.alearning.com.cn/podcast/article/2/cover3.jpg',
+  cover: 'https://media.alearning.com.cn/podcast/article/2/cover2.jpg',
   detail: '父母的吼叫有时候会成为孩子一生的阴影，很多研究表明，长期对孩子发脾气、吼叫，不仅会造成亲子关系的疏离，也会让孩子在成长过程中形成自我否定的消极心理，严重的还会影响他们与别人建立亲密关系的能力。然而，这些道理很多人懂，做到却好难好难。',
   author: {
     avatar: '',
@@ -153,8 +153,8 @@ module.exports = [{
 }, {
   id: '5',
   status: '',
-  name: '有话好好说-1',
-  title: '有话好好说-1',
+  name: '有话好好说',
+  title: '有话好好说',
   cover: 'https://media.alearning.com.cn/podcast/article/1/cover2.JPG',
   detail: '语言是带情绪的，你所说的每一个字串联起来，有可能给人带去温暖，但也可能带来伤害。“打击式教育”出来的孩子不能坚持自我，很容易生气，不懂得尊重别人的感受，行为粗鲁没有礼貌……。\n',
   author: {
@@ -177,7 +177,7 @@ module.exports = [{
   status: '',
   name: '这个世界没有笨小孩',
   title: '这个世界没有笨小孩',
-  cover: 'https://media.alearning.com.cn/podcast/article/4/cover.jpg',
+  cover: 'https://media.alearning.com.cn/podcast/article/4/cover1.jpg',
   detail: '绝大部分人智商差异不大，只是特长不同而已。有的孩子虽然读书不行，但也许在其他方面有很大的潜力；有的孩子刚开始上小学时成绩不是特别好，但是后劲足，潜力大。',
   author: {
     avatar: '',

@@ -210,7 +210,7 @@
         const {onChange} = this
         typeof onChange === 'function' && onChange(this, e) //  当手指碰触到slide时执行
         this.active = +idx
-        $wxapp.emitter.emit('tab-change', this.active)
+//        $wxapp.emitter.emit('tab-change', this.active)
         this.$apply()
       },
       playingToggle () {
