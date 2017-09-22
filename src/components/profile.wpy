@@ -1,93 +1,94 @@
-<style type="scss">
+<style lang="scss">
+  @import '../stylesheets/style';
+
   $bgcolor: #EFEFF4;
   .me {
     background-color: $bgcolor;
     height: 100%;
-    padding-top: 40rpx;
+    padding-top: rpx(40);
     .info {
       display: flex;
       flex-direction: column;
       align-items: center;
       .avatar {
-        width: 130rpx;
-        height: 130rpx;
+        width: rpx(130);
+        height: rpx(130);
         border-radius: 50%;
       }
       .nickname {
         color: #aaa;
         padding: 10px;
-        font-size: 32repx;
+        font-size: rpx(32);
       }
     }
     .item {
       background-color: #fff;
-      height: 100rpx;
+      height: rpx(100);
       position: relative;
       box-sizing: border-box;
-      padding: 15rpx 25rpx;
+      padding: rpx(15) rpx(25);
       border-bottom: 1px solid #eee;
     }
   }
 
   $border: 1px solid #eeeeee;
   .list {
-    margin-top: 40rpx;
+    margin-top: rpx(40);
     background-color: #fff;
     border-bottom: $border;
     .item {
-      height: 100rpx;
+      height: rpx(100);
       position: relative;
       /*-webkit-box-sizing: border-box;*/
       /*-moz-box-sizing: border-box;*/
       box-sizing: border-box;
-      padding: 20rpx;
+      padding: rpx(20);
       border-bottom: $border;
       .icon {
-        width: 60rpx;
-        height: 60rpx;
+        width: rpx(60);
+        height: rpx(60);
         position: absolute;
-        margin-left: 15rpx;
-    }
+        margin-left: rpx(15);
+      }
       .arrow_left {
         position: absolute;
-        right: 20rpx;
-        width: 30rpx;
-        height: 40rpx;
-        margin-top: -32rpx;
-    }
+        right: rpx(20);
+        width: rpx(30);
+        height: rpx(40);
+        margin-top: rpx(-32);
+      }
       .title {
-        padding: 18rpx 0 0 100rpx;
+        padding: rpx(18) 0 0 rpx(100);
         display: block;
-        font-size: 33rpx;
+        font-size: rpx(33);
+      }
     }
-  }
   }
 </style>
 <template>
-
   <view class="me">
     <view class="info">
-      <image class="avatar" src="{{ user.avatarUrl }}" background-size="cover"/>
-      <view class="nickname">{{ user.nickName }}</view>
+      <image class="avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+      <view class="nickname">{{ userInfo.nickName }}</view>
     </view>
 
     <view class="list">
       <!--<block wx:for-items="{{list}}" wx:for-index="index" wx:for-item="item">-->
-        <!--<view class="item">-->
-          <!--<image class="icon" src="../../images/podcast_on.png"></image>-->
-          <!--<text class="title">我的柚道</text>-->
-          <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
-        <!--</view>-->
-        <view class="item">
-          <image class="icon" src="../../images/podcast_on.png"></image>
-          <text class="title">我的订阅 </text>
-          <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
-        </view>
-        <!--<view class="item">-->
-          <!--<image class="icon" src="../../images/ask_on.png"></image>-->
-          <!--<text class="title">我的提问</text>-->
-          <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
-        <!--</view>-->
+      <!--<view class="item">-->
+      <!--<image class="icon" src="../../images/podcast_on.png"></image>-->
+      <!--<text class="title">我的柚道</text>-->
+      <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
+      <!--</view>-->
+      <view class="item">
+        <image class="icon" src="../images/podcast_on.png"></image>
+        <text class="title">我的订阅 </text>
+        <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
+      </view>
+      <!--<view class="item">-->
+      <!--<image class="icon" src="../../images/ask_on.png"></image>-->
+      <!--<text class="title">我的提问</text>-->
+      <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
+      <!--</view>-->
       <!--</block>-->
     </view>
     <!--<album :list="dAlbum"/>-->
@@ -95,63 +96,55 @@
     <!--<setting :list="dEmoji"/>-->
   </view>
 </template>
+
 <script>
-  /* eslint-disable no-return-assign,no-unexpected-multiline,no-sequences */
-
   import wepy from 'wepy'
-  import List from '../components/list'
-  import api from '../common/api'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+  import user from '../mixins/user'
+  const $wxapp = wepy.$instance
 
-  export default class Me extends wepy.component {
-    components = {
-      album: List,
-      emoji: List,
-      setting: List
-    }
-    props = {
-      user: Object
-    }
+  export default class weSwiper extends wepy.component {
+    mixins = [base, http, user]
     data = {
-//      userInfo: {
-//        nickName: 'Basil',
-//        id: 'basil',
-//        avatarUrl: wepy.env === 'web' ? './images/myheader.png' : '../images/myheader.png'
-//      },
-      dAlbum: [
-        {icon: wepy.env === 'web' ? './images/album.png' : '../images/album.png', title: '相册'},
-        {icon: wepy.env === 'web' ? './images/collect.png' : '../images/collect.png', title: '收藏'},
-        {icon: wepy.env === 'web' ? './images/wallet.png' : '../images/wallet.png', title: '钱包'},
-        {icon: wepy.env === 'web' ? './images/card.png' : '../images/card.png', title: '卡包'}
-      ],
-      dSetting: [
-        {
-          id: 'clear',
-          icon: '../images/setting.png',
-          title: '清除本地聊天记录',
-          action () {
-            this.clearHistory()
-          }
+      userInfo: {
+        nickName: '加载中...',
+        // 头像占位图
+        avatarUrl: '../images/icon/icon-avatar@2x.png',
+
+        packages: {
+          times: 0,
+          status: '阅读状态'
+        },
+        identity: {
+          type: '订阅状态',
+          collection: 0
         }
-      ],
-      dEmoji: [{icon: wepy.env === 'web' ? './images/emoji.png' : '../images/emoji.png', title: '表情'}]
-    }
-    methods = {}
-//    onLoad () {
-//      this.setUserInfo()
-//    }
-    async setUserInfo () {
-      let res
-      try {
-        res = await api.getUserInfo()
-      } catch (e) {
-        res = this.userInfo
       }
-      console.log(res)
-      ['nickName', 'avatarUrl'].forEach((v) => this.userInfo[v] = res[v])
-      this.$apply()
     }
-    async clearHistory (id) {
+    computed = {
+      packages () {
+      },
+      identity () {
+      },
+      nickName () {
+        const info = this.getObject(this.userInfo)
+        return (info.nickName || info.avatarUrl) ? info.nickName : '未授权用户'
+      }
+    }
+
+    onLoad () {
+//      console.log(this.$parent.$parent.$updateGlobalData)
+      $wxapp.emitter.on('onShowMe', async (e) => {
+        // 初始化页面数据
+        await this.$getUserInfo((info) => {
+          const uinfo = this.getObject(info)
+          const userInfo = this.getObject(this.userInfo)
+          this.userInfo = Object.assign({}, userInfo, uinfo)
+//          this.initPageData()
+        })
+      })
+//      console.log('show profile...')
     }
   }
-
 </script>

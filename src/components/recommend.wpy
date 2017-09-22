@@ -129,7 +129,7 @@
         <view class="item" style="width: {{itemWidth}}px;" >
           <view class="itemSelf" style="height: calc(100% - 160rpx);">
             <view class="article" >
-              <view class="cover" style=" box-shadow: 0 4rpx 30rpx 0rpx rgba(0, 0, 0, 0.15);  box-sizing: content-box;  background: url({{item.cover}});  background-position: center center; {{item.type === 'book' ? 'border: 1px solid #fafafa; width: 248.41rpx; height: 350rpx; background-size: 248.41rpx 350rpx;' : 'border: 3px solid #fafafa; width:535rpx; height: 380rpx; background-size: 535rpx 380rpx; '}}">
+              <view class="cover" style=" box-shadow: 0 4rpx 30rpx 0rpx rgba(0, 0, 0, 0.15);  box-sizing: content-box;  background: url({{item.featured_image}});  background-position: center center; {{item.type === 'book' ? 'border: 1px solid #fafafa; width: 248.41rpx; height: 350rpx; background-size: 248.41rpx 350rpx;' : 'border: 3px solid #fafafa; width:535rpx; height: 380rpx; background-size: 535rpx 380rpx; '}}">
                 <view class="play">
                   <!-- 有播放状态的专辑 -->
                   <image class="" src="../images/quick/pause_big.png" @tap="stop({{item}})" hidden="{{!(curplay.id === item.id && curplay.status == 'playing')}}"></image>
@@ -140,18 +140,18 @@
               </view>
               <view class="info" @tap="tap({{item}})">
                 <text class="title">
-                  {{item.name}}
+                  {{item.title}}
                 </text>
                 <text class="author" wx:if="{{item.type === 'book'}}">
-                  {{item.author.name}}
+                  <!--{{item.author.name}}-->
                 </text>
               </view>
               <view class="detail">
-                  {{item.detail}}
+                  {{item.excerpt}}
               </view>
               <view class="anchor" @tap="tap({{item}})">
-                <image class="avatar" src="{{item.anchor.avatar}}" mode="aspectFill"></image>
-                <text class="name">{{item.anchor.name}}</text>
+                <!--<image class="avatar" src="{{item.anchor.avatar}}" mode="aspectFill"></image>-->
+                <!--<text class="name">{{item.anchor.name}}</text>-->
               </view>
             </view>
 
@@ -167,6 +167,10 @@
   /* eslint-disable no-unused-vars,no-undef,no-multi-spaces,no-throw-literal */
 
   import wepy from 'wepy'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+  import { api } from '../config'
+
   const $wxapp = wepy.$instance
   const device = wx.getSystemInfoSync()  //  获取设备信息
   const DEFAULT = {
@@ -207,6 +211,8 @@
   }
 
   export default class weSwiper extends wepy.component {
+    mixins = [base, http]
+
     data = {
       directionClass: 'we-container-horizontal',
       animationData: null,
@@ -567,6 +573,20 @@
       const {option} = this
       const CONFIG = Object.assign(this, DEFAULT, option)
 //      console.log(CONFIG)
+//      console.log(CONFIG)
+      this.$ajax(api.common.recommend, {
+        success: ({code, data}) => {
+          CONFIG.items = data
+          CONFIG.slideLength = data.length
+//          console.log(data.length)
+//          this.$apply()
+//          console.log('success')
+//          for (let item of data) {
+//            console.log(JSON.stringify(item))
+//          }
+//          console.log(JSON.stringify(data.data))
+        }
+      })
       this.initSwiper(CONFIG)
       $wxapp.emitter.on('playing', (e) => {
         this.curplay = $wxapp.globalData.curplay

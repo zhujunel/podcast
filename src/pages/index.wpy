@@ -1,4 +1,5 @@
 <style lang="scss">
+  @import '../stylesheets/style';
   .tab_item {
     height: 100%;
   }
@@ -17,62 +18,62 @@
   .me {
     background-color: $bgcolor;
     height: 100%;
-    padding-top: 40rpx;
+    padding-top: rpx(40);
     .info {
       display: flex;
       flex-direction: column;
       align-items: center;
       .avatar {
-        width: 130rpx;
-        height: 130rpx;
+        width: rpx(130);
+        height: rpx(130);
         border-radius: 50%;
       }
       .nickname {
         color: #aaa;
         padding: 10px;
-        font-size: 32repx;
+        font-size: rpx(32);
       }
     }
     .item {
       background-color: #fff;
-      height: 100rpx;
+      height: rpx(100);
       position: relative;
       box-sizing: border-box;
-      padding: 15rpx 25rpx;
+      padding: rpx(15) rpx(25);
       border-bottom: 1px solid #eee;
     }
   }
 
   $border: 1px solid #eeeeee;
   .list {
-    margin-top: 40rpx;
+    margin-top: rpx(40);
     background-color: #fff;
     border-bottom: $border;
     .item {
-      height: 100rpx;
+      height: rpx(100);
       position: relative;
       /*-webkit-box-sizing: border-box;*/
       /*-moz-box-sizing: border-box;*/
       box-sizing: border-box;
-      padding: 20rpx;
+      padding: rpx(20);
       border-bottom: $border;
       .icon {
-        width: 60rpx;
-        height: 60rpx;
+        width: rpx(60);
+        height: rpx(60);
         position: absolute;
-        margin-left: 15rpx;
+        margin-left: rpx(15);
       }
       .arrow_left {
         position: absolute;
-        right: 20rpx;
-        width: 30rpx;
-        height: 40rpx;
-        margin-top: -32rpx;
+        right: rpx(20);
+        width: rpx(30);
+        height: rpx(40);
+        margin-top: rpx(-32);
       }
       .title {
-        padding: 18rpx 0 0 100rpx;
+        padding: rpx(18) 0 0 rpx(100);
         display: block;
-        font-size: 33rpx;
+        font-size: rpx(32);
       }
     }
   }
@@ -84,36 +85,7 @@
     <!--<view hidden="{{currentTab != 1 }}">-->
       <!--<detail :option="detail"></detail>-->
     <!--</view>-->
-    <view hidden="{{currentTab != 1 }}" class="me">
-      <view class="info">
-        <image class="avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-        <view class="nickname">{{ userInfo.nickName }}</view>
-      </view>
-
-      <view class="list">
-        <!--<block wx:for-items="{{list}}" wx:for-index="index" wx:for-item="item">-->
-        <!--<view class="item">-->
-        <!--<image class="icon" src="../../images/podcast_on.png"></image>-->
-        <!--<text class="title">我的柚道</text>-->
-        <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
-        <!--</view>-->
-        <view class="item">
-          <image class="icon" src="../images/podcast_on.png"></image>
-          <text class="title">我的订阅 </text>
-          <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
-        </view>
-        <!--<view class="item">-->
-        <!--<image class="icon" src="../../images/ask_on.png"></image>-->
-        <!--<text class="title">我的提问</text>-->
-        <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
-        <!--</view>-->
-        <!--</block>-->
-      </view>
-      <!--<album :list="dAlbum"/>-->
-      <!--<emoji :list="dSetting"/>-->
-      <!--<setting :list="dEmoji"/>-->
-    </view>
-
+    <me hidden="{{currentTab !== 1}}"></me>
     <recommend :option.sync="swiper" hidden="{{currentTab != 0}}"/>
     <tab :active.sync="currentTab" :curplay.sync="curplay"/>
     <toast/>
@@ -121,36 +93,47 @@
 </template>
 
 <script>
+
   /* eslint-disable no-undef,no-throw-literal */
-  const items = require('../mocks/data.js')
+//  const items = require('../mocks/data.js')
   import wepy from 'wepy'
+//  import { service } from '../config.js'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+
   import Recommend from '../components/recommend'
 //  import Detail from '../components/detail'
-//  import Me from '../components/profile'
+  import Me from '../components/profile'
   import Tab from '../components/toolbar'
   import Toast from 'wepy-com-toast'
   const device = wx.getSystemInfoSync()  //  获取设备信息
   const $wxapp = wepy.$instance
   export default class Index extends wepy.page {
+    mixins = [base, http]
     config = {
       'navigationBarTitleText': '育儿柚道',
       'navigationBarTextStyle': 'white',
       'navigationBarBackgroundColor': '#3b3a40',
-      'disableScroll': true
+      'disableScroll': true,
+      'enablePullDownRefresh': false
     }
     components = {
 //      detail: Detail,
       recommend: Recommend,
-//      me: Me,
+      me: Me,
       tab: Tab,
       toast: Toast
     }
     data = {
-      userInfo: {},
+      items: [],
+      userInfo: {
+        nickName: '加载中...',
+        avatarUrl: '../images/icon/icon-avatar@2px.png'
+      },
       swiper: {
         direction: 'horizontal',
-        slideLength: items.length,
-        items: items,
+        slideLength: 8,
+        items: [],
 //        curplay: $wxapp.globalData.curplay,
         /**
          * swiper初始化后执行
@@ -251,9 +234,15 @@
     methods = {
     }
     watch = {
+      currentTab (old, newValue) {
+        if (newValue === 0) {
+          $wxapp.emitter.emit('onShowMe')
+        }
+      }
     }
     events = {
       'tab-change': (active, $event) => {
+//        console.log(active + '----')
 //        console.log('Active===' + active)
 //        console.log($event)
 //        console.log(active)
@@ -262,8 +251,38 @@
 //        this.slideAnimation(0, 500)
       }
     }
+    computed = {
+//      swiperItems () {
+//        return items
+//      }
+//      packages () {
+//      },
+//      identity () {
+//      },
+//      nickName () {
+//        const info = this.getObject(this.userInfo)
+//        return (info.nickName || info.avatarUrl) ? info.nickName : '未授权用户'
+//      }
+    }
     onLoad() {
       let self = this
+//      self.items = items
+
+/*      this.$get({
+        url: 'http://zy.picker.la/api/podcast/recommend'
+      }, {
+        success: ({code, data}) => {
+          self.swiper.items = data
+//          self.swiper.slideLength = data.length
+//          console.log(data.length)
+          this.$apply()
+//          console.log('success')
+//          for (let item of data) {
+//            console.log(JSON.stringify(item))
+//          }
+//          console.log(JSON.stringify(data.data))
+        }
+      })*/
       this.$parent.getUserInfo(function (userInfo) {
         if (userInfo) {
           self.userInfo = userInfo

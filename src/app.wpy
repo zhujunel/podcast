@@ -4,6 +4,7 @@
   import wepy from 'wepy'
   import mitt from 'mitt'
   import 'wepy-async-function'
+
   export default class extends wepy.app {
     config = {
       pages: [
@@ -46,6 +47,7 @@
     }
     emitter = mitt()
     globalData = {
+      user: null,
       userInfo: null,
       hasLogin: false,
       hide: false,
@@ -70,15 +72,15 @@
       globalStop: true,
       currentPosition: 0,
       staredList: [],
-      cookie: '',
-      user: {}
+      cookie: ''
     }
 
-    constructor() {
+    constructor () {
       super()
       this.use('requestfix')
     }
-    onLaunch() {
+
+    onLaunch () {
       const cookie = wx.getStorageSync('cookie') || ''
       const gb = wx.getStorageSync('globalData')
       gb && (this.globalData = gb)
@@ -108,7 +110,7 @@
         this.globalData.globalStop = false
 //        that.globalData.globalStop = that.globalData.hide ? true : false
         wx.getBackgroundAudioPlayerState({
-          complete(res) {
+          complete (res) {
             that.globalData.currentPosition = res.currentPosition ? res.currentPosition : 0
 //            console.log(that.globalData.currentPosition)
           }
@@ -116,11 +118,11 @@
       })
     }
 
-    stopMusic(type, cb) {
+    stopMusic (type, cb) {
       wx.pauseBackgroundAudio()
     }
 
-    seekMusic(type, seek, cb) {
+    seekMusic (type, seek, cb) {
 //      const that = this
 //      const m = this.globalData.curplay
 //      if (!m.id) return
@@ -128,14 +130,14 @@
       this.playing(type, cb, seek)
     }
 
-    playing(type, cb, seek) {
+    playing (type, cb, seek) {
       const that = this
       const m = that.globalData.curplay
 //      console.log(m.id + '----')
       wx.playBackgroundAudio({
         dataUrl: m.src,
         title: m.songname,
-        success(res) {
+        success (res) {
           if (seek !== undefined) {
             wx.seekBackgroundAudio({position: seek})
           }
@@ -147,24 +149,24 @@
 //          })
           cb && cb()
         },
-        fail() {
+        fail () {
           console.log('fail --- play next')
 //          that
         }
       })
     }
 
-    onShow() {
+    onShow () {
       this.globalData.hide = false
     }
 
-    onHide() {
+    onHide () {
       this.globalData.hide = true
       console.log('Home hide')
       wx.setStorageSync('globalData', this.globalData)
     }
 
-    sleep(s) {
+    sleep (s) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve('promise resolved')
@@ -172,7 +174,7 @@
       })
     }
 
-    playStatus(that) {
+    playStatus (that) {
       if (this.globalData.globalStop) {
         that.percent = 0.1
         that.playing = false
@@ -182,7 +184,7 @@
       const _that = this
       wx.getBackgroundAudioPlayerState({
         complete (res) {
-          let { time, playtime, downloadPercent } = 0
+          let {time, playtime, downloadPercent} = 0
           let playing = false
           if (res.status !== 2) {
             time = res.currentPosition / res.duration * 100
@@ -203,13 +205,15 @@
         }
       })
     }
-    prePlay() {
+
+    prePlay () {
       // 歌曲切换，停止当前音乐
       this.globalData.playing = false
       this.globalData.globalStop = true
       wx.pauseBackgroundAudio()
     }
-    playNext(cb, pos) {
+
+    playNext (cb, pos) {
       // 播放列表中下一首
       this.prePlay()
       const list = this.globalData.album.list
@@ -234,7 +238,8 @@
       this.playing()
       cb && cb()
     }
-    playAlrc(that) {
+
+    playAlrc (that) {
       if (this.globalData.globalStop) {
         that.playtime = '00:00'
         that.duration = '00:00'
@@ -254,7 +259,7 @@
       const _that = this
       wx.getBackgroundAudioPlayerState({
         complete (res) {
-          let { time, playtime, downloadPercent } = 0
+          let {time, playtime, downloadPercent} = 0
           let playing = false
 //          console.log(res.status)
 //          console.log(res.duration)
@@ -278,20 +283,22 @@
       })
     }
 
-    formatNumber(n) {
+    formatNumber (n) {
       n = n.toString()
       return n[1] ? n : '0' + n
     }
+
     formatDuration (duration) {
       duration = new Date(duration)
       return this.formatNumber(duration.getMinutes()) + ':' + this.formatNumber(duration.getSeconds())
     }
-    async testAsync() {
+
+    async testAsync () {
       const data = await this.sleep(3)
       console.log(data)
     }
 
-    async getUserInfo(cb) {
+    async getUserInfo (cb) {
       const that = this
       if (this.globalData.userInfo) {
         return this.globalData.userInfo
@@ -302,6 +309,45 @@
           cb && cb(res.userInfo)
         }
       })
+    }
+
+    /* ============= 工具方法（app没法用mixins，就再写一遍了） ============= */
+    isObject (item) {
+      return typeof item === 'object' && !this.isArray(item)
+    }
+
+    isArray (item) {
+      return Object.prototype.toString.apply(item) === '[object Array]'
+    }
+
+    isUndefined (item) {
+      return typeof item === 'undefined'
+    }
+
+    /* ========================= 更新缓存信息 ======================== */
+    $updateGlobalData (name, obj) {
+      // 校验: globalData
+      console.log(this.globalData)
+      if (!this.globalData) return
+      // 校验: 操作字段
+      if (typeof name !== 'string' || name === '') return {}
+      // 取已有信息
+      const info = this.globalData[name] || {}
+      // 更新缓存
+      if (obj && this.isObject(obj)) {
+        // Object合并第一层
+        this.globalData[name] = Object.assign({}, info, obj)
+      } else if (!this.isUndefined(obj)) {
+        // 其他非undefined数据直接覆盖
+        this.globalData[name] = obj
+      }
+      this.$apply && this.$apply()
+      console.info(`[${obj ? 'UPDATE' : 'GET'} GlobalData ${name}]:`, this.globalData[name])
+      return this.globalData[name]
+    }
+
+    $echo (msg) {
+      console.log(msg)
     }
   }
 </script>

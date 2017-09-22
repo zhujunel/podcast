@@ -1,0 +1,40 @@
+// ENV
+const env = 'development' // 'development' or 'production'
+
+// WXAPP VERSION
+const version = 1.0
+
+// development and production host
+const hosts = {
+  development: 'http://zy.picker.la/api',
+  production: 'https://zy.picker.cc/api'
+}
+
+// apis
+const api = {
+  common: {
+    recommend: {
+      method: 'GET',
+      url: '/podcast/recommend'
+    }
+  }
+
+}
+
+module.exports = {
+  env,
+  version,
+  api: disposeUrl(api, hosts[env])
+}
+
+function disposeUrl(obj, prefix) {
+  Object.keys(obj).forEach(v => {
+    if (obj[v].url) {
+      obj[v].url = prefix + obj[v].url
+    } else {
+      obj[v] = disposeUrl(obj[v], prefix)
+    }
+  })
+
+  return obj
+}

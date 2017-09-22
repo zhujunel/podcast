@@ -1,11 +1,12 @@
-<style scoped>
+<style lang="scss" scoped>
+  @import '../stylesheets/style';
   .book-content{
     height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
-    font-size: 24rpx;
+    font-size: rpx(24);
     color: #808080;
   }
 
@@ -19,8 +20,8 @@
 
   .song-item {
     display: flex;
-    height: 60rpx;
-    padding: 10rpx;
+    height: rpx(60);
+    padding: rpx(10);
     align-items: center;
     text-align: left;
   }
@@ -37,7 +38,7 @@
 
   .song-item .song-no {
     text-align: center;
-    width: 60rpx;
+    width: rpx(60);
     display: flex;
     align-items: center;
     /*margin:0 auto;*/
@@ -46,18 +47,18 @@
 
   .song-item .song-name {
     margin:0 auto;
-    padding-left: 0rpx;
+    padding-left: rpx(0);
     overflow: hidden;
     flex: 1;
   }
   .playing-item image{
-    width:60rpx;
-    height:60rpx;
+    width: rpx(60);
+    height: rpx(60);
     justify-content: center;
     vertical-align: middle;
   }
   .player{
-    height: 294rpx;
+    height: rpx(294);
     /*background: #008be8;*/
     /*border-bottom: 1px solid #f5f5f5;*/
     /*box-shadow: 0 4rpx 30rpx 0rpx rgba(0, 0, 0, 0.05);*/
@@ -68,52 +69,52 @@
   }
 
   .bookinfo{
-    height: 150rpx;
+    height: rpx(150);
     background: #fff;
     border-bottom: 1px solid #ededed;
     display: flex;
     margin: 0 auto;
-    padding: 10rpx;
+    padding: rpx(10);
   }
   .bookinfo .cover{
-    margin: 10rpx;
-    width: 90rpx;
-    height: 141.3rpx;
+    margin: rpx(10);
+    width: rpx(90);
+    height: rpx(141.33);
   }
   .bookinfo .detail {
-    padding: 20rpx;
+    padding: rpx(20);
     flex: 1;
-    font-size: 24rpx;
+    font-size: rpx(24);
     color: inherit;
   }
   .detail .title{
     display:block;
-    font-size: 32rpx;
-    margin-bottom: 10rpx;
+    font-size: rpx(32);
+    margin-bottom: rpx(10);
   }
 
   .readerinfo{
-    padding: 10rpx;
-    height: 120rpx;
+    padding: rpx(10);
+    height: rpx(120);
     background: #fff;
     border-bottom: 1px solid #ededed;
     display: flex;
   }
   .avatar {
-    margin: 10rpx;
-    width: 90rpx;
-    height: 90rpx;
+    margin: rpx(10);
+    width: rpx(90);
+    height: rpx(90);
     border-radius: 50%;
   }
   .readerinfo .author{
     flex: 1;
-    padding: 10rpx;
+    padding: rpx(10);
   }
 
   .author .title {
-    font-size: 28rpx;
+    font-size: rpx(28);
     display:block;
-    margin-bottom: 10rpx;
+    margin-bottom: rpx(10);
   }
   .author .detail {
     display: block;
@@ -171,18 +172,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 32rpx;
-    margin-bottom:45rpx;
+    font-size: rpx(32);
+    margin-bottom: rpx(45);
   }
   .pi-act{flex: 1;text-align: center;position: relative}
-  .pi-act image{width:80rpx;height: 80rpx;}
+  .pi-act image{width:rpx(80);height: rpx(80);}
 
 
-  #playingaction{margin: 10rpx 10rpx 40rpx;display: flex}
+  #playingaction{margin: rpx(10) rpx(10) rpx(40);display: flex}
   .pa-baction,.pa-maction,.pa-saction{flex: 1;text-align: center;width: 100%}
-  .pa-baction image{width:100rpx;height:100rpx; vertical-align: middle }
-  .pa-maction image{width:32rpx;height:32rpx;vertical-align: middle;margin-top: 30rpx}
-  .pa-saction image{width:120rpx;height:120rpx; vertical-align: middle;}
+  .pa-baction image{width:rpx(100);height:rpx(100); vertical-align: middle }
+  .pa-maction image{width:rpx(32);height:rpx(32);vertical-align: middle;margin-top: rpx(30)}
+  .pa-saction image{width:rpx(120);height:rpx(120); vertical-align: middle;}
 
 
   .playing #playing-main{animation-play-state: running !important;}
