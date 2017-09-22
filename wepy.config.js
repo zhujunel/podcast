@@ -17,6 +17,7 @@ module.exports = {
       compress: true
     },
     sass: {
+      indentSyntax: true,
       outputStyle: 'compressed'
     },
     babel: {

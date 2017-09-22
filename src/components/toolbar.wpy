@@ -1,32 +1,34 @@
-<style type="scss">
+<style lang="scss">
+  @import '../stylesheets/style';
+
   $fontcolor: #7b7b7b;
   $activecolor: #2196F3;
   .tab {
     color: $fontcolor;
-    position:fixed;
+    position: fixed;
     bottom: 0;
-    height: 100rpx;
+    height: rpx(100);
     width: 100%;
     left: 0;
     right: 0;
     /* Mask: */
     background: #FFFFFF;
-    border-top: 1px solid rgba(255,255,255,0.60);
-    box-shadow: 0 4px 20px 0 rgba(0,0,0,0.20);
+    border-top: 1px solid rgba(255, 255, 255, 0.60);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.20);
     /* Photo Copy: */
-    font-size: 24rpx;
+    font-size: rpx(24);
     /*box-sizing: border-box;*/
-    white-space:nowrap;
+    white-space: nowrap;
     .tab_item {
-      border-left: 1px solid rgba(0,0,0,0.05);
+      border-left: 1px solid rgba(0, 0, 0, 0.05);
       display: flex;
       flex-flow: row;
       /*display: inline-block;*/
       width: 25%;
       text-align: center;
       .icon {
-        width: 98rpx;
-        height: 98rpx;
+        width: rpx(98);
+        height: rpx(98);
         display: block;
         margin: auto;
       }
@@ -56,57 +58,57 @@
         display: flex;
         flex-flow: row;
         width: 50%;
-        .album{
-          width: 74rpx;
-          height: 74rpx;
-          margin: 12rpx 12rpx 12rpx 20rpx;
-          border-radius: 10rpx;
+        .album {
+          width: rpx(74);
+          height: rpx(74);
+          margin: rpx(12) rpx(12) rpx(12) rpx(20);
+          border-radius: rpx(10);
         }
         .info {
           /*color: #418AF2;*/
           flex: 1;
-          align-items:center;
+          align-items: center;
           justify-content: center;
-          font-size: 24rpx;
-          margin:20rpx 20rpx 20rpx 8rpx;
-          overflow:hidden;
-          word-break:break-all;
-          text-overflow:ellipsis;//文字隐藏后添加省略号
-          white-space:nowrap;  //强制不换行
+          font-size: rpx(24);
+          margin: rpx(20) rpx(20) rpx(20) rpx(8);
+          overflow: hidden;
+          word-break: break-all;
+          text-overflow: ellipsis; //文字隐藏后添加省略号
+          white-space: nowrap; //强制不换行
 
           .author {
-            font-size: 20rpx;
-            line-height: 32rpx;
+            font-size: rpx(20);
+            line-height: rpx(32);
             color: #aaa;
           }
         }
       }
 
     }
-    .arrow{
+    .arrow {
       position: absolute;
       bottom: 0;
       right: 0;
       background: #fff;
-      height: 100rpx;
+      height: rpx(100);
       text-align: center;
-      width: 52rpx;
+      width: rpx(52);
       display: flex;
-      justify-content:center;
+      justify-content: center;
       align-items: center;
       border-top: 1px solid #f5f5f5;
-        box-sizing: border-box;
+      box-sizing: border-box;
       border-left: 1px solid #f5f5f5;
-      image{
-        width: 24rpx;
-        height: 24rpx;
+      image {
+        width: rpx(24);
+        height: rpx(24);
       }
     }
-    .play{
-        display:flex;
-          width: 200rpx;
-          height: 100%;
-   }
+    .play {
+      display: flex;
+      width: rpx(200);
+      height: 100%;
+    }
   }
 </style>
 <template>
@@ -116,7 +118,9 @@
         <image class="album" src="{{curplay.anchor.avatar}}" background-size="cover"></image>
         <view class="info">
           <text class="title">{{curplay.songname}}</text>
-          <view class="author"><text>{{curplay.anchor.name}}</text></view>
+          <view class="author">
+            <text>{{curplay.anchor.name}}</text>
+          </view>
           <view class="timeline"></view>
         </view>
       </view>
@@ -134,6 +138,7 @@
   /* eslint-disable no-undef,no-throw-literal,no-extra-bind,no-extra-parens,no-unused-vars */
 
   import wepy from 'wepy'
+
   const $wxapp = wepy.$instance
   const device = wx.getSystemInfoSync()  //  获取设备信息
   const DEFAULT = {
@@ -200,7 +205,7 @@
           }
         })
       },
-      updatePlayer(curplay) {
+      updatePlayer (curplay) {
         this.curplay = curplay
         this.$apply()
       },
@@ -217,20 +222,23 @@
         this.playing = !this.playing
       }
     }
+
     /**
      * 同步设置到视图
      * @param DEFAULT：默认参数
      * @param param：构造参数
      */
-    syncView(viewName, prop) {
+    syncView (viewName, prop) {
       this[`${viewName}`] = prop
       this.$apply()
     }
+
     initTab () {
       const {onInit} = this
       typeof onInit === 'function' && onInit(this)
     }
-    onLoad() {
+
+    onLoad () {
       const that = this
       $wxapp.emitter.on('playing', e => {
         console.log('playing event')
