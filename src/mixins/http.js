@@ -10,7 +10,7 @@ export default class httpMixin extends wepy.mixin {
         }
         }) {
     const methods = 'GET'
-    this.$ajax(
+    this.$request(
       {url, headers, methods, data},
       {success, fail, complete}
     )
@@ -25,7 +25,7 @@ export default class httpMixin extends wepy.mixin {
          }
          }) {
     const methods = 'POST'
-    this.$ajax(
+    this.$request(
       {url, headers, methods, data},
       {success, fail, complete}
     )
@@ -36,7 +36,7 @@ export default class httpMixin extends wepy.mixin {
    * @param  {[type]}  item [description]
    * @return {Boolean}      [description]
    */
-  $ajax ({url = '', headers = {}, methods = 'GET', data = {}},
+  $request ({url = '', headers = {}, methods = 'GET', data = {}},
          {
            success = () => {
            }, fail = () => {

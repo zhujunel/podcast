@@ -111,8 +111,6 @@
       }
     }
   }
-
-
 </style>
 
 <template>
@@ -574,7 +572,7 @@
       const CONFIG = Object.assign(this, DEFAULT, option)
 //      console.log(CONFIG)
 //      console.log(CONFIG)
-      this.$ajax(api.common.recommend, {
+      this.$request(api.common.recommend, {
         success: ({code, data}) => {
           CONFIG.items = data
           CONFIG.slideLength = data.length

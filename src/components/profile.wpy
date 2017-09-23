@@ -102,6 +102,7 @@
   import http from '../mixins/http'
   import base from '../mixins/base'
   import user from '../mixins/user'
+
   const $wxapp = wepy.$instance
 
   export default class weSwiper extends wepy.component {
@@ -134,7 +135,7 @@
     }
 
     onLoad () {
-//      console.log(this.$parent.$parent.$updateGlobalData)
+      //      console.log(this.$parent.$parent.$updateGlobalData)
       $wxapp.emitter.on('onShowMe', async (e) => {
         // 初始化页面数据
         await this.$getUserInfo((info) => {
