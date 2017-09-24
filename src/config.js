@@ -10,6 +10,8 @@ const hosts = {
   production: 'https://zy.picker.cc/api'
 }
 
+const basic_token = 'Basic token='
+const picker_appid = '1'
 // apis
 const api = {
   common: {

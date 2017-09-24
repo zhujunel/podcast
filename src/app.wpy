@@ -82,10 +82,48 @@
 
     onLaunch () {
       const cookie = wx.getStorageSync('cookie') || ''
+      const jwt = wx.getStorageSync('jwt')
       const gb = wx.getStorageSync('globalData')
       gb && (this.globalData = gb)
       this.globalData.cookie = cookie
       const that = this
+      wx.login({
+        success: function (res) {
+          if (res.code) {
+//            console.log(res.data + '====>')
+            let encryptedData = 'ency'
+            let iv = 'iv'
+            that.getUserInfo((data) => {
+//              const uinfo = that.getObject(data.info)
+//              const userInfo = that.getObject(data.userInfo)
+//              that.globalData.userInfo = Object.assign({}, userInfo, uinfo)
+//              console.log(that.globalData.userInfo + '-----')
+//              console.log(data.encryptedData)
+              encryptedData = data.encryptedData || 'ency'
+              iv = data.iv
+              wx.request({
+                method: 'POST',
+                url: 'http://zy.picker.la/api/app/1/login',
+                header: {
+                  Authorization: ''
+                },
+                data: {
+                  username: encryptedData,
+                  password: iv,
+                  grant_type: 'password',
+                  auth_approach: 'wxapp',
+                  code: res.code
+                },
+                success: (res) => {
+                  console.log(res.data)
+                }
+              })
+            })
+          } else {
+            console.log('获取用户登录态失败！' + res.errMsg)
+          }
+        }
+      })
       // 播放列表中下一首
       wx.onBackgroundAudioStop(() => {
         if (that.globalData.globalStop) {
@@ -305,13 +343,18 @@
       }
       wepy.getUserInfo({
         success (res) {
+//          console.log(res)
           that.globalData.userInfo = res.userInfo
-          cb && cb(res.userInfo)
+          cb && cb(res)
         }
       })
     }
 
     /* ============= 工具方法（app没法用mixins，就再写一遍了） ============= */
+    getObject (item, defaultObj) {
+      return this.isObject(item) ? item : (defaultObj || {})
+    }
+
     isObject (item) {
       return typeof item === 'object' && !this.isArray(item)
     }

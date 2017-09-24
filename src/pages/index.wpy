@@ -1,10 +1,8 @@
 <style lang="scss">
   @import '../stylesheets/style';
-
   .tab_item {
     height: 100%;
   }
-
   Page, .body {
     font-family: '\5FAE\8F6F\96C5\9ED1', arial;
     background: #FAFAFC;
@@ -16,7 +14,6 @@
     box-sizing: border-box;
     position: relative;
   }
-
   $bgcolor: #EFEFF4;
   .me {
     background-color: $bgcolor;
@@ -86,7 +83,7 @@
   <view class="body" style="height: {{height}}px;">
     <!--<me :user.sync="userInfo" hidden="{{currentTab == 0}}"/>-->
     <!--<view hidden="{{currentTab != 1 }}">-->
-    <!--<detail :option="detail"></detail>-->
+      <!--<detail :option="detail"></detail>-->
     <!--</view>-->
     <me hidden="{{currentTab !== 1}}"></me>
     <recommend :option.sync="swiper" hidden="{{currentTab != 0}}"/>
@@ -98,18 +95,17 @@
 <script>
 
   /* eslint-disable no-undef,no-throw-literal */
-  //  const items = require('../mocks/data.js')
+//  const items = require('../mocks/data.js')
   import wepy from 'wepy'
-  //  import { service } from '../config.js'
+//  import { service } from '../config.js'
   import http from '../mixins/http'
   import base from '../mixins/base'
 
   import Recommend from '../components/recommend'
-  //  import Detail from '../components/detail'
+//  import Detail from '../components/detail'
   import Me from '../components/profile'
   import Tab from '../components/toolbar'
   import Toast from 'wepy-com-toast'
-
   const device = wx.getSystemInfoSync()  //  获取设备信息
   const $wxapp = wepy.$instance
   export default class Index extends wepy.page {
@@ -235,7 +231,8 @@
       curplay: $wxapp.globalData.curplay,
       background: ''
     }
-    methods = {}
+    methods = {
+    }
     watch = {
       currentTab (old, newValue) {
         if (newValue === 0) {
@@ -267,30 +264,25 @@
 //        return (info.nickName || info.avatarUrl) ? info.nickName : '未授权用户'
 //      }
     }
+    onLoad() {
+      let self = this
+//      self.items = items
 
-    onLoad () {
-      wepy.login({
-        success: (res) => {
-          console.log('wepy.login.success:', res)
-//          this.$post({
-//            url: `https://api.weixin.qq.com/sns/jscode2session?appid=wxca1f2b8b273d909e&secret=69ef69490d90f8c51c20039f6e29fb4e&js_code=${res.code}&grant_type=authorization_code`
-//          }, )
-          // 根据业务接口处理:业务登陆:异步
-          this.$get({
-            url: `https://api.weixin.qq.com/sns/jscode2session?appid=wxca1f2b8b273d909e&secret=69ef69490d90f8c51c20039f6e29fb4e&js_code=${res.code}&grant_type=authorization_code`
-          }, {
-            success: ({code, data}) => {
-              console.log(data)
-            },
-            fail: ({code, data}) => {
-            }
-          })
-        },
-        fail: (res) => {
-          console.log('wepy.login.fail:', res)
+      this.$get({
+        url: 'http://zy.picker.la/api/podcast/recommend'
+      }, {
+        success: ({code, data}) => {
+          self.swiper.items = data
+          self.swiper.slideLength = data.length
+//          console.log(data.length)
+          this.$apply()
+//          console.log('success')
+//          for (let item of data) {
+//            console.log(JSON.stringify(item))
+//          }
+//          console.log(JSON.stringify(data.data))
         }
       })
-      let self = this
       this.$parent.getUserInfo(function (userInfo) {
         if (userInfo) {
           self.userInfo = userInfo
@@ -315,16 +307,14 @@
 //        self.$apply()
 //      })
     }
-
-    onShow () {
+    onShow() {
       this.currentTab = 0
 //      if ($wxapp.globalData.playing) {
 //        this.showToolbar = false
 //      }
       // this.$invoke('message', 'loadMessage')
     }
-
-    slideAnimation (translate = 0, speed = 300, timingFunction = 'ease-in-out') {
+    slideAnimation(translate = 0, speed = 300, timingFunction = 'ease-in-out') {
       const REG = {
         TRANSLATE: /^(0|[1-9][0-9]*|-[1-9][0-9]*)$/,
         SPEED: /^(0|[1-9][0-9]*|-[1-9][0-9]*)$/,
@@ -360,16 +350,15 @@
      * @param DEFAULT：默认参数
      * @param param：构造参数
      */
-    syncView (viewName, prop) {
+    syncView(viewName, prop) {
       this[`${viewName}`] = prop
 //      console.log(viewName)
       this.$apply()
     }
-
     /**
      * 错误对照
      */
-    consoleException (type, place) {
+    consoleException(type, place) {
       const ERROR = {
         'paramType': '参数类型错误',
         'bound': '参数越界'
@@ -384,8 +373,7 @@
         path: '/pages/index'
       }
     }
-
-    showToast (name) {
+    showToast(name) {
       let promise = this.$invoke('toast', 'show', {
         title: `${name}`,
         img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
