@@ -43,10 +43,7 @@
       border-bottom: 1px solid #eee;
     }
   }
-  .slide-image{
-    width: 100%;
-    height: 220px;
-  }
+
   $border: 1px solid #eeeeee;
   .list {
     margin-top: rpx(40);
@@ -83,30 +80,13 @@
 </style>
 <template>
 
-  <view>
+  <view class="body" style="height: {{height}}px;">
     <!--<me :user.sync="userInfo" hidden="{{currentTab == 0}}"/>-->
     <!--<view hidden="{{currentTab != 1 }}">-->
       <!--<detail :option="detail"></detail>-->
     <!--</view>-->
     <me hidden="{{currentTab !== 1}}"></me>
-    <swiper indicator-dots="{{indicatorDots}}"
-            autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
-      <block wx:for="{{imgUrls}}">
-        <swiper-item>
-          <image src="{{item}}" class="slide-image" />
-        </swiper-item>
-      </block>
-    </swiper>
-    <view class="section section_gap">
-      <view class="section__title">horizontal scroll</view>
-      <scroll-view class="scroll-view_H" scroll-x style="width: 100%">
-        <view id="green" class="scroll-view-item_H bc_green"></view>
-        <view id="red"  class="scroll-view-item_H bc_red"></view>
-        <view id="yellow" class="scroll-view-item_H bc_yellow"></view>
-        <view id="blue" class="scroll-view-item_H bc_blue"></view>
-      </scroll-view>
-    </view>
-    <!--<recommend :option.sync="swiper" hidden="{{currentTab != 0}}"/>-->
+    <recommend :option.sync="swiper" hidden="{{currentTab != 0}}"/>
     <tab :active.sync="currentTab" :curplay.sync="curplay"/>
     <toast/>
   </view>
@@ -145,21 +125,100 @@
       toast: Toast
     }
     data = {
-      toView: 'red',
-      scrollTop: 100,
-      imgUrls: [
-        'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
-        'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
-        'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
-      ],
-      indicatorDots: true,
-      autoplay: true,
-      interval: 5000,
-      duration: 2000,
       items: [],
       userInfo: {
         nickName: '加载中...',
         avatarUrl: '../images/icon/icon-avatar@2px.png'
+      },
+      swiper: {
+        direction: 'horizontal',
+        slideLength: 8,
+        items: [],
+//        curplay: $wxapp.globalData.curplay,
+        /**
+         * swiper初始化后执行
+         * @param swiper
+         */
+        onInit (weswiper) {
+        },
+        /**
+         * 手指碰触slide时执行
+         * @param swiper
+         * @param event
+         */
+        onTouchStart (weswiper, event) {
+
+        },
+        /**
+         * 手指碰触slide并且滑动时执行
+         * @param swiper
+         * @param event
+         */
+        onTouchMove (weswiper, event) {
+
+        },
+        /**
+         * 手指离开slide时执行
+         * @param swiper
+         * @param event
+         */
+        onTouchEnd (weswiper, event) {
+
+        },
+        /**
+         *  slide达到过渡条件时执行
+         */
+        onSlideChangeStart (weswiper) {
+
+        },
+        /**
+         *  swiper从一个slide过渡到另一个slide结束时执行
+         */
+        onSlideChangeEnd (weswiper) {
+
+        },
+        /**
+         *  过渡时触发
+         */
+        onTransitionStart (weswiper) {
+
+        },
+        /**
+         *  过渡结束时执行
+         */
+        onTransitionEnd (weswiper) {
+
+        },
+        /**
+         *  手指触碰swiper并且拖动slide时执行
+         */
+        onSlideMove (weswiper) {
+
+        },
+        /**
+         * slide达到过渡条件 且规定了方向 向前（右、下）切换时执行
+         */
+        onSlideNextStart (weswiper) {
+
+        },
+        /**
+         *  slide达到过渡条件 且规定了方向 向前（右、下）切换结束时执行
+         */
+        onSlideNextEnd (weswiper) {
+
+        },
+        /**
+         *  slide达到过渡条件 且规定了方向 向前（左、上）切换时执行
+         */
+        onSlidePrevStart (swiper) {
+
+        },
+        /**
+         *  slide达到过渡条件 且规定了方向 向前（左、上）切换结束时执行
+         */
+        onSlidePrevEnd (weswiper) {
+
+        }
       },
       currentTab: 0,
       detail: {
@@ -206,7 +265,7 @@
 //      }
     }
     onLoad() {
-//      let self = this
+      let self = this
 //      self.items = items
 
 //      this.$get({

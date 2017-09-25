@@ -87,47 +87,50 @@
       gb && (this.globalData = gb)
       this.globalData.cookie = cookie
       const that = this
-      wx.login({
-        success: function (res) {
-          if (res.code) {
-//            console.log(res.data + '====>')
-            let encryptedData = 'ency'
-            let iv = 'iv'
-            that.getUserInfo((data) => {
-//              const uinfo = that.getObject(data.info)
-//              const userInfo = that.getObject(data.userInfo)
-//              that.globalData.userInfo = Object.assign({}, userInfo, uinfo)
-//              console.log(that.globalData.userInfo + '-----')
-//              console.log(data.encryptedData)
-              encryptedData = data.encryptedData || 'ency'
-              iv = data.iv
-              wx.request({
-                method: 'POST',
-                url: 'http://zy.picker.la/api/app/1/login',
-                header: {
-                  Authorization: ''
-                },
-                data: {
-                  username: encryptedData,
-                  password: iv,
-                  grant_type: 'password',
-                  auth_approach: 'wxapp',
-                  code: res.code
-                },
-                success: (res) => {
-                  console.log(res.data)
-                }
+//      console.log(jwt)
+      if (!jwt.token) {
+        wx.login({
+          success: function (res) {
+            if (res.code) {
+              console.log('code' + res.code)
+              let encryptedData = 'ency'
+              let iv = 'iv'
+              that.getUserInfo((data) => {
+                encryptedData = data.encryptedData || 'ency'
+                iv = data.iv
+                wx.request({
+                  method: 'POST',
+                  url: 'http://zy.picker.la/api/app/1/login',
+                  header: {
+                    Authorization: ''
+                  },
+                  data: {
+                    username: encryptedData,
+                    password: iv,
+                    grant_type: 'password',
+                    auth_approach: 'wxapp',
+                    code: res.code
+                  },
+                  success: (res) => {
+                    if (!Object.is(res.data, undefined)) {
+//                    console.log(res.data)
+                      wx.setStorageSync('jwt', res.data.data)
+                    }
+                  }
+                })
               })
-            })
-          } else {
-            console.log('获取用户登录态失败！' + res.errMsg)
+            } else {
+              console.log('获取用户登录态失败！' + res.errMsg)
+            }
           }
-        }
-      })
+        })
+      } else {
+        console.log(jwt.userId)
+//        console.log('not register')
+      }
       // 播放列表中下一首
       wx.onBackgroundAudioStop(() => {
         if (that.globalData.globalStop) {
-//          console.log('stop')
           return
         }
         that.playNext()

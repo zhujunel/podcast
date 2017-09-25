@@ -42,33 +42,61 @@ export default class userMixin extends wepy.mixin {
           this.$apply()
           return
         }
-
+        // if (res.code) {
+        //   let encryptedData = 'ency'
+        //   let iv = 'iv'
+        //   that.getUserInfo((data) => {
+        //     encryptedData = data.encryptedData || 'ency'
+        //     iv = data.iv
+        //     wx.request({
+        //       method: 'POST',
+        //       url: 'http://zy.picker.la/api/app/1/login',
+        //       header: {
+        //         Authorization: ''
+        //       },
+        //       data: {
+        //         username: encryptedData,
+        //         password: iv,
+        //         grant_type: 'password',
+        //         auth_approach: 'wxapp',
+        //         code: res.code
+        //       },
+        //       success: (res) => {
+        //         console.log(res.data)
+        //       }
+        //     })
+        //   })
+        // } else {
+        //   console.log('获取用户登录态失败！' + res.errMsg)
+        // }
         // 根据业务接口处理:业务登陆:异步
-        // this.$post({ url: service.login, data: {code: res.code} }, {
-        //   success: ({code, data}) => {},
-        //   fail: ({code, data}) => {}
-        // })
+        this.$post({ url: 'http://zy.picker.la/api/app/1/login',
+          data: {
+          code: res.code} }, {
+          success: ({code, data}) => {},
+          fail: ({code, data}) => {}
+        })
 
         // ===== 以下随机示例 =====
-        setTimeout(() => {
-          wepy.$instance.$updateGlobalData('user', {
-            session: Math.random().toString(36).substring(2),
-            packages: {
-              times: 0,
-              quantity: 0,
-              status: '未借阅'
-            },
-            identity: {
-              collection: 20,
-              type: '未订阅用户',
-              mobile: '1234567890',
-              address: '在那遥远的地方 有一位美丽的姑娘',
-            }
-          })
-          // 串行回调
-          this.isFunction(success) && success(res)
-          this.$apply()
-        }, 100)
+        // setTimeout(() => {
+        //   wepy.$instance.$updateGlobalData('user', {
+        //     session: Math.random().toString(36).substring(2),
+        //     packages: {
+        //       times: 0,
+        //       quantity: 0,
+        //       status: '未借阅'
+        //     },
+        //     identity: {
+        //       collection: 20,
+        //       type: '未订阅用户',
+        //       mobile: '1234567890',
+        //       address: '在那遥远的地方 有一位美丽的姑娘',
+        //     }
+        //   })
+        //   // 串行回调
+        //   this.isFunction(success) && success(res)
+        //   this.$apply()
+        // }, 100)
       },
       fail: (res) => {
         console.log('wepy.login.fail:', res)
@@ -111,7 +139,7 @@ export default class userMixin extends wepy.mixin {
     // 先判断是否支持开启授权页的API
     wx.openSetting && wx.showModal({
       title: '授权提示',
-      content: 'BookMall希望获得以下权限：\n · 获取您的公开信息（昵称、头像等）',
+      content: '【育儿柚道】希望获得以下权限：\n · 获取您的公开信息（昵称、头像等）',
       confirmText: '去授权',
       cancelText: '先不授权',
       success: (res) => {
