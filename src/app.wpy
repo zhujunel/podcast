@@ -4,6 +4,7 @@
   import wepy from 'wepy'
   import mitt from 'mitt'
   import 'wepy-async-function'
+  import {api} from '../config'
 
   export default class extends wepy.app {
     config = {
@@ -14,39 +15,40 @@
       window: {
         backgroundTextStyle: 'light',
         navigationBarBackgroundColor: '#fff',
-        navigationBarTitleText: 'WeChat',
+        navigationBarTitleText: '育儿柚道',
         navigationBarTextStyle: 'black'
+      },
+      tabBar: {
+        color: '#4A4A4A',
+        selectedColor: '#56abe4',
+        backgroundColor: '#fff',
+        borderStyle: 'white',
+        list: [{
+          pagePath: 'pages/index',
+          text: '首页',
+          iconPath: 'images/home.png',
+          selectedIconPath: 'images/home_on.png'
+        }, {
+          pagePath: 'pages/podcast',
+          text: '柚道',
+          iconPath: 'images/podcast.png',
+          selectedIconPath: 'images/podcast_on.png'
+        }, {
+          pagePath: 'pages/ask',
+          text: '柚答',
+          iconPath: 'images/ask.png',
+          selectedIconPath: 'images/ask_on.png'
+        }, {
+          pagePath: 'pages/me',
+          text: '我的',
+          iconPath: 'images/user.png',
+          selectedIconPath: 'images/user_on.png'
+        }]
       }
-//    tabBar: {
-//      color: '#4A4A4A',
-//      selectedColor: '#56abe4',
-//      backgroundColor: '#fff',
-//      borderStyle: 'white',
-//      list: [{
-//        pagePath: 'pages/index',
-//        text: '首页',
-//        iconPath: 'images/home.png',
-//        selectedIconPath: 'images/home_on.png'
-//      }, {
-//        pagePath: 'pages/podcast',
-//        text: '柚道',
-//        iconPath: 'images/podcast.png',
-//        selectedIconPath: 'images/podcast_on.png'
-//      }, {
-//        pagePath: 'pages/ask',
-//        text: '柚答',
-//        iconPath: 'images/ask.png',
-//        selectedIconPath: 'images/ask_on.png'
-//      }, {
-//        pagePath: 'pages/me',
-//        text: '我的',
-//        iconPath: 'images/user.png',
-//        selectedIconPath: 'images/user_on.png'
-//      }]
-//    }
     }
     emitter = mitt()
     globalData = {
+      options: {},
       user: null,
       userInfo: null,
       hasLogin: false,
@@ -87,7 +89,6 @@
       gb && (this.globalData = gb)
       this.globalData.cookie = cookie
       const that = this
-//      console.log(jwt)
       if (!jwt.token) {
         wx.login({
           success: function (res) {
@@ -95,6 +96,7 @@
               console.log('code' + res.code)
               let encryptedData = 'ency'
               let iv = 'iv'
+//              that.getOptions()
               that.getUserInfo((data) => {
                 encryptedData = data.encryptedData || 'ency'
                 iv = data.iv
@@ -128,6 +130,7 @@
         console.log(jwt.userId)
 //        console.log('not register')
       }
+
       // 播放列表中下一首
       wx.onBackgroundAudioStop(() => {
         if (that.globalData.globalStop) {
@@ -198,10 +201,12 @@
     }
 
     onShow () {
+      console.log('App on show...')
       this.globalData.hide = false
     }
 
     onHide () {
+      console.log('App on hide')
       this.globalData.hide = true
       console.log('Home hide')
       wx.setStorageSync('globalData', this.globalData)

@@ -11,10 +11,14 @@ const hosts = {
 }
 
 const basic_token = 'Basic token='
-const picker_appid = '1'
+const PICKER_APPID = '1'
 // apis
 const api = {
   common: {
+    options: {
+      method: 'GET',
+      url: `/app/${PICKER_APPID}/options/wxapp`
+    },
     recommend: {
       method: 'GET',
       url: '/podcast/recommend'
