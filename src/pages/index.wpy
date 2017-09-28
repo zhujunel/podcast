@@ -233,18 +233,14 @@
             <view class="title" @tap="tap({{item}})">
               {{ item.title }}
             </view>
-            <view class="author">
-              - 叶青
+            <view class="author" @tap="">
+              - {{ item.authorInfo.user_nicename }}
             </view>
             <view class="excerpt">
               {{ item.excerpt }}
             </view>
           </view>
         </view>
-        <view class="episode-card">lala</view>
-        <view class="episode-card">lala</view>
-        <view class="episode-card">lala</view>
-        <view class="episode-card">lala</view>
         <!--<view style="background: yellow; width: 200px; height: 100px; display: inline-block"></view>-->
       </scroll-view>
     </view>
@@ -300,14 +296,10 @@
               {{ item.title }}
             </view>
             <view class="author">
-              - 叶青
+              - {{ item.authorInfo.user_nicename }}
             </view>
           </view>
         </view>
-        <view class="episode-card">lala</view>
-        <view class="episode-card">lala</view>
-        <view class="episode-card">lala</view>
-        <view class="episode-card">lala</view>
         <!--<view style="background: yellow; width: 200px; height: 100px; display: inline-block"></view>-->
       </scroll-view>
     </view>
@@ -378,6 +370,11 @@
       recommend: []
     }
     methods = {
+      toAuthorPage (id) {
+        wx.navigateTo({
+          url: '/pages/author?id=' + id
+        })
+      },
       tap (item) {
 //        console.log(JSON.stringify(item))
         wx.navigateTo({

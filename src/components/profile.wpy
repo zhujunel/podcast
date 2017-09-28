@@ -80,7 +80,7 @@
       <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
       <!--</view>-->
       <view class="item">
-        <image class="icon" src="../images/podcast_on.png"></image>
+        <image class="icon" src="../../images/podcast_on.png"></image>
         <text class="title">我的订阅 </text>
         <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
       </view>
@@ -103,10 +103,13 @@
   import base from '../mixins/base'
   import user from '../mixins/user'
 
-  const $wxapp = wepy.$instance
+//  const $wxapp = wepy.$instance
 
   export default class weSwiper extends wepy.component {
     mixins = [base, http, user]
+    props = {
+      userInfo: {}
+    }
     data = {
       userInfo: {
         nickName: '加载中...',
@@ -136,15 +139,15 @@
 
     onLoad () {
       //      console.log(this.$parent.$parent.$updateGlobalData)
-      $wxapp.emitter.on('onShowMe', async (e) => {
-        // 初始化页面数据
-        await this.$getUserInfo((info) => {
-          const uinfo = this.getObject(info)
-          const userInfo = this.getObject(this.userInfo)
-          this.userInfo = Object.assign({}, userInfo, uinfo)
+//      $wxapp.emitter.on('onShowMe', async (e) => {
+      // 初始化页面数据
+//      this.$getUserInfo((info) => {
+//        const uinfo = this.getObject(info)
+//        const userInfo = this.getObject(this.userInfo)
+//        this.userInfo = Object.assign({}, userInfo, uinfo)
 //          this.initPageData()
-        })
-      })
+//      })
+//      })
 //      console.log('show profile...')
     }
   }

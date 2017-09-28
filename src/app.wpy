@@ -4,13 +4,14 @@
   import wepy from 'wepy'
   import mitt from 'mitt'
   import 'wepy-async-function'
-  import {api} from '../config'
+  import {api} from './config'
 
   export default class extends wepy.app {
     config = {
       pages: [
         'pages/index',
-        'pages/detail'
+        'pages/detail',
+        'pages/mine'
       ],
       window: {
         backgroundTextStyle: 'light',
@@ -39,7 +40,7 @@
           iconPath: 'images/ask.png',
           selectedIconPath: 'images/ask_on.png'
         }, {
-          pagePath: 'pages/me',
+          pagePath: 'pages/mine',
           text: '我的',
           iconPath: 'images/user.png',
           selectedIconPath: 'images/user_on.png'

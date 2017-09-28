@@ -42,6 +42,8 @@ export default class userMixin extends wepy.mixin {
           this.$apply()
           return
         }
+        this.isFunction(success) && success(res)
+
         // if (res.code) {
         //   let encryptedData = 'ency'
         //   let iv = 'iv'
@@ -70,12 +72,17 @@ export default class userMixin extends wepy.mixin {
         //   console.log('获取用户登录态失败！' + res.errMsg)
         // }
         // 根据业务接口处理:业务登陆:异步
-        this.$post({ url: 'http://zy.picker.la/api/app/1/login',
-          data: {
-          code: res.code} }, {
-          success: ({code, data}) => {},
-          fail: ({code, data}) => {}
-        })
+        // this.$post({
+        //   url: 'http://zy.picker.la/api/app/1/login',
+        //   data: {
+        //     code: res.code
+        //   }
+        // }, {
+        //   success: ({code, data}) => {
+        //   },
+        //   fail: ({code, data}) => {
+        //   }
+        // })
 
         // ===== 以下随机示例 =====
         // setTimeout(() => {
