@@ -1,0 +1,19 @@
+@import "../stylesheets/shared/mixins/mixins";
+@import "../stylesheets/shared/colors";
+/**
+ * General styles
+ */
+
+
+Page, .body {
+  font-size: 28rpx;
+  background: $gray-light;
+}
+
+//.body {
+//  color: $gray-dark;
+//  font-size: 28rpx;
+//  line-height: 1.5;
+//}
+
+

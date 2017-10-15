@@ -1,9 +1,9 @@
 <style lang="scss" scoped>
-  @import '../stylesheets/style';
-
+  /*@import '../stylesheets/style';*/
+  @import '../stylesheets/shared/functions';
   .swiper {
-    height: rpx(440);
     width: 100%;
+    height: rpx(440);
     .slide-image {
       width: 100%;
       height: rpx(440);
@@ -18,8 +18,8 @@
     autoplay="{{config.autoplay}}" interval="{{config.interval}}" duration="{{config.duration}}">
     <block wx:for="{{config.items}}" wx:key="item">
       <swiper-item>
-        <!--<image src="{{item.image_link}}" class="slide-image"/>-->
-        <image src="../images/swiper.png" class="slide-image"/>
+        <image src="{{item.image_link}}" class="slide-image"/>
+        <!--<image src="../images/swiper.png" class="slide-image"/>-->
       </swiper-item>
     </block>
   </swiper>

@@ -139,6 +139,7 @@
               <view class="info" @tap="tap({{item}})">
                 <text class="title">
                   {{item.title}}
+                  sdfjasldfjasldfdsfjs
                 </text>
                 <text class="author" wx:if="{{item.type === 'book'}}">
                   <!--{{item.author.name}}-->
@@ -146,6 +147,7 @@
               </view>
               <view class="detail">
                   {{item.excerpt}}
+                sdfasdflasdfkasdf
               </view>
               <view class="anchor" @tap="tap({{item}})">
                 <!--<image class="avatar" src="{{item.anchor.avatar}}" mode="aspectFill"></image>-->
@@ -577,7 +579,7 @@
           CONFIG.items = data
           CONFIG.slideLength = data.length
 //          console.log(data.length)
-//          this.$apply()
+          this.$apply()
 //          console.log('success')
 //          for (let item of data) {
 //            console.log(JSON.stringify(item))

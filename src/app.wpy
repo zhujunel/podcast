@@ -18,7 +18,7 @@
         navigationBarBackgroundColor: '#fff',
         navigationBarTitleText: '育儿柚道',
         navigationBarTextStyle: 'black'
-      },
+      }/*
       tabBar: {
         color: '#4A4A4A',
         selectedColor: '#56abe4',
@@ -45,7 +45,7 @@
           iconPath: 'images/user.png',
           selectedIconPath: 'images/user_on.png'
         }]
-      }
+      } */
     }
     emitter = mitt()
     globalData = {

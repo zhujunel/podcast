@@ -6,22 +6,22 @@ const version = 1.0
 
 // development and production host
 const hosts = {
-  development: 'http://zy.picker.la/api',
+  development: 'http://api.picker.la/v1',
   production: 'https://zy.picker.cc/api'
 }
 
 const basic_token = 'Basic token='
-const PICKER_APPID = '1'
+const PICKER_APPID = 'S11SeYT2W'
 // apis
 const api = {
   common: {
     options: {
       method: 'GET',
-      url: `/app/${PICKER_APPID}/options/wxapp`
+      url: `/app/${PICKER_APPID}/options?key=_wxapp`
     },
     recommend: {
       method: 'GET',
-      url: '/podcast/recommend'
+      url: `/app/${PICKER_APPID}/posts`
     }
   }
 

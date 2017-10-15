@@ -1,0 +1,568 @@
+<style lang="scss">
+  @import '../stylesheets/style';
+
+  .tab_item {
+    height: 100%;
+  }
+
+  Page, .body {
+    font-family: '\5FAE\8F6F\96C5\9ED1', arial;
+    background: #F9FAFC;
+    /*background: #ECEDF0;*/
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  Page {
+
+  }
+
+  $bgcolor: #EFEFF4;
+  .me {
+    background-color: $bgcolor;
+    height: 100%;
+    padding-top: rpx(40);
+    .info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .avatar {
+        width: rpx(130);
+        height: rpx(130);
+        border-radius: 50%;
+      }
+      .nickname {
+        color: #aaa;
+        padding: 10px;
+        font-size: rpx(32);
+      }
+    }
+    .item {
+      background-color: #fff;
+      height: rpx(100);
+      position: relative;
+      box-sizing: border-box;
+      padding: rpx(15) rpx(25);
+      border-bottom: 1px solid #eee;
+    }
+  }
+
+  $border: 1px solid #eeeeee;
+  .list {
+    margin-top: rpx(40);
+    background-color: #fff;
+    border-bottom: $border;
+    .item {
+      height: rpx(100);
+      position: relative;
+      /*-webkit-box-sizing: border-box;*/
+      /*-moz-box-sizing: border-box;*/
+      box-sizing: border-box;
+      padding: rpx(20);
+      border-bottom: $border;
+      .icon {
+        width: rpx(60);
+        height: rpx(60);
+        position: absolute;
+        margin-left: rpx(15);
+      }
+      .arrow_left {
+        position: absolute;
+        right: rpx(20);
+        width: rpx(30);
+        height: rpx(40);
+        margin-top: rpx(-32);
+      }
+      .title {
+        padding: rpx(18) 0 0 rpx(100);
+        display: block;
+        font-size: rpx(32);
+      }
+    }
+  }
+
+  .podcast {
+    heigth: rpx(300)
+    &-section {
+      /*heigth: rpx(300)*/
+    }
+    &-section__title {
+      color: #3B4859;
+      margin: rpx(120) 0 rpx(60) rpx(60);
+      font-size: rpx(38);
+    }
+    .episode {
+      display: flex;
+      white-space: nowrap;
+      &-card {
+        transform:translate(rpx(30));
+        margin-left: rpx(30);
+        padding: rpx(24);
+        background: #FFFFFF;
+        /*border: 1px solid #8392A7;*/
+        border-radius: rpx(10);
+        display: inline-flex;
+
+      }
+      &-article_card {
+        transform:translate(rpx(30));
+
+        flex-direction: column;
+        margin-left: rpx(30);
+        display: inline-flex;
+        .featured-image {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          background-position: center center;
+          box-shadow: 0 -4px 30px 0 rgba(0, 0, 0, 0.05);
+          border-radius: rpx(10);
+          /* 忍不住吼孩子: */
+          .play {
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 100;
+          }
+          .play image {
+            width: rpx(75);
+            height: rpx(75);
+          }
+        }
+        .content {
+          flex-direction: column;
+          margin-top: rpx(20);
+          color: #3B4859;
+          .title {
+            display: flex;
+            font-size: rpx(28);
+            line-height: rpx(36);
+            overflow: hidden;
+            word-break:break-all;
+            min-width:0;
+            width: rpx(400);
+            /*height: 200rpx;*/
+            white-space:nowrap;
+            text-overflow:ellipsis;//文字隐藏后添加省略号
+          }
+          .author {
+            display: flex;
+            font-size: rpx(24);
+          }
+        }
+      }
+      &-card__feature-image {
+        /*height: rpx(180);*/
+        /*width: rpx(128);*/
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background-position: center center;
+        .play {
+          position: relative;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          z-index: 100;
+        }
+        .play image {
+          width: rpx(75);
+          height: rpx(75);
+        }
+      }
+      &-card__content {
+        flex: 1;
+        margin-left: rpx(24);
+        color: #3B4859;
+        .title {
+          font-size: rpx(28);
+          display: inline-block;
+          line-height: rpx(36);
+        }
+        .author {
+          font-size: rpx(24);
+        }
+        .excerpt {
+          color: #8392A7;
+          font-size: rpx(24);
+          /*padding: 20rpx;*/
+          line-height: 36rpx;
+          overflow: hidden;
+          word-break:break-all;
+          min-width:0;
+          width: rpx(400);
+          /*height: 200rpx;*/
+          white-space:nowrap;
+          text-overflow:ellipsis;//文字隐藏后添加省略号
+        }
+      }
+    }
+  }
+</style>
+<template>
+
+  <view>
+    <!--<me :user.sync="userInfo" hidden="{{currentTab == 0}}"/>-->
+    <!--<view hidden="{{currentTab != 1 }}">-->
+    <!--<detail :option="detail"></detail>-->
+    <!--</view>-->
+    <adswiper :config.sync="swiper"></adswiper>
+    <view class="podcast">
+      <view class="podcast-section__title">听书...</view>
+      <scroll-view scroll-x="true" class="episode">
+        <!--  display: inline-block-->
+        <!--<block wx:for-items="{{items}}" wx:for-index="index" wx:for-item="item" wx:key="id">-->
+        <view class="episode-card" wx:for-items="{{recommend}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+          <view class="episode-card__feature-image" style="box-sizing: content-box;  background: url({{item.featured_image}}); height: 180rpx; width: 128rpx; background-size: 128rpx 180rpx;}}">
+            <view class="play">
+                <!-- 有播放状态的专辑 -->
+                <!--<image class="" src="../images/quick/pause_big.png"></image>-->
+                <image class="" src="../images/quick/play_big.png"></image>
+                <!-- 没有状态的专辑 -->
+                <!--<image class="" src="../images/quick/play_big.png"></image>-->
+              </view>
+          </view>
+          <view class="episode-card__content">
+            <view class="title" @tap="tap({{item}})">
+              {{ item.title }}
+            </view>
+            <view class="author" @tap="">
+              - {{ item.authorInfo.user_nicename }}
+            </view>
+            <view class="excerpt">
+              {{ item.excerpt }}
+            </view>
+          </view>
+        </view>
+        <!--<view style="background: yellow; width: 200px; height: 100px; display: inline-block"></view>-->
+      </scroll-view>
+    </view>
+    <view class="podcast">
+      <view class="podcast-section__title">文章...</view>
+      <scroll-view scroll-x="true" class="episode">
+        <!--  display: inline-block-->
+        <!--<block wx:for-items="{{items}}" wx:for-index="index" wx:for-item="item" wx:key="id">-->
+        <view class="episode-article_card" wx:for-items="{{recommend}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+          <view class="featured-image" style=" background: no-repeat;  background-position: center center; background: url({{item.featured_image}}); border-radius: 10rpx;height: 240rpx; width: 440rpx; background-size: 440rpx;}}">
+            <view class="play">
+              <!-- 有播放状态的专辑 -->
+              <!--<image class="" src="../images/quick/pause_big.png"></image>-->
+              <image class="" src="../images/quick/play_big.png"></image>
+              <!-- 没有状态的专辑 -->
+              <!--<image class="" src="../images/quick/play_big.png"></image>-->
+            </view>
+          </view>
+          <view class="content">
+            <view class="title">
+              {{ item.title }}
+            </view>
+            <view class="author">
+              - 叶青
+            </view>
+          </view>
+        </view>
+        <view class="episode-card">lala</view>
+        <view class="episode-card">lala</view>
+        <view class="episode-card">lala</view>
+        <view class="episode-card">lala</view>
+        <!--<view style="background: yellow; width: 200px; height: 100px; display: inline-block"></view>-->
+      </scroll-view>
+    </view>
+
+    <view class="podcast">
+      <view class="podcast-section__title">文章...</view>
+      <scroll-view scroll-x="true" class="episode">
+        <!--  display: inline-block-->
+        <!--<block wx:for-items="{{items}}" wx:for-index="index" wx:for-item="item" wx:key="id">-->
+        <view class="episode-article_card" wx:for-items="{{recommend}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+          <view class="featured-image" style=" background: no-repeat;  background-position: center center; background: url({{item.featured_image}}); border-radius: 10rpx;height: 240rpx; width: 440rpx; background-size: 440rpx;}}">
+            <view class="play">
+              <!-- 有播放状态的专辑 -->
+              <!--<image class="" src="../images/quick/pause_big.png"></image>-->
+              <image class="" src="../images/quick/play_big.png"></image>
+              <!-- 没有状态的专辑 -->
+              <!--<image class="" src="../images/quick/play_big.png"></image>-->
+            </view>
+          </view>
+          <view class="content">
+            <view class="title">
+              {{ item.title }}
+            </view>
+            <view class="author">
+              - {{ item.authorInfo.user_nicename }}
+            </view>
+          </view>
+        </view>
+        <!--<view style="background: yellow; width: 200px; height: 100px; display: inline-block"></view>-->
+      </scroll-view>
+    </view>
+
+    <me hidden="{{currentTab !== 1}}"></me>
+    <recommend :option.sync="swiper" hidden="{{currentTab != 0}}"/>
+    <tab :active.sync="currentTab" :curplay.sync="curplay"/>
+    <toast/>
+  </view>
+</template>
+
+<script>
+
+  /* eslint-disable no-undef,no-throw-literal */
+  //  const items = require('../mocks/data.js')
+  import wepy from 'wepy'
+  //  import { service } from '../config.js'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+
+  import Recommend from '../components/recommend'
+  import AdSwiper from '../components/AdSwiper'
+  //  import Detail from '../components/detail'
+  import Me from '../components/profile'
+  import Tab from '../components/toolbar'
+  import Toast from 'wepy-com-toast'
+  import {api} from '../config'
+
+  const device = wx.getSystemInfoSync()  //  获取设备信息
+  const $wxapp = wepy.$instance
+  export default class Index extends wepy.page {
+    mixins = [base, http]
+    config = {
+//      'backgroundTextStyle': '#000',
+      'navigationBarTitleText': '育儿柚道',
+//      'navigationBarTextStyle': '#8392A7',
+//      'navigationBarBackgroundColor': '#fff',
+//      'disableScroll': true,
+      'enablePullDownRefresh': false
+    }
+    components = {
+//      detail: Detail,
+      adswiper: AdSwiper,
+      recommend: Recommend,
+      me: Me,
+      tab: Tab,
+      toast: Toast
+    }
+    data = {
+      toView: 'red',
+      scrollTop: 100,
+      items: [],
+      userInfo: {
+        nickName: '加载中...',
+        avatarUrl: '../images/icon/icon-avatar@2px.png'
+      },
+      currentTab: 0,
+      detail: {
+        scrollHeight: device.windowHeight + 120
+      },
+      XORY: 'X',
+      height: device.windowHeight,
+      animationData: '',
+      animationViewName: 'animationData',
+      curplay: $wxapp.globalData.curplay,
+      background: '',
+      swiper: {},
+      recommend: []
+    }
+    methods = {
+      toAuthorPage (id) {
+        wx.navigateTo({
+          url: '/pages/author?id=' + id
+        })
+      },
+      tap (item) {
+//        console.log(JSON.stringify(item))
+        wx.navigateTo({
+          url: '/pages/detail?id=' + item.id,
+          success (res) {
+          }
+        })
+      }
+    }
+    watch = {
+      currentTab (old, newValue) {
+        if (newValue === 0) {
+          $wxapp.emitter.emit('onShowMe')
+        }
+      }
+    }
+    events = {
+      'tab-change': (active, $event) => {
+//        this.currentTab = active
+//        this.$apply()
+//        this.slideAnimation(0, 500)
+      }
+    }
+    computed = {
+//      swiperItems () {
+//        return items
+//      }
+//      packages () {
+//      },
+//      identity () {
+//      },
+//      nickName () {
+//        const info = this.getObject(this.userInfo)
+//        return (info.nickName || info.avatarUrl) ? info.nickName : '未授权用户'
+//      }
+    }
+
+    onLoad () {
+      console.log('onload')
+      if (JSON.stringify($wxapp.globalData.options) === '{}') {
+        this.$request(api.common.options, {
+          success: ({code, data}) => {
+            this.swiper = data.swiper
+            $wxapp.$updateGlobalData('options', data)
+          }
+        })
+      }
+      this.$request(api.common.recommend, {
+        success: ({code, data}) => {
+          this.recommend = data
+          console.log(data)
+//          CONFIG.items = data
+//          CONFIG.slideLength = data.length
+        }
+      })
+//      this.$get({
+//        url: 'http://zy.picker.la/api/app/1/options/wxapp'
+//      }, {
+//        success: ({code, data}) => {
+//          this.swiper = data.swiper
+//          this.$apply()
+//          console.log('lalala---')
+//          console.log(JSON.stringify(data) + '-----')
+
+//          console.log(JSON.stringify(data))
+//        }
+//      })
+//      this.$get({
+//        url: 'http://zy.picker.la/api/podcast/recommend'
+//      }, {
+//        success: ({code, data}) => {
+//          self.swiper.items = data
+//          self.swiper.slideLength = data.length
+//          console.log(data.length)
+//          this.$apply()
+//          console.log('success')
+//          for (let item of data) {
+//            console.log(JSON.stringify(item))
+//          }
+//          console.log(JSON.stringify(data.data))
+//        }
+//      })
+//      this.$getUserInfo((data) => {
+//        self.userInfo = data
+//      })
+//      this.$parent.getUserInfo(function (userInfo) {
+//        if (userInfo) {
+//          self.userInfo = userInfo
+//        }
+//        console.log(self.userInfo)
+//        self.$apply()
+//      })
+      this.curplay = {
+        id: '2',
+        anchor: {
+          name: '叶青',
+          avatar: 'https://media.alearning.com.cn/podcast/book/2/anchor.jpg'
+        },
+        songname: '交流密码：我说的你听懂了吗？（3-6岁）',
+        status: 'stop',
+        src: 'https://media.alearning.com.cn/podcast/book/2/202.mp3'
+      }
+      $wxapp.globalData.curplay = this.curplay
+      $wxapp.emitter.emit('onload')
+//      $wxapp.emitter.on('tab-change', (active) => {
+//        self.currentTab = active
+//        self.$apply()
+//      })
+    }
+
+    onShow () {
+      this.currentTab = 0
+//      if ($wxapp.globalData.playing) {
+//        this.showToolbar = false
+//      }
+      // this.$invoke('message', 'loadMessage')
+    }
+
+    slideAnimation (translate = 0, speed = 300, timingFunction = 'ease-in-out') {
+      const REG = {
+        TRANSLATE: /^(0|[1-9][0-9]*|-[1-9][0-9]*)$/,
+        SPEED: /^(0|[1-9][0-9]*|-[1-9][0-9]*)$/,
+        TIMINGFUNCTION: /linear|ease|ease-in|ease-in-out|ease-out|step-start|step-end/
+      }
+
+      const {XORY, animationViewName, consoleException} = this
+      try {
+        /**
+         * 异常处理
+         */
+        if (!REG.TRANSLATE.test(translate)) throw 'paramType'
+        if (!REG.SPEED.test(speed)) throw 'paramType'
+        if (!REG.TIMINGFUNCTION.test(timingFunction)) throw 'paramType'
+        /**
+         * 创建一个动画实例
+         */
+        const animation = wx.createAnimation({
+          transformOrigin: '50% 50% 0',
+          duration: speed,
+          timingFunction,
+          delay: 0
+        })
+        animation[`translate${XORY}`](translate).step()  //  动画描述
+        this.syncView(animationViewName, animation)  //  同步动画到视图
+      } catch (err) {
+        consoleException(err, 'slideAnimation[Function]')
+      }
+    }
+
+    /**
+     * 同步设置到视图
+     * @param DEFAULT：默认参数
+     * @param param：构造参数
+     */
+    syncView (viewName, prop) {
+      this[`${viewName}`] = prop
+//      console.log(viewName)
+      this.$apply()
+    }
+
+    /**
+     * 错误对照
+     */
+    consoleException (type, place) {
+      const ERROR = {
+        'paramType': '参数类型错误',
+        'bound': '参数越界'
+      }
+      console.log(`%c${place}:${ERROR[type]}`, 'color: red')
+    }
+
+    onShareAppMessage () {
+      return {
+        title: '育儿柚道',
+        desc: '育儿柚道-育儿有道！',
+        path: '/pages/index'
+      }
+    }
+
+    showToast (name) {
+      let promise = this.$invoke('toast', 'show', {
+        title: `${name}`,
+        img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
+      })
+
+      promise.then((d) => {
+        console.log('toast done')
+      })
+    }
+  }
+</script>
