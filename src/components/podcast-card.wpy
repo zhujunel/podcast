@@ -1,0 +1,87 @@
+<template>
+  <view>
+    <podcast-header :item="item"></podcast-header>
+    <view class="card">
+      <view class="podcast">
+        <!--<view class="podcast-section__title">文章...</view>-->
+        <scroll-view scroll-x="true" class="episode">
+          <view class="episode-article_card ">
+            <view class="featured-image" style=" background: no-repeat;  background-position: center center; background: url({{item.featured_image}}); border-radius: 10rpx;height: 240rpx; width: 440rpx; background-size: 440rpx;}}">
+              <view class="play">
+                <!-- 有播放状态的专辑 -->
+                <!--<image class="" src="../images/quick/pause_big.png"></image>-->
+                <!-- 没有状态的专辑 -->
+                <!--<image class="" src="../images/quick/play_big.png"></image>-->
+              </view>
+            </view>
+            <view class="content">
+              {{ item.id }}
+            </view>
+          </view>
+          <!--  display: inline-block-->
+          <!--<block wx:for-items="{{items}}" wx:for-index="index" wx:for-item="item" wx:key="id">-->
+          <view class="episode-article_card" wx:for-items="{{recommend}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+            <view class="featured-image" style=" background: no-repeat;  background-position: center center; background: url({{item.featured_image}}); border-radius: 10rpx;height: 240rpx; width: 440rpx; background-size: 440rpx;}}">
+              <view class="play">
+                <!-- 有播放状态的专辑 -->
+                <!--<image class="" src="../images/quick/pause_big.png"></image>-->
+                <image class="" src="../images/quick/play_big.png"></image>
+                <!-- 没有状态的专辑 -->
+                <!--<image class="" src="../images/quick/play_big.png"></image>-->
+              </view>
+            </view>
+            <view class="content">
+              <view class="title">
+                {{ item.title }}
+              </view>
+              <view class="author">
+                - 叶青
+              </view>
+            </view>
+          </view>
+          <!--<view style="background: yellow; width: 200px; height: 100px; display: inline-block"></view>-->
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import PodcastHeader from '../components/podcast-header'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+  import {api} from '../config'
+
+  export default class Index extends wepy.component {
+    mixins = [base, http]
+
+    components = {
+      'podcast-header': PodcastHeader
+    }
+
+    props = {
+      item: {
+        type: Object,
+        twoWay: true
+      }
+    }
+    data = {
+      current: this.item
+    }
+    methods = {
+    }
+    /**
+     * lifecycles hook
+     */
+    async onComponentLoad () {
+      console.log('on component lost....')
+      console.log(this.item.id)
+//      console.log(JSON.stringify(this.current))
+      await this.$request(api.common.episodes(this.item.id), {
+        success: ({code, data}) => {
+//          console.log(JSON.stringify(data))
+        }
+      })
+    }
+  }
+</script>

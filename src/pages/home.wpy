@@ -306,7 +306,7 @@
 
     <me hidden="{{currentTab !== 1}}"></me>
     <recommend :option.sync="swiper" hidden="{{currentTab != 0}}"/>
-    <tab :active.sync="currentTab" :curplay.sync="curplay"/>
+    <!--<tab :active.sync="currentTab" :curplay.sync="curplay"/>-->
     <toast/>
   </view>
 </template>
@@ -324,7 +324,7 @@
   import AdSwiper from '../components/AdSwiper'
   //  import Detail from '../components/detail'
   import Me from '../components/profile'
-  import Tab from '../components/toolbar'
+  import Tab from '../components/TabBar'
   import Toast from 'wepy-com-toast'
   import {api} from '../config'
 

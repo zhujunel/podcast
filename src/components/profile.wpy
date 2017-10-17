@@ -3,7 +3,7 @@
 
   $bgcolor: #EFEFF4;
   .me {
-    background-color: $bgcolor;
+    background-color: $gray-light;
     height: 100%;
     padding-top: rpx(40);
     .info {
@@ -36,7 +36,12 @@
     margin-top: rpx(40);
     background-color: #fff;
     border-bottom: $border;
+    display: flex;
+    flex-direction: column;
+
     .item {
+      justify-content: center;
+
       height: rpx(100);
       position: relative;
       /*-webkit-box-sizing: border-box;*/
@@ -58,7 +63,9 @@
         margin-top: rpx(-32);
       }
       .title {
-        padding: rpx(18) 0 0 rpx(100);
+        justify-content: center;
+        margin-top: rpx(10);
+        margin-left: rpx(100);
         display: block;
         font-size: rpx(33);
       }
@@ -74,21 +81,21 @@
 
     <view class="list">
       <!--<block wx:for-items="{{list}}" wx:for-index="index" wx:for-item="item">-->
-      <!--<view class="item">-->
-      <!--<image class="icon" src="../../images/podcast_on.png"></image>-->
-      <!--<text class="title">我的柚道</text>-->
-      <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
-      <!--</view>-->
+      <view class="item">
+        <image class="icon" src="../../images/podcast_on.png"></image>
+        <text class="title">我的柚道</text>
+        <image class="arrow_left" src="../images/arrow_left.png"></image>
+      </view>
       <view class="item">
         <image class="icon" src="../../images/podcast_on.png"></image>
         <text class="title">我的订阅 </text>
-        <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
+        <image class="arrow_left" src="../images/arrow_left.png"></image>
       </view>
-      <!--<view class="item">-->
-      <!--<image class="icon" src="../../images/ask_on.png"></image>-->
-      <!--<text class="title">我的提问</text>-->
-      <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
-      <!--</view>-->
+      <view class="item">
+        <image class="icon" src="../../images/ask_on.png"></image>
+        <text class="title">我的提问</text>
+        <image class="arrow_left" src="../images/arrow_left.png"></image>
+      </view>
       <!--</block>-->
     </view>
     <!--<album :list="dAlbum"/>-->
@@ -103,19 +110,15 @@
   import base from '../mixins/base'
   import user from '../mixins/user'
 
-//  const $wxapp = wepy.$instance
+  //  const $wxapp = wepy.$instance
 
   export default class weSwiper extends wepy.component {
     mixins = [base, http, user]
-    props = {
-      userInfo: {}
-    }
     data = {
       userInfo: {
         nickName: '加载中...',
         // 头像占位图
         avatarUrl: '../images/icon/icon-avatar@2x.png',
-
         packages: {
           times: 0,
           status: '阅读状态'
@@ -126,6 +129,28 @@
         }
       }
     }
+
+    async onShow () {
+      try {
+        await this.$getUserInfo((data) => {
+          this.userInfo = data
+        })
+//        const { data } = await http({
+//          method: api.user.blog.method,
+//          url: `${api.user.blog.url}?page=1`
+//        })
+//        this.blogs = data.data
+
+//        this.$apply()
+      } catch (e) {
+        console.log(e)
+        wepy.showModal({
+          title: '提示',
+          content: `加载页面出错,请重试。${e.message}`
+        })
+      }
+    }
+
     computed = {
       packages () {
       },
@@ -135,21 +160,6 @@
         const info = this.getObject(this.userInfo)
         return (info.nickName || info.avatarUrl) ? info.nickName : '未授权用户'
       }
-    }
-
-    onLoad () {
-      //
-      // console.log(this.$parent.$parent.$updateGlobalData)
-//      $wxapp.emitter.on('onShowMe', async (e) => {
-      // 初始化页面数据
-//      this.$getUserInfo((info) => {
-//        const uinfo = this.getObject(info)
-//        const userInfo = this.getObject(this.userInfo)
-//        this.userInfo = Object.assign({}, userInfo, uinfo)
-//          this.initPageData()
-//      })
-//      })
-//      console.log('show profile...')
     }
   }
 </script>

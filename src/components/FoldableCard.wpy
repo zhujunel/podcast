@@ -119,14 +119,14 @@
       flex: 2;
       display: block;
       overflow: hidden;
-      margin-top: 16 rpx;
+      margin-top: rpx(16);
     }
     .podcast-icon {
       margin-left: 0px;
       float: left;
-      margin-right: 16 rpx;
-      width: 80 rpx;
-      height: 80 rpx;
+      margin-right: rpx(16);
+      width: rpx(80);
+      height: rpx(80);
       position: relative;
       transition: opacity .15s ease-in-out;
 
@@ -148,12 +148,15 @@
       <view class="foldable-card__main">
         <slot name="header"></slot>
       </view>
-      <view class="foldable-card__summary">
-        <slot name="summary"></slot>
+      <view class="foldable-card__secondary">
+        <view class="foldable-card__summary">
+          <slot name="summary"></slot>
+        </view>
+        <view class="foldable-card__summary-expanded">
+          <slot name="expandedSummary"></slot>
+        </view>
       </view>
-      <view class="foldable-card__summary-expanded">
-        <slot name="expandedSummary"></slot>
-      </view>
+
       <!--<button class="foldable-card__action foldable-card__expand"></button>-->
     </view>
     <view class="foldable-card__content" wx:if="{{isExpanded}}">
@@ -170,7 +173,9 @@
         type: String,
         default: ''
       },
-      item: Object,
+      item: {
+        type: Object
+      },
       tapableHeader: {
         type: Boolean,
         default: true
@@ -222,7 +227,7 @@
     }
 
     onLoad () {
-//      this.isExpanded = this.expanded
+      this.isExpanded = this.expanded
     }
   }
 </script>

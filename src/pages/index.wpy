@@ -342,7 +342,7 @@
   .podcasts-browser-item__title {
     color: $gray-dark;
     font-weight: 600;
-    font-size: 15px;
+    font-size: rpx(30);
     margin-top: 3px;
   }
 
@@ -430,15 +430,15 @@
 
 
   .podcast {
-    heigth: rpx(300)
+    /*height: rpx(300);*/
+    margin-top: rpx(30);
     &-section {
       /*heigth: rpx(300)*/
     }
-    &-section__title {
-      color: #3B4859;
-      margin: rpx(120) 0 rpx(60) rpx(60);
-      font-size: rpx(38);
-    }
+    /*:last-child {*/
+      /*margin-right: 30rpx;*/
+    /*}*/
+
     &-content_card {
       transform:translate(rpx(30));
       display: inline-flex;
@@ -446,11 +446,15 @@
         align-items: flex-start;
         height: rpx(220);
         padding: rpx(20);
-        font-size: rpx(32);
+        font-size: 26rpx;
         line-height: rpx(36);
         overflow: hidden;
         word-break:break-all;
         white-space: pre-line;
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
         /*height: rpx(200);*/
         text-overflow:ellipsis;//文字隐藏后添加省略号
       }
@@ -459,321 +463,401 @@
     .episode {
       display: flex;
       white-space: nowrap;
-      &-card {
+      &-audio_card {
+        min-width: rpx(380);
+        display: block;
+        position: relative;
+        margin: 0 auto 10rpx auto;
+        box-sizing: border-box;
+        background: #fafafa;
+        box-shadow: 0 0 0 1px transparentize(lighten($gray, 20%), .5),
+        0 2px 4px lighten($gray, 30%);
+        width: auto;
+        /*max-width: rpx(500);*/
         transform:translate(rpx(30));
-        margin-left: rpx(30);
+        margin-right: rpx(32);
         padding: rpx(24);
-        background: #FFFFFF;
-        border: 1px solid #8392A7;
-        border-radius: rpx(10);
         display: inline-flex;
       }
-      &-article_card {
-        transform:translate(rpx(30));
+    }
+  }
+  .upgrade-nudge {
+    border-left: 3px solid $blue-wordpress;
+    border-bottom-left-radius: 10rpx;
+    border-top-left-radius: 10rpx;
+    display: flex;
+    padding: 12px 16px;
 
-        flex-direction: column;
-        margin-left: rpx(30);
-        display: inline-flex;
-        .featured-image {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          background-position: center center;
-          box-shadow: 0 -4px 30px 0 rgba(0, 0, 0, 0.05);
-          border-radius: rpx(10);
-          /* 忍不住吼孩子: */
-          .play {
-            width: rpx(75);
-            height: rpx(75);
-            position: relative;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            z-index: 100;
-          }
-          .play image {
-            width: rpx(75);
-            height: rpx(75);
-          }
-        }
-        .content {
-          flex-direction: column;
-          margin-top: rpx(20);
-          color: #3B4859;
-          .title {
-            display: flex;
-            font-size: rpx(28);
-            line-height: rpx(36);
-            overflow: hidden;
-            word-break:break-all;
-            min-width:0;
-            width: rpx(400);
-            /*height: 200rpx;*/
-            white-space:nowrap;
-            text-overflow:ellipsis;//文字隐藏后添加省略号
-          }
-          .author {
-            display: flex;
-            font-size: rpx(24);
-          }
-        }
-      }
-      &-card__feature-image {
-        /*height: rpx(180);*/
-        /*width: rpx(128);*/
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        background-position: center center;
-        .play {
-          position: relative;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          z-index: 100;
-        }
-        .play image {
-          width: rpx(75);
-          height: rpx(75);
-        }
-      }
-      &-card__content {
-        flex: 1;
-        margin-left: rpx(24);
-        color: #3B4859;
-        .title {
-          font-size: rpx(28);
-          display: inline-block;
-          line-height: rpx(36);
-        }
-        .author {
-          font-size: rpx(24);
-        }
-        .excerpt {
-          color: #8392A7;
-          font-size: rpx(24);
-          /*padding: 20rpx;*/
-          line-height: 36rpx;
-          overflow: hidden;
-          word-break:break-all;
-          min-width:0;
-          width: rpx(400);
-          /*height: 200rpx;*/
-          white-space:nowrap;
-          text-overflow:ellipsis;//文字隐藏后添加省略号
-        }
+    .upgrade-nudge__title {
+      font-size: 14px;
+    }
+
+    .button {
+      margin-left: auto;
+    }
+
+    &.is-no-margin {
+      margin: 0;
+    }
+
+    /*&.is-card-link {*/
+      /*padding-right: 48px;*/
+    /*}*/
+  }
+
+  .upgrade-nudge__icon {
+    background: $blue-medium;
+    border-radius: 50%;
+    margin-right: 16px;
+    color: $white;
+    padding: 5px 7px 7px 5px;
+    align-self: center;
+    flex: 0 0 auto;
+  }
+
+  .upgrade-nudge.button {
+    margin-bottom: 16px;
+    text-align: left;
+    display: inline-flex;
+
+    .upgrade-nudge__icon {
+      background: $alert-green;
+    }
+
+    &.is-full-width {
+      width:100%;
+      @include breakpoint( ">660px" ) {
+        max-width: 420px;
       }
     }
   }
 
-  .card__content {
-    display: -webkit-box;
-    word-break: break-all;
-    text-overflow: ellipsis;
-    font-size: 26rpx;
+  .upgrade-nudge__title {
+    color: $gray-dark;
+    font-weight: 500;
+  }
+
+  .upgrade-nudge__message {
+    color: $gray-text-min;
+    font-size: 12px;
+    display: block;
+  }
+
+  .plugin-meta__banner {
+    position: relative;
+    top: 0;
+    left: -16px;
+    width: calc( 100% + 32px );
     overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    margin-top: -16px;
+    margin-bottom: 16px;
+    box-shadow: inset 0 0 2px 2px rgba( lighten( $gray, 10 ), 0.1 );
+    background: rgba( lighten( $gray, 30 ), 0.3 );
+
+
+    image {
+      display: block;
+      width: auto;
+      max-height: rpx(288);
+      margin: 0 auto;
+    }
 
   }
+  // ==========================================================================
+  // Plugin icon
+  // ==========================================================================
+
+  .plugin-icon {
+    float: left;
+    margin-right: 16px;
+    width: 56px;
+    height: 56px;
+    position: relative;
+    transition: opacity .15s ease-in-out;
+
+      width: 40px;
+      height: 40px;
+
+    .gridicon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate( -50%, -50% );
+      width: 24px;
+      height: 24px;
+      fill: $white;
+    }
+    &.is-placeholder {
+      background-color: lighten( $gray, 30% );
+      animation: loading-fade 1.6s ease-in-out infinite;
+      opacity: 0.3;
+    }
+    &.is-fallback {
+      background: lighten( $gray, 20% );
+    }
+  }
+
+  .plugin-icon__img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .plugin-meta__information {
+    display: flex;
+    flex-direction: column;
+
+    @include breakpoint( '>480px' ) {
+      flex-direction: row;
+    }
+  }
+
+  .plugin-meta__information {
+    position: relative;
+  }
+
+  .plugin-meta__name {
+    color: $gray-dark;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 32px;
+    white-space: pre;
+    overflow: hidden;
+    position: relative;
+
+    &:after {
+      @include long-content-fade( $size: 20% );
+    }
+
+    @include breakpoint( '>480px' ) {
+      font-size: 24px;
+    }
+
+    .is-placeholder & {
+      width: 200px;
+      @include placeholder();
+    }
+  }
+
+  .plugin-meta__detail {
+    position: relative;
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .plugin-meta__upgrade_nudge .upgrade-nudge.card {
+    margin-top: 0;
+  }
+
+  .plugin-meta__meta {
+    color: $gray;
+    white-space: pre;
+    text-overflow: ellipsis;
+    float: left;
+
+    .is-placeholder & {
+      width: 120px;
+      @include placeholder();
+    }
+  }
+
+  .is-placeholder .plugin-meta__author {
+    color: transparent !important;
+  }
+
+  .plugin-meta__actions {
+    border-top: 1px solid lighten( $gray, 30% );
+    flex-grow: 1;
+    flex-shrink: 0;
+    margin-top: 16px;
+    padding-top: 16px;
+
+    .has-button & {
+      position: initial;
+      right: inherit;
+    }
+
+      min-width: 22%;
+      border: none;
+      margin: 0;
+      padding: 0;
+      text-align: right;
+      justify-content: flex-end;
+      align-self: flex-start;
+
+      .plugin-action {
+        margin-top: 16px;
+      }
+
+      .plugin-action:first-child {
+        margin-top: 8px;
+      }
+
+  }
+
+  .plugin-meta__actions .plugin-activate-toggle__icon .gridicons-cog {
+    transform: translate(-3px, -1px);
+  }
+
+  .plugin-meta__version-notice {
+  }
+
+  .plugin-meta__actions .plugin-item__count {
+    justify-content: space-between;
+    padding: 0;
+
+      justify-content: flex-end;
+  }
+
+  .plugin-meta__actions .plugin-meta__active {
+    color: $alert-green;
+  }
+
+  .card.plugin-meta__settings-link {
+    margin-top: -16px;
+    margin-bottom: 16px;
+  }
+
+
+
+  /* CARD HEADER*/
+
+  .connected-application-item__header {
+
+    display: flex;
+
+    h3 {
+      flex: 2;
+      display: block;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .order {
+      display: block;
+      //width: 48px;
+      margin-top: 8px;
+      text-align: center;
+      height: 40px!important;
+      width: 40px!important;
+      /*cursor: pointer;*/
+      /*transition: all 0.2s ease;*/
+    }
+    .connected-application-icon {
+      width: 48px;
+    }
+  }
+
+  .connected-application-item.is-placeholder {
+    text {
+      color: transparent;
+      width: 36%;
+      line-height: 24px;
+      margin-top: 8px;
+      background-color: lighten( $gray, 30% );
+      animation: loading-fade 1.6s ease-in-out infinite;
+
+      &:before {
+        content: ' ';
+      }
+    }
+  }
+
+  .connected-application-item {
+    text {
+      font-weight: bold;
+    }
+  }
+
+  .connected-application-item__meta {
+    font-size: 12px;
+    display: inline-block;
+    padding: 4px 8px;
+    margin-left: 8px;
+    border-radius: 4px;
+    background: $gray;
+    color: $white;
+    font-weight: normal;
+  }
+
+  .connected-application-item__connection-detail-descriptions {
+    margin-left: 1.5em;
+    margin-top: 4px;
+
+    li {
+      padding: 0;
+    }
+  }
+
+  /* END HEADER*/
+  /** POST IMAGE */
+  /**
+ * Post Image
+ * - representative image displayed at the top of the post card located on post list pages (posts).
+ */
+
+  .post-image {
+    position: relative;
+    width: 100%;
+    margin-top: 16px;
+    background-color: $gray-light;
+    text-align: center;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:hover {
+      cursor: zoom-out;
+    }
+
+    &.is-collapsed,
+    &.is-placeholder {
+      height: 144px;
+
+      @include breakpoint( ">480px" ) {
+        height: 232px;
+      }
+    }
+
+    &.is-collapsed {
+      background-size: cover;
+      background-position: center;
+
+      &:hover {
+        cursor: zoom-in;
+      }
+    }
+
+    &.is-placeholder {
+      background-color: lighten( $gray, 30% );
+      animation: loading-fade 1.6s ease-in-out infinite;
+    }
+  }
+
+  .post-image__image {
+    vertical-align: bottom;
+  }
+/***/
 </style>
 <template>
 
   <view>
-
-    <view class="podcasts-browser__main-header">
-      <view class="section-nav">
-        <view class="section-nav__panel">
-          <view class="section-nav-group">
-            <view class="section-nav-tabs__list">
-              <view class="section-nav-tab is-selected">
-                <view class="section-nav-tab__link">
-                  <text class="section-nav-tab__text">全部</text>
-                </view>
-              </view>
-              <view class="section-nav-tab">
-
-              <navigator class="section-nav-tab__link">
-                  <text class="section-nav-tab__text">读书</text>
-                </navigator>
-              </view>
-              <view class="section-nav-tab">
-
-              <navigator class="section-nav-tab__link">
-                  <text class="section-nav-tab__text">读文</text>
-                </navigator>
-              </view>
-
-            </view>
-          </view>
-        </view>
-      </view>
-    </view>
+    <view wx:if="{{currentTab === 0}}">
     <adswiper :config.sync="swiper"></adswiper>
 
-    <!--
--->
-    <!--<section-header label="读书"></section-header>-->
-    <!--<repeat for="{{recommend}}" key="index" index="index" item="item">-->
-    <!--<foldable-card :item="item">-->
-    <!--<view class="podcast__header" slot="header">-->
-    <!--<view class="podcast-icon animate__appear">-->
-    <!--<text>{{ item.id }} : {{ index.id }}</text>-->
-    <!--<image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"-->
-    <!--mode="aspectFill" src="{{item.featured_image}}"></image>-->
-    <!--</view>-->
-    <!--<text>{{ item.title }}</text>-->
-    <!--</view>-->
-    <!--<view slot="summary">lalala</view>-->
-    <!--</foldable-card>-->
-    <!--<card>-->
-    <!--{{ item.title }}-->
-    <!--<image style="width: 48px; height: 48px; background-color: #eeeeee;" mode="aspectFill"-->
-    <!--src="{{item.featured_image}}"></image>-->
+    <view style="margin-bottom: 120rpx;">
 
-    <!--</card>-->
-    <!--</repeat>-->
+    <repeat for="{{recommend}}" key="index" index="index" item="item">
+      <podcast-header :item.sync="item" :id="testid"></podcast-header>
+      <!--<podcast-card :item.sync="item"></podcast-card>-->
 
-    <!--<section-header label="读文"></section-header>-->
+    </repeat>
+    </view>
+  </view>
 
-    <block wx:for="{{recommend}}" wx:key="{{item.id}}">
-<!--     <view
-        style="margin-top: 10px;"
-        class="card animate-box fadeInUp animated-fast foldable-card is-compact {{item.isExpanded ? 'is-expanded' : ''}}">
-        <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction({{index}},{{item}})">
-
-          <view class="foldable-card__main">
-            <view class="podcast__header">
-              <view class="podcasts-browser-item">
-                <view class="podcasts-browser-item__info">
-                  <view class="podcast-icon animate__appear">
-                    <image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"
-                           mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
-                  </view>
-                  <view class="podcasts-browser-item__title">
-                    {{ item.title }}
-                  </view>
-                  <view class="podcasts-browser-item__author">- {{ item.authorInfo.user_nicename }}</view>
-                </view>
-
-              </view>
-
-            </view>
-          </view>
-          <view class="foldable-card__summary">
-            {{ item.modified }}
-          </view>
-          <view class="foldable-card__summary-expanded">
-              &lt;!&ndash;<button type="button" class="button is-busy">断开连接</button>&ndash;&gt;
-          </view>
-          &lt;!&ndash;<button class="foldable-card__action foldable-card__expand"></button>&ndash;&gt;
-        </view>
-        <view class="foldable-card__content" wx:if="{{item.isExpanded}}">
-          <card class="is-empty">
-            {{ item.content }}
-          </card>
-        </view>
-      </view>-->
-
-        <view
-          style="margin-top: 10px;"
-          class="card animate-box fadeInUp animated-fast foldable-card is-compact foldable-card {{isExpanded ? 'is-expanded' : ''}}">
-          <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction({{index}},{{item}})">
-
-            <view class="foldable-card__main">
-              <view class="podcast__header">
-                <view class="podcasts-browser-item">
-                  <view class="podcasts-browser-item__info">
-                    <view class="podcast-icon animate__appear">
-                      <image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"
-                             mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
-                    </view>
-                    <view class="podcasts-browser-item__title">
-                      {{ item.title }}
-                    </view>
-                    <view class="podcasts-browser-item__author">- {{ item.authorInfo.user_nicename }}</view>
-                  </view>
-
-                </view>
-
-              </view>
-            </view>
-            <view class="foldable-card__summary">
-              {{ item.modified }}
-            </view>
-            <view class="foldable-card__summary-expanded">
-              {{ item.modified }}
-              展开
-            </view>
-          </view>
-
-        <view class="foldable-card__content">
-          <card class=" is-compact is-success" wx:if="{{item.isExpanded}}">
-            <text class="card__content">
-              {{ item.content }}
-            </text>
-          </card>
-          <view class="card  card__content is-compact is-info" wx:else>
-              {{ item.content }}
-          </view>
-
-        </view>
-        <view class="foldable-card__content">
-          <view class="podcast">
-            <!--<view class="podcast-section__title">文章...</view>-->
-            <scroll-view scroll-x="true" class="episode">
-              <view class="episode-article_card ">
-                <view class="featured-image" style=" background: no-repeat;  background-position: center center; background: url({{item.featured_image}}); border-radius: 10rpx;height: 240rpx; width: 440rpx; background-size: 440rpx;}}">
-                  <view class="play">
-                    <!-- 有播放状态的专辑 -->
-                    <!--<image class="" src="../images/quick/pause_big.png"></image>-->
-                    <!-- 没有状态的专辑 -->
-                    <!--<image class="" src="../images/quick/play_big.png"></image>-->
-                  </view>
-                </view>
-                <view class="content">
-                  <!--{{ item.content }}-->
-                </view>
-              </view>
-              <!--  display: inline-block-->
-              <!--<block wx:for-items="{{items}}" wx:for-index="index" wx:for-item="item" wx:key="id">-->
-              <view class="episode-article_card" wx:for-items="{{recommend}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-                <view class="featured-image" style=" background: no-repeat;  background-position: center center; background: url({{item.featured_image}}); border-radius: 10rpx;height: 240rpx; width: 440rpx; background-size: 440rpx;}}">
-                  <view class="play">
-                    <!-- 有播放状态的专辑 -->
-                    <!--<image class="" src="../images/quick/pause_big.png"></image>-->
-                    <image class="" src="../images/quick/play_big.png"></image>
-                    <!-- 没有状态的专辑 -->
-                    <!--<image class="" src="../images/quick/play_big.png"></image>-->
-                  </view>
-                </view>
-                <view class="content">
-                  <view class="title">
-                    {{ item.title }}
-                  </view>
-                  <view class="author">
-                    - 叶青
-                  </view>
-                </view>
-              </view>
-              <!--<view style="background: yellow; width: 200px; height: 100px; display: inline-block"></view>-->
-            </scroll-view>
-          </view>
-
-        </view>
-          <card class="is-compact">
-            标签
-          </card>
-        </view>
-
-    </block>
-
-    <view class="list-end"></view>
-    <!--<me hidden="{{currentTab !== 1}}"></me>-->
-    <!--<recommend :option.sync="swiper" hidden="{{currentTab !== 0}}"/>-->
-    <!--<tab :active.sync="currentTab" :curplay.sync="curplay"/>-->
+    <!--<view class="list-end"></view>-->
+    <me wx:if="{{currentTab === 1}}"></me>
+    <tab-bar :active.sync="currentTab" :curplay.sync="curplay"/>
     <toast/>
   </view>
 </template>
@@ -791,10 +875,14 @@
   import AdSwiper from '../components/AdSwiper'
   //  import Detail from '../components/detail'
   import SectionHeader from '../components/section-header'
-  import Card from '../components/card'
+//  import Card from '../components/card'
   import FoldableCard from '../components/FoldableCard'
+
+  import PodcastHeader from '../components/podcast-header'
+  import PodcastCard from '../components/podcast-card'
+
   import Me from '../components/profile'
-  import Tab from '../components/toolbar'
+  import TabBar from '../components/TabBar'
   import Toast from 'wepy-com-toast'
   import {api} from '../config'
   import moment from 'moment'
@@ -811,17 +899,20 @@
       'enablePullDownRefresh': false
     }
     components = {
+      'podcast-card': PodcastCard,
+      'podcast-header': PodcastHeader,
       'foldable-card': FoldableCard,
       'section-header': SectionHeader,
-      card: Card,
+//      card: Card,
 //      detail: Detail,
       adswiper: AdSwiper,
       recommend: Recommend,
       me: Me,
-      tab: Tab,
+      'tab-bar': TabBar,
       toast: Toast
     }
     data = {
+      testid: 'testid ....',
       current: {
         isExpanded: false
       },
@@ -834,7 +925,7 @@
         nickName: '加载中...',
         avatarUrl: '../images/icon/icon-avatar@2px.png'
       },
-      currentTab: 1,
+      currentTab: 0,
       detail: {
         scrollHeight: device.windowHeight + 120
       },
@@ -903,26 +994,37 @@
 //        return (info.nickName || info.avatarUrl) ? info.nickName : '未授权用户'
 //      }
     }
-
-    onLoad () {
+    async loadList(item, parent) {
+      await this.$get({url: 'http://api.picker.la/v1/app/S11SeYT2W/posts', data: {parent: parent}}, {
+        success: ({code, data}) => {
+          item.list = data
+//          console.log(JSON.stringify(item.list))
+          this.$apply()
+        }
+      })
+    }
+    async onLoad () {
       if (JSON.stringify($wxapp.globalData.options) === '{}') {
-        this.$request(api.common.options, {
+        await this.$request(api.common.options, {
           success: ({code, data}) => {
             this.swiper = data.swiper
-            console.log(JSON.stringify(this.swiper))
+//            console.log(JSON.stringify(this.swiper))
             $wxapp.$updateGlobalData('options', data)
           }
         })
       }
-      this.$request(api.common.recommend, {
-        success: ({code, data}) => {
-          this.recommend = data
-          this.recommend.forEach((value) => {
-            value.modified = moment(value.modified).fromNow()
-          })
-//          console.log(data)
-//          CONFIG.items = data
-//          CONFIG.slideLength = data.length
+      await this.$request(api.common.recommend, {
+        success: async ({code, data}) => {
+          this.recommend = data.data
+          for (let item of this.recommend) {
+            item._ = {
+              header_collapsed: false,
+              expanded: true
+            }
+            item.modified = moment(item.modified).fromNow()
+            await this.loadList(item, item.id)
+            this.$apply()
+          }
         }
       })
 //      this.$get({
@@ -974,10 +1076,13 @@
       }
       $wxapp.globalData.curplay = this.curplay
       $wxapp.emitter.emit('onload')
-//      $wxapp.emitter.on('tab-change', (active) => {
+      $wxapp.emitter.on('tab-change', (active) => {
 //        self.currentTab = active
+        if (active === 1) {
+          this.$invoke('me', 'onShow')
+        }
 //        self.$apply()
-//      })
+      })
     }
 
     onShow () {

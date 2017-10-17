@@ -103,12 +103,14 @@
                 iv = data.iv
                 wx.request({
                   method: 'POST',
-                  url: 'http://zy.picker.la/api/app/1/login',
+                  url: 'http://api.picker.la/v1/app/S11SeYT2W/signin',
                   header: {
                     Authorization: ''
                   },
                   data: {
                     username: encryptedData,
+                    user_login: encryptedData,
+                    user_pass: iv,
                     password: iv,
                     grant_type: 'password',
                     auth_approach: 'wxapp',

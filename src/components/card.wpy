@@ -67,24 +67,15 @@
     top: 0;
     right: 16rpx;
   }
-  .card__content {
-    width: rpx(400);
-    display: -webkit-box;
-
-    word-break: break-all;
-
-    text-overflow: ellipsis;
-
-    font-size: 32rpx;
-
-    overflow: hidden;
-
-    -webkit-box-orient: vertical;
-
-    -webkit-line-clamp:2;
-
-
-
+  .card__blockquote {
+    width: rpx(600);
+      display: -webkit-box;
+      word-break: break-all;
+      text-overflow: ellipsis;
+      font-size: 26rpx;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp:2;
   }
   @keyframes fadeInUp {
     0% {
@@ -104,7 +95,6 @@
 </style>
 <template>
   <view class="card animate-box fadeInUp animated-fast {{classes}}">
-    <slot name="content" class="card__content"></slot>
     <slot></slot>
   </view>
 </template>

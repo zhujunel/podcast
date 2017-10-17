@@ -233,7 +233,7 @@
   import AdSwiper from '../components/AdSwiper'
   //  import Detail from '../components/detail'
   import Me from '../components/profile'
-  import Tab from '../components/toolbar'
+  import Tab from '../components/TabBar'
   import Toast from 'wepy-com-toast'
   import {api} from '../config'
 

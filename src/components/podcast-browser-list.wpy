@@ -1,0 +1,68 @@
+<template>
+  <view>
+
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import PodcastCard from '../components/podcast-card'
+  import PodcastHeader from '../components/podcast-header'
+  import FoldableCard from '../components/FoldableCard'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+  import {api} from '../config'
+//  import moment from 'moment'
+//  import http from '../utils/request'
+  export default class Index extends wepy.component {
+    mixins = [base, http]
+    components = {
+      'podcast-card': PodcastCard,
+      'podcast-header': PodcastHeader,
+      'foldable-card': FoldableCard
+    }
+    data = {
+      recommend: []
+    }
+    methods = {
+    }
+    /**
+     * lifecycles hook
+     */
+    async onComponentLoad () {
+      await this.loadData()
+      this.$apply()
+//      await this.$request(api.common.recommend, {
+//        success: ({code, data}) => {
+//          this.recommend = data
+//          this.recommend.forEach((value) => {
+//            value._ = {
+//              header_collapsed: false,
+//              expanded: true
+//            }
+//            value.modified = moment(value.modified).fromNow()
+//          })
+//          this.$invoke('podcast-card', 'onComponentLoad')
+//          this.$apply()
+//        }
+//      })
+//      console.log('on com list load....')
+//      this.$apply()
+//      console.log(JSON.stringify(this.recommend))
+    }
+
+    async loadData () {
+      await this.$request(api.common.recommend, {
+        success: ({code, data}) => {
+          this.recommend = data
+//          $wxapp.$updateGlobalData('options', data)
+        },
+        fail: (statusCode, data) => {
+          wepy.showModal({
+            title: '提示',
+            content: `加载列表失败，请截图本提示，并联系。${statusCode}`
+          })
+        }
+      })
+    }
+  }
+</script>

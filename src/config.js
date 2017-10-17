@@ -22,6 +22,12 @@ const api = {
     recommend: {
       method: 'GET',
       url: `/app/${PICKER_APPID}/posts`
+    },
+    episodes: (parentId) => {
+      return {
+        method: 'GET',
+        url: `/app/${PICKER_APPID}/posts/?parent=${parentId}`
+      }
     }
   }
 
