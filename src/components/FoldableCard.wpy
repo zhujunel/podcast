@@ -142,27 +142,35 @@
   }
 </style>
 <template>
-  <view class="card animate-box fadeInUp animated-fast foldable-card is-compact {{isExpanded ? 'is-expanded' : ''}}">
-    <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction">
+  <view>
 
-      <view class="foldable-card__main">
-        <slot name="header"></slot>
-      </view>
-      <view class="foldable-card__secondary">
-        <view class="foldable-card__summary">
-          <slot name="summary"></slot>
-        </view>
-        <view class="foldable-card__summary-expanded">
-          <slot name="expandedSummary"></slot>
-        </view>
-      </view>
+    <view class="card animate-box fadeInUp animated-fast foldable-card is-compact {{isExpanded ? 'is-expanded' : ''}}">
+      <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction">
 
-      <!--<button class="foldable-card__action foldable-card__expand"></button>-->
+        <view class="foldable-card__main">
+          <slot name="header"></slot>
+        </view>
+        <view class="foldable-card__secondary">
+          <view class="foldable-card__summary">
+            <slot name="summary"></slot>
+          </view>
+          <view class="foldable-card__summary-expanded">
+            <slot name="expandedSummary"></slot>
+          </view>
+        </view>
+
+        <!--<button class="foldable-card__action foldable-card__expand"></button>-->
+      </view>
+      <view class="foldable-card__content" wx:if="{{isExpanded}}">
+        <slot></slot>
+      </view>
+      <view class="card is-compact">
+        <slot name="footer">lalal</slot>
+      </view>
     </view>
-    <view class="foldable-card__content" wx:if="{{isExpanded}}">
-      <slot></slot>
-    </view>
+
   </view>
+
 </template>
 <script>
   import wepy from 'wepy'

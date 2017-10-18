@@ -1,87 +1,149 @@
+<style>
+  .player {
+    width: 64rpx;
+    height: 64rpx;
+    display: block;
+    margin-right: 20rpx;
+  }
+</style>
 <template>
   <view>
-    <podcast-header :item="item"></podcast-header>
-    <view class="card">
-      <view class="podcast">
-        <!--<view class="podcast-section__title">文章...</view>-->
+
+    <foldable-card :expanded="isExpanded" class="is-compact">
+      <view class="connected-application-item__header" slot="header">
+        <view class="podcast__header">
+          <view class="podcasts-browser-item">
+            <view class="podcasts-browser-item__info">
+              <view class="podcast-icon animate__appear">
+                <image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"
+                       mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
+              </view>
+              <view class="podcasts-browser-item__title">
+                {{ item.title }} {{$wxapp.globalData.curplay.title }}
+              </view>
+              <view class="podcasts-browser-item__author">- {{ item.authorInfo.user_nicename }}</view>
+            </view>
+
+          </view>
+
+        </view>
+      </view>
+      <view slot="summary">
+        {{ item.title }}
+      </view>
+      <view slot="expandedSummary">
+       详情
+      </view>
+      <view class="plugin-meta__banner {{ item._.header_collapsed ? '': 'is-collapsed'}}" wx:if="{{item.featured_image}}">
+        <image class="plugin-meta__banner-image post-image__image"
+               mode="{{item._.header_collapsed ? 'aspectFit': 'aspectFill'}}" src="{{item.featured_image}}"
+               @tap="tapImage({{item.featured_image}})"></image>
+      </view>
+      <view class="card is-compact is-empty" wx:if="{{item.content}}">
+        {{ item.content}}
+      </view>
+      <view class="podcast {{item.list ? '': 'is-placeholder'}}">
         <scroll-view scroll-x="true" class="episode">
-          <view class="episode-article_card ">
-            <view class="featured-image" style=" background: no-repeat;  background-position: center center; background: url({{item.featured_image}}); border-radius: 10rpx;height: 240rpx; width: 440rpx; background-size: 440rpx;}}">
-              <view class="play">
-                <!-- 有播放状态的专辑 -->
-                <!--<image class="" src="../images/quick/pause_big.png"></image>-->
-                <!-- 没有状态的专辑 -->
-                <!--<image class="" src="../images/quick/play_big.png"></image>-->
+          <view class="episode-audio_card is-compact {{(curplay.id === item.id && curplay.play_status === 'playing') ? 'is-playing' : ''}}"  wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+              <!-- 有播放状态的专辑 -->
+              <image class="gridicon player" src="../images/quick/pause_big.png" @tap="playItem({{item}})" hidden="{{!(curplay.id === item.id && curplay.play_status == 'playing')}}"></image>
+              <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})" hidden="{{!(curplay.id === item.id && curplay.play_status == 'stop')}}"></image>
+              <!-- 没有状态的专辑 -->
+              <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})" hidden="{{!(curplay.id !== item.id)}}"></image>
+
+              <view class="episode-audio_card__info">
+                <view class="episode-audio_card__title">{{item.title}}</view>
               </view>
-            </view>
-            <view class="content">
-              {{ item.id }}
-            </view>
           </view>
-          <!--  display: inline-block-->
-          <!--<block wx:for-items="{{items}}" wx:for-index="index" wx:for-item="item" wx:key="id">-->
-          <view class="episode-article_card" wx:for-items="{{recommend}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-            <view class="featured-image" style=" background: no-repeat;  background-position: center center; background: url({{item.featured_image}}); border-radius: 10rpx;height: 240rpx; width: 440rpx; background-size: 440rpx;}}">
-              <view class="play">
-                <!-- 有播放状态的专辑 -->
-                <!--<image class="" src="../images/quick/pause_big.png"></image>-->
-                <image class="" src="../images/quick/play_big.png"></image>
-                <!-- 没有状态的专辑 -->
-                <!--<image class="" src="../images/quick/play_big.png"></image>-->
-              </view>
-            </view>
-            <view class="content">
-              <view class="title">
-                {{ item.title }}
-              </view>
-              <view class="author">
-                - 叶青
-              </view>
-            </view>
-          </view>
-          <!--<view style="background: yellow; width: 200px; height: 100px; display: inline-block"></view>-->
         </scroll-view>
       </view>
-    </view>
+
+    </foldable-card>
+
   </view>
+
 </template>
 <script>
+  /* eslint-disable no-undef */
+
   import wepy from 'wepy'
-  import PodcastHeader from '../components/podcast-header'
-  import http from '../mixins/http'
-  import base from '../mixins/base'
-  import {api} from '../config'
+  import FoldableCard from '../components/FoldableCard'
+  import Card from '../components/card'
+  const $wxapp = wepy.$instance
 
-  export default class Index extends wepy.component {
-    mixins = [base, http]
-
-    components = {
-      'podcast-header': PodcastHeader
-    }
-
+  export default class PodcastHeader extends wepy.component {
     props = {
-      item: {
-        type: Object,
-        twoWay: true
+      id: String,
+      item: Object,
+      isExpanded: {
+        type: Boolean,
+        default: true
       }
     }
     data = {
-      current: this.item
+      id: '',
+      imageList: [],
+      curplay: {
+        id: ''
+      }
+    }
+    components = {
+      'card': Card,
+      'foldable-card': FoldableCard
     }
     methods = {
-    }
-    /**
-     * lifecycles hook
-     */
-    async onComponentLoad () {
-      console.log('on component lost....')
-      console.log(this.item.id)
-//      console.log(JSON.stringify(this.current))
-      await this.$request(api.common.episodes(this.item.id), {
-        success: ({code, data}) => {
-//          console.log(JSON.stringify(data))
+      playItem(song, e) {
+        wx.showToast({
+          title: '加载中',
+          icon: 'loading',
+          duration: 1000
+        })
+
+        if (this.curplay.id === song.id) {
+          if (this.curplay.play_status === 'playing') {
+            this.curplay.play_status = 'stop'
+            $wxapp.stopMusic()
+          } else {
+            this.curplay.play_status = 'playing'
+            $wxapp.playing()
+          }
+        } else {
+          this.curplay.play_status = 'playing'
+          this.curplay = Object.assign({}, song, {play_status: 'playing'})
+          $wxapp.globalData.curplay = this.curplay
+          $wxapp.playing()
         }
-      })
+        $wxapp.emitter.emit('playing')
+      },
+      handleTap () {
+        this.item._.header_collapsed = !this.item._.header_collapsed
+      },
+      tapImage (image) {
+//        const current = e.target.src
+        this.imageList.push(image)
+        wx.previewImage({
+          current: image,
+          urls: this.imageList,
+          fail () {
+          },
+          complete () {
+          }
+        })
+      }
     }
+
+    async onComponentLoad (value) {
+      this.curplay = $wxapp.globalData.curplay
+    }
+    async onShow (value) {
+      this.curplay = $wxapp.globalData.curplay
+      this.$apply()
+    }
+
+    async onReload () {
+      this.page = 1
+    }
+
   }
+
 </script>

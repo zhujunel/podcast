@@ -291,8 +291,8 @@
 //      if (that.curplay.id !== this.globalData.curplay.id) {
 //        that.curplay = this.globalData.curplay
 //        that.duration = this.formatDuration(this.globalData.curplay.duration || this.globalData.curplay.dt)
-        wx.setNavigationBarTitle({ title: this.globalData.curplay.title })
-        that.$apply()
+      wx.setNavigationBarTitle({title: this.globalData.curplay.title})
+      that.$apply()
 //      }
       const _that = this
       wx.getBackgroundAudioPlayerState({

@@ -19,11 +19,13 @@
 
   .is-placeholder {
     color: transparent;
-    width: 36%;
+    width: 100%;
+    height: rpx(100);
     line-height: 24px;
     margin-top: 8px;
     background-color: lighten($gray, 30%);
     animation: loading-fade 1.6s ease-in-out infinite;
+    opacity: 0.3;
 
     &:before {
       content: ' ';
@@ -387,32 +389,6 @@
       margin-right: 3px;
     }
   }
-  /**
-   * List End:
-   * ------
-   * Marker that can be appended to indicate the end of a list (e.g. posts).
-   */
-
-  .list-end {
-    position: relative;
-    width: 100%;
-    margin-top: (15 / 15) * 1em;
-    text-align: center;
-    &:before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      border-bottom: solid 1px lighten( $gray, 25% );
-    }
-    &:after {
-      color: $gray;
-      font-size: (22 / 15) * 1em;
-      padding: 0 (8 / 22) * 1em;
-      background-color: $gray-light;
-    }
-  }
 
   @keyframes comment-detail__author-more-info {
     0% {
@@ -430,36 +406,7 @@
 
 
   .podcast {
-    /*height: rpx(300);*/
     margin-top: rpx(30);
-    &-section {
-      /*heigth: rpx(300)*/
-    }
-    /*:last-child {*/
-      /*margin-right: 30rpx;*/
-    /*}*/
-
-    &-content_card {
-      transform:translate(rpx(30));
-      display: inline-flex;
-      .content {
-        align-items: flex-start;
-        height: rpx(220);
-        padding: rpx(20);
-        font-size: 26rpx;
-        line-height: rpx(36);
-        overflow: hidden;
-        word-break:break-all;
-        white-space: pre-line;
-        display: -webkit-box;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-        /*height: rpx(200);*/
-        text-overflow:ellipsis;//文字隐藏后添加省略号
-      }
-    }
-
     .episode {
       display: flex;
       white-space: nowrap;
@@ -467,82 +414,46 @@
         min-width: rpx(380);
         display: block;
         position: relative;
-        margin: 0 auto 10rpx auto;
+        margin: rpx(20) rpx(32) rpx(10) auto;
         box-sizing: border-box;
-        background: #fafafa;
-        box-shadow: 0 0 0 1px transparentize(lighten($gray, 20%), .5),
-        0 2px 4px lighten($gray, 30%);
+        background: #fefefe;
+        box-shadow: 0 0 0 1px transparentize(lighten($gray, 30%), .10),0 2px 4px lighten($gray, 30%);
         width: auto;
-        /*max-width: rpx(500);*/
         transform:translate(rpx(30));
-        margin-right: rpx(32);
+        /*margin-right: rpx(32);*/
         padding: rpx(24);
         display: inline-flex;
+        &__info {}
+        &__title {
+          margin-top: rpx(10);
+          font-size: 14px;
+          color: $gray-dark;
+          font-weight: 500;
+        }
+        &.is-error {
+          box-shadow: inset 3px 0 0 $alert-red;
+        }
+
+        &.is-info {
+          box-shadow: inset 3px 0 0 $blue-wordpress;
+        }
+
+        &.is-playing {
+          box-shadow: inset 3px 0 0 $blue-medium;
+        }
+
+        &.is-pause {
+          box-shadow: inset 3px 0 0 $alert-yellow;
+        }
+
+        &.is-placeholder {
+          background-color: lighten( $gray, 30% );
+          animation: loading-fade 1.6s ease-in-out infinite;
+          opacity: 0.3;
+        }
       }
     }
   }
-  .upgrade-nudge {
-    border-left: 3px solid $blue-wordpress;
-    border-bottom-left-radius: 10rpx;
-    border-top-left-radius: 10rpx;
-    display: flex;
-    padding: 12px 16px;
-
-    .upgrade-nudge__title {
-      font-size: 14px;
-    }
-
-    .button {
-      margin-left: auto;
-    }
-
-    &.is-no-margin {
-      margin: 0;
-    }
-
-    /*&.is-card-link {*/
-      /*padding-right: 48px;*/
-    /*}*/
-  }
-
-  .upgrade-nudge__icon {
-    background: $blue-medium;
-    border-radius: 50%;
-    margin-right: 16px;
-    color: $white;
-    padding: 5px 7px 7px 5px;
-    align-self: center;
-    flex: 0 0 auto;
-  }
-
-  .upgrade-nudge.button {
-    margin-bottom: 16px;
-    text-align: left;
-    display: inline-flex;
-
-    .upgrade-nudge__icon {
-      background: $alert-green;
-    }
-
-    &.is-full-width {
-      width:100%;
-      @include breakpoint( ">660px" ) {
-        max-width: 420px;
-      }
-    }
-  }
-
-  .upgrade-nudge__title {
-    color: $gray-dark;
-    font-weight: 500;
-  }
-
-  .upgrade-nudge__message {
-    color: $gray-text-min;
-    font-size: 12px;
-    display: block;
-  }
-
   .plugin-meta__banner {
     position: relative;
     top: 0;
@@ -848,9 +759,7 @@
     <view style="margin-bottom: 120rpx;">
 
     <repeat for="{{list}}" key="index" index="index" item="item">
-      <podcast-header :item.sync="item" :id="testid"></podcast-header>
-      <!--<podcast-card :item.sync="item"></podcast-card>-->
-
+      <podcast-card :item.sync="item" :id="testid"></podcast-card>
     </repeat>
     </view>
   </view>
@@ -878,7 +787,6 @@
 //  import Card from '../components/card'
   import FoldableCard from '../components/FoldableCard'
 
-  import PodcastHeader from '../components/podcast-header'
   import PodcastCard from '../components/podcast-card'
 
   import Me from '../components/profile'
@@ -894,11 +802,10 @@
 //      'backgroundTextStyle': '#000',
       'navigationBarTitleText': '育儿柚道',
 //      'disableScroll': true,
-      'enablePullDownRefresh': false
+      'enablePullDownRefresh': true
     }
     components = {
       'podcast-card': PodcastCard,
-      'podcast-header': PodcastHeader,
       'foldable-card': FoldableCard,
       'section-header': SectionHeader,
 //      card: Card,
@@ -984,7 +891,6 @@
           this.sticky = data
           this.curplay = Object.assign({}, this.sticky, {play_status: 'stop'})
           $wxapp.globalData.curplay = this.curplay
-          console.log(JSON.stringify(this.curplay))
         }
       })
     }
@@ -1002,8 +908,6 @@
       } else {
         this.swiper = this.options.swiper
       }
-//      console.log('------- stickys -------')
-//      console.log($wxapp.globalData.options.stickys)
 
       await this.$request(api.common.list, {
         success: async ({code, data}) => {
@@ -1019,16 +923,6 @@
           }
         }
       })
-//      this.curplay = {
-//        id: '2',
-//        anchor: {
-//          name: '叶青',
-//          avatar: 'https://media.alearning.com.cn/podcast/book/2/anchor.jpg'
-//        },
-//        songname: '交流密码：我说的你听懂了吗？（3-6岁）',
-//        status: 'stop',
-//        src: 'https://media.alearning.com.cn/podcast/book/2/202.mp3'
-//      }
 
       $wxapp.emitter.emit('onload')
       $wxapp.emitter.on('tab-change', (active) => {
@@ -1038,14 +932,12 @@
         } else {
           this.onShow()
         }
-//        self.$apply()
       })
     }
     async loadChildList(item, parent) {
       await this.$get({url: 'http://api.picker.la/v1/app/S11SeYT2W/posts', data: {parent: parent}}, {
         success: ({code, data}) => {
           item.list = data
-//          console.log(JSON.stringify(item.list))
           this.$apply()
         }
       })
@@ -1055,6 +947,7 @@
       this.currentTab = 0
       console.log('on show page ....')
       console.log($wxapp.globalData.options.stickys)
+      this.$invoke('podcast-card', 'onShow')
 
 //      if ($wxapp.globalData.playing) {
 //        this.showToolbar = false
@@ -1102,6 +995,13 @@
       this[`${viewName}`] = prop
 //      console.log(viewName)
       this.$apply()
+    }
+    onPullDownRefresh () {
+      console.log('down refresh .......')
+//      this.$invoke(this.tabs[this.tab], 'onPullDownRefresh')
+    }
+    onReachBottom () {
+//      this.$invoke(this.tabs[this.tab], 'onReachBottom')
     }
 
     /**

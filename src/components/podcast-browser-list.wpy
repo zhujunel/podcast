@@ -1,27 +1,28 @@
 <template>
   <view>
-
+    <repeat for="{{list}}" key="index" index="index" item="item">
+      <podcast-card :item.sync="item"></podcast-card>
+    </repeat>
   </view>
 </template>
 <script>
   import wepy from 'wepy'
   import PodcastCard from '../components/podcast-card'
-  import PodcastHeader from '../components/podcast-header'
-  import FoldableCard from '../components/FoldableCard'
+//  import PodcastHeader from './podcast-card'
+//  import FoldableCard from '../components/FoldableCard'
   import http from '../mixins/http'
   import base from '../mixins/base'
   import {api} from '../config'
-//  import moment from 'moment'
+  import moment from 'moment'
 //  import http from '../utils/request'
   export default class Index extends wepy.component {
     mixins = [base, http]
     components = {
-      'podcast-card': PodcastCard,
-      'podcast-header': PodcastHeader,
-      'foldable-card': FoldableCard
+      'podcast-card': PodcastCard
     }
     data = {
-      recommend: []
+      page: 1,
+      list: []
     }
     methods = {
     }
@@ -30,37 +31,45 @@
      */
     async onComponentLoad () {
       await this.loadData()
-      this.$apply()
-//      await this.$request(api.common.recommend, {
-//        success: ({code, data}) => {
-//          this.recommend = data
-//          this.recommend.forEach((value) => {
-//            value._ = {
-//              header_collapsed: false,
-//              expanded: true
-//            }
-//            value.modified = moment(value.modified).fromNow()
-//          })
-//          this.$invoke('podcast-card', 'onComponentLoad')
-//          this.$apply()
-//        }
-//      })
-//      console.log('on com list load....')
-//      this.$apply()
-//      console.log(JSON.stringify(this.recommend))
     }
-
+    async onReload () {
+      this.page = 1
+    }
     async loadData () {
-      await this.$request(api.common.recommend, {
-        success: ({code, data}) => {
-          this.recommend = data
-//          $wxapp.$updateGlobalData('options', data)
+
+      await this.$request(api.common.list, {
+        success: async ({code, data}) => {
+          if (this.page === 1) {
+            this.list = data.data
+          } else {
+            this.list.push(...data.data)
+          }
+          for (let item of this.list) {
+            item._ = {
+              header_collapsed: false,
+              expanded: true
+            }
+            item.modified = moment(item.modified).fromNow()
+            await this.loadChildList(item, item.id)
+          }
+          wepy.stopPullDownRefresh()
+          this.$apply()
         },
         fail: (statusCode, data) => {
           wepy.showModal({
             title: '提示',
-            content: `加载列表失败，请截图本提示，并联系。${statusCode}`
+            content: `加载列表失败,请重试或联系我们。${statusCode}`
           })
+        }
+      })
+    }
+
+    async loadChildList(item, parent) {
+      const req = Object.assign({}, api.common.get, {data: {parent: parent}})
+      await this.$request(req, {
+        success: ({code, data}) => {
+          item.list = data
+          this.$apply()
         }
       })
     }

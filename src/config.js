@@ -30,7 +30,7 @@ const api = {
     },
     list: {
       method: 'GET',
-      url: `/app/${PICKER_APPID}/posts`
+      url: `/app/${PICKER_APPID}/posts?term=category`
     },
     recommend: {
       method: 'GET',

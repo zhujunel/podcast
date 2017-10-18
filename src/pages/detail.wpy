@@ -510,7 +510,7 @@
           clearInterval(seek)
         }
       })
-      that.apply()
+      that.$apply()
 //      $wxapp.emitter.on('onload', (e) => {
 //        that.curplay = $wxapp.globalData.curplay
 //      })
