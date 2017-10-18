@@ -15,19 +15,26 @@ const PICKER_APPID = 'S11SeYT2W'
 // apis
 const api = {
   common: {
+    get: {
+      method: 'GET',
+      url: `/app/${PICKER_APPID}/posts`,
+      data: {}
+    },
     options: {
       method: 'GET',
       url: `/app/${PICKER_APPID}/options?key=_wxapp`
     },
-    recommend: {
+    sticky: {
       method: 'GET',
       url: `/app/${PICKER_APPID}/posts`
     },
-    episodes: (parentId) => {
-      return {
-        method: 'GET',
-        url: `/app/${PICKER_APPID}/posts/?parent=${parentId}`
-      }
+    list: {
+      method: 'GET',
+      url: `/app/${PICKER_APPID}/posts`
+    },
+    recommend: {
+      method: 'GET',
+      url: `/app/${PICKER_APPID}/posts`
     }
   }
 
@@ -47,6 +54,6 @@ function disposeUrl(obj, prefix) {
       obj[v] = disposeUrl(obj[v], prefix)
     }
   })
-
+  console.log(JSON.stringify(obj))
   return obj
 }

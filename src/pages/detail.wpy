@@ -294,19 +294,19 @@
 <template>
   <view class="body">
   <view id="anchor">
-    <image class="avatar" src="{{item.anchor.avatar}}" backbround-size="cover" mode="aspectFill"></image>
+    <image class="avatar" src="{{detail.authorInfo.avatar}}" backbround-size="cover" mode="aspectFill"></image>
     <view class="info">
-      <text class="name">{{item.anchor.name}}</text>
-      <text class="detail">{{item.anchor.detail}}</text>
+      <text class="name">{{detail.authorInfo.user_nicename}}</text>
+      <text class="detail">{{detail.authorInfo.content}}</text>
     </view>
   </view>
 
   <view class="book-content">
     <view class="bookinfo">
-      <image class="cover" src="{{item.cover}}" background-size="cover" mode="aspectFill"></image>
+      <image class="cover" src="{{detail.featured_image}}" background-size="cover" mode="aspectFill"></image>
       <view class="detail">
-        <text class="title">{{item.title}}</text>
-        <text class="author">{{item.author.detail}}</text>
+        <text class="title">{{detail.title}}</text>
+        <text class="author">{{detail.content}}</text>
       </view>
     </view>
     <view id="timeline" wx:if="{{playing}}">
@@ -321,18 +321,18 @@
 
   </view>
     <view class="playlist">
-      <block wx:for="{{item.list}}" wx:for-item="song" wx:key="index">
-        <view class="item even {{curplay.src === song.src ? 'current': ''}}"
+      <block wx:for="{{list}}" wx:for-item="song" wx:key="index">
+        <view class="item even {{curplay.id === song.id ? 'current': ''}}"
               @tap="playItem('{{song}}')">
-          <view class="no" wx:if="{{!(curplay.src === song.src)}}">{{ index + 1 }}.</view>
+          <view class="no" wx:if="{{!(curplay.id === song.id)}}">{{ index + 1 }}.</view>
 
-          <view class="playing" wx:if="{{playing && curplay.src === song.src}}">
+          <view class="playing" wx:if="{{playing && curplay.id === song.id}}">
             <image class="icon" src="../images/status/pause_mini.png"></image>
           </view>
-          <view class="playing" wx:if="{{!playing && curplay.src === song.src}}">
+          <view class="playing" wx:if="{{!playing && curplay.id === song.id}}">
             <image class="icon" src="../images/status/play_mini.png"></image>
           </view>
-          <view class="song-name">{{song.songname}}</view>
+          <view class="song-name">{{song.title}}</view>
 
         </view>
 
@@ -348,14 +348,14 @@
 <script>
   /* eslint-disable no-undef,no-unused-vars */
   import wepy from 'wepy'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+  import {api} from '../config'
 
   const device = wx.getSystemInfoSync()  //  获取设备信息
-  const songList = require('../yodao.js')
-  const items = require('../mocks/data.js')
-//  const displayList =
-//  const playList = displayList.splice(0)
   const $wxapp = wepy.$instance
   let seek = 0
+
   export default class Detail extends wepy.page {
     config = {
       'navigationBarTitleText': '育儿柚道',
@@ -363,52 +363,49 @@
       'navigationBarBackgroundColor': '#3b3a40',
       'disableScroll': false
     }
+    mixins = [base, http]
     data = {
+      detail: {},
+      list: [],
       animationData: null,
 //      }),
-      item: {},
+//      item: {
+//        play_status: 'stop'
+//      },
       src: '',
       mode: 'loop',
       loading: true,
       downloadPercent: 0,
       percent: 50,
-//      playing: false,
-      curplay: {}
+      playing: false,
+      curplay: {
+        play_status: 'stop'
+      }
     }
     props = {
       option: Object
     }
     computed = {
       playing () {
-//        console.log(this.item.status)
-        return this.item.status === 'playing'
+        return $wxapp.globalData.curplay.play_status === 'playing'
       }
     }
     methods = {
       share() {
-//        console.log('onshare')
         wx.showShareMenu({
           withShareTicket: true
         })
       },
       pauseAll() {
-        if (this.item.status === 'playing') {
-          this.item.status = 'stop'
+        if (this.curplay.play_status === 'playing') {
+          this.curplay.play_status = 'stop'
           $wxapp.stopMusic()
         }
       },
       playAll() {
-        $wxapp.globalData.album = this.item
-        this.item.status = 'playing'
-        $wxapp.globalData.curplay = {
-          id: this.item.id,
-          album: this.item.album,
-          author: this.item.author,
-          anchor: this.item.anchor,
-          songname: this.item.list[0].songname,
-          status: 'playing',
-          src: this.item.list[0].src
-        }
+        $wxapp.globalData.playlist = this.list
+        this.curplay.play_status = 'playing'
+        $wxapp.globalData.curplay = Object.assign({}, this.list[0], {play_status: 'playing'})
         $wxapp.globalData.playindex = 0
         $wxapp.playing()
         $wxapp.emitter.emit('playing')
@@ -420,30 +417,19 @@
           icon: 'loading',
           duration: 1000
         })
-        const that = this
 
-        if (this.curplay.src === song.src) {
+        if (this.curplay.id === song.id) {
 //          console.log('当前暂停')
-          if (this.item.status === 'playing') {
-            this.item.status = 'stop'
+          if (this.curplay.play_status === 'playing') {
+            this.curplay.play_status = 'stop'
             $wxapp.stopMusic()
           } else {
-            this.item.status = 'playing'
+            this.curplay.play_status = 'playing'
             $wxapp.playing()
           }
         } else {
-//          console.log('当前播放')
-//          this.src = song.src
-          this.item.status = 'playing'
-          this.curplay = {
-            id: this.item.id,
-            album: this.item.album,
-            author: this.item.author,
-            anchor: this.item.anchor,
-            songname: song.songname,
-            status: 'playing',
-            src: song.src
-          }
+          this.curplay.play_status = 'playing'
+          this.curplay = Object.assign({}, song, {play_status: 'playing'})
           $wxapp.globalData.curplay = this.curplay
           $wxapp.playing()
         }
@@ -451,24 +437,24 @@
       },
       museek (e) {
         let nextime = e.detail.value
-        let that = this
+        const that = this
         nextime = $wxapp.globalData.curplay.dt * nextime / 100000
         $wxapp.globalData.currentPosition = nextime
         $wxapp.seekMusic(1, $wxapp.globalData.currentPosition, () => {
           this.percent = e.detail.value
-          this.$apply()
+          that.$apply()
         })
       }
     }
     onShow() {
       const that = this
-      if (that.item.status === 'playing') {
+      if (that.curplay.play_status === 'playing') {
         $wxapp.playAlrc(that)
         seek = setInterval(() => {
           $wxapp.playAlrc(that)
         }, 1000)
       }
-      if (this.item.status === 'stop') {
+      if (this.curplay.play_status === 'stop') {
         clearInterval(seek)
       }
     }
@@ -479,31 +465,52 @@
         path: '/pages/detail?id=' + this.item.id
       }
     }
-    onLoad(option) {
-      const _id = option.id
-//      const _id = !option.id ? $wxapp.globalData.curplay.id : option.id
-      const _items = items.filter((item) => {
-        return item.id === _id
+
+    async getDetail(id) {
+      const req = Object.assign(api.common.get, {data: {id: id}})
+      await this.$request(req, {
+        success: ({code, data}) => {
+          this.detail = data
+//          this.curplay = Object.assign({}, this.sticky, {play_status: 'stop'})
+//          $wxapp.globalData.curplay = this.curplay
+        }
       })
-      this.item = _items[0]
-      if ($wxapp.globalData.curplay.id === this.item.id) {
-        this.item.status = $wxapp.globalData.curplay.status
-      }
-//      console.log(JSON.stringify(this.item))
+    }
+    async getList(id, parent) {
+      const req = Object.assign(api.common.get, {data: {parent: parent}})
+      await this.$request(req, {
+        success: ({code, data}) => {
+          this.list = data
+          const cur = this.list.find((item) => {
+            if (item.id.toString() === id) {
+              return item
+            }
+          })
+          this.curplay = Object.assign({}, cur, {play_status: 'stop'})
+        }
+      })
+    }
+    async onLoad(option) {
+      await this.getDetail(option.parent)
+      await this.getList(option.id, option.parent)
+//      const _id = !option.id ? $wxapp.globalData.curplay.id : option.id
 //      this.scrollHeight = device.windowHeight - 300
 
-      let that = this
+      const that = this
       $wxapp.emitter.on('playing', (e) => {
-        if (that.item.status === 'playing') {
+        that.curplay = $wxapp.globalData.curplay
+        console.log(JSON.stringify(this.curplay))
+        if (that.curplay.play_status === 'playing') {
           $wxapp.playAlrc(that)
           seek = setInterval(() => {
             $wxapp.playAlrc(that)
           }, 1000)
         }
-        if (that.item.status === 'stop') {
+        if (that.curplay.play_status === 'stop') {
           clearInterval(seek)
         }
       })
+      that.apply()
 //      $wxapp.emitter.on('onload', (e) => {
 //        that.curplay = $wxapp.globalData.curplay
 //      })

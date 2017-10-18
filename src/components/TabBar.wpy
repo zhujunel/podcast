@@ -115,11 +115,11 @@
   <view class="tab">
     <view class="toolbar" wx:if="{{showToolbar}}">
       <view class="song" @tap="tap" style="background-position:-{{percent}}% -{{downloadPercent}}% ">
-        <image class="album" src="{{curplay.anchor.avatar}}" background-size="cover"></image>
+        <image class="album" src="{{curplay.authorInfo.avatar}}" background-size="cover"></image>
         <view class="info">
-          <text class="title">{{curplay.songname}}</text>
+          <text class="title">{{curplay.title}}</text>
           <view class="author">
-            <text>{{curplay.anchor.name}}</text>
+            <text>{{curplay.authorInfo.user_nicename}}</text>
           </view>
           <view class="timeline"></view>
         </view>
@@ -200,7 +200,7 @@
     methods = {
       tap () {
         wx.navigateTo({
-          url: '/pages/detail?id=' + $wxapp.globalData.curplay.id,
+          url: `/pages/detail?id=${$wxapp.globalData.curplay.id}&parent=${$wxapp.globalData.curplay.parent}`,
           success (res) {
           }
         })

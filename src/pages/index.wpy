@@ -847,7 +847,7 @@
 
     <view style="margin-bottom: 120rpx;">
 
-    <repeat for="{{recommend}}" key="index" index="index" item="item">
+    <repeat for="{{list}}" key="index" index="index" item="item">
       <podcast-header :item.sync="item" :id="testid"></podcast-header>
       <!--<podcast-card :item.sync="item"></podcast-card>-->
 
@@ -871,7 +871,7 @@
   import http from '../mixins/http'
   import base from '../mixins/base'
 
-  import Recommend from '../components/recommend'
+//  import Recommend from '../components/recommend'
   import AdSwiper from '../components/AdSwiper'
   //  import Detail from '../components/detail'
   import SectionHeader from '../components/section-header'
@@ -893,8 +893,6 @@
     config = {
 //      'backgroundTextStyle': '#000',
       'navigationBarTitleText': '育儿柚道',
-//      'navigationBarTextStyle': '#8392A7',
-//      'navigationBarBackgroundColor': '#fff',
 //      'disableScroll': true,
       'enablePullDownRefresh': false
     }
@@ -906,13 +904,12 @@
 //      card: Card,
 //      detail: Detail,
       adswiper: AdSwiper,
-      recommend: Recommend,
+//      recommend: Recommend,
       me: Me,
       'tab-bar': TabBar,
       toast: Toast
     }
     data = {
-      testid: 'testid ....',
       current: {
         isExpanded: false
       },
@@ -921,10 +918,6 @@
       toView: 'red',
       scrollTop: 100,
       items: [],
-      userInfo: {
-        nickName: '加载中...',
-        avatarUrl: '../images/icon/icon-avatar@2px.png'
-      },
       currentTab: 0,
       detail: {
         scrollHeight: device.windowHeight + 120
@@ -936,12 +929,16 @@
       curplay: $wxapp.globalData.curplay,
       background: '',
       swiper: {},
-      recommend: []
+      recommend: [],
+      list: [],
+      sticky: {},
+      options: {
+        swiper: {}
+      }
     }
     methods = {
       headerTapAction (index, item) {
         this.current.id = item.id
-//        console.log(typeof item)
         if (Object.is(this.recommend[index].isExpanded, undefined)) {
           this.recommend[index].isExpanded = true
           return
@@ -979,22 +976,72 @@
       }
     }
     computed = {
-//      expanded () {
-//        return 'is-expanded'
-//      }
-//      swiperItems () {
-//        return items
-//      }
-//      packages () {
-//      },
-//      identity () {
-//      },
-//      nickName () {
-//        const info = this.getObject(this.userInfo)
-//        return (info.nickName || info.avatarUrl) ? info.nickName : '未授权用户'
-//      }
     }
-    async loadList(item, parent) {
+    async getSticky (id) {
+      const req = Object.assign(api.common.get, {data: {id: id}})
+      await this.$request(req, {
+        success: ({code, data}) => {
+          this.sticky = data
+          this.curplay = Object.assign({}, this.sticky, {play_status: 'stop'})
+          $wxapp.globalData.curplay = this.curplay
+          console.log(JSON.stringify(this.curplay))
+        }
+      })
+    }
+    async onLoad () {
+//      const that = this
+      if (JSON.stringify($wxapp.globalData.options) === '{}') {
+        await this.$request(api.common.options, {
+          success: async ({code, data}) => {
+            this.swiper = data.swiper
+            this.$apply()
+            $wxapp.$updateGlobalData('options', data)
+            await this.getSticky(data.stickys[0])
+          }
+        })
+      } else {
+        this.swiper = this.options.swiper
+      }
+//      console.log('------- stickys -------')
+//      console.log($wxapp.globalData.options.stickys)
+
+      await this.$request(api.common.list, {
+        success: async ({code, data}) => {
+          this.list = data.data
+          for (let item of this.list) {
+            item._ = {
+              header_collapsed: false,
+              expanded: true
+            }
+            item.modified = moment(item.modified).fromNow()
+            await this.loadChildList(item, item.id)
+            this.$apply()
+          }
+        }
+      })
+//      this.curplay = {
+//        id: '2',
+//        anchor: {
+//          name: '叶青',
+//          avatar: 'https://media.alearning.com.cn/podcast/book/2/anchor.jpg'
+//        },
+//        songname: '交流密码：我说的你听懂了吗？（3-6岁）',
+//        status: 'stop',
+//        src: 'https://media.alearning.com.cn/podcast/book/2/202.mp3'
+//      }
+
+      $wxapp.emitter.emit('onload')
+      $wxapp.emitter.on('tab-change', (active) => {
+//        self.currentTab = active
+        if (active === 1) {
+          this.$invoke('me', 'onShow')
+        } else {
+          this.onShow()
+        }
+//        self.$apply()
+      })
+    }
+    async loadChildList(item, parent) {
       await this.$get({url: 'http://api.picker.la/v1/app/S11SeYT2W/posts', data: {parent: parent}}, {
         success: ({code, data}) => {
           item.list = data
@@ -1003,90 +1050,12 @@
         }
       })
     }
-    async onLoad () {
-      if (JSON.stringify($wxapp.globalData.options) === '{}') {
-        await this.$request(api.common.options, {
-          success: ({code, data}) => {
-            this.swiper = data.swiper
-//            console.log(JSON.stringify(this.swiper))
-            $wxapp.$updateGlobalData('options', data)
-          }
-        })
-      }
-      await this.$request(api.common.recommend, {
-        success: async ({code, data}) => {
-          this.recommend = data.data
-          for (let item of this.recommend) {
-            item._ = {
-              header_collapsed: false,
-              expanded: true
-            }
-            item.modified = moment(item.modified).fromNow()
-            await this.loadList(item, item.id)
-            this.$apply()
-          }
-        }
-      })
-//      this.$get({
-//        url: 'http://zy.picker.la/api/app/1/options/wxapp'
-//      }, {
-//        success: ({code, data}) => {
-//          this.swiper = data.swiper
-//          this.$apply()
-//          console.log('lalala---')
-//          console.log(JSON.stringify(data) + '-----')
-
-//          console.log(JSON.stringify(data))
-//        }
-//      })
-//      this.$get({
-//        url: 'http://zy.picker.la/api/podcast/recommend'
-//      }, {
-//        success: ({code, data}) => {
-//          self.swiper.items = data
-//          self.swiper.slideLength = data.length
-//          console.log(data.length)
-//          this.$apply()
-//          console.log('success')
-//          for (let item of data) {
-//            console.log(JSON.stringify(item))
-//          }
-//          console.log(JSON.stringify(data.data))
-//        }
-//      })
-//      this.$getUserInfo((data) => {
-//        self.userInfo = data
-//      })
-//      this.$parent.getUserInfo(function (userInfo) {
-//        if (userInfo) {
-//          self.userInfo = userInfo
-//        }
-//        console.log(self.userInfo)
-//        self.$apply()
-//      })
-      this.curplay = {
-        id: '2',
-        anchor: {
-          name: '叶青',
-          avatar: 'https://media.alearning.com.cn/podcast/book/2/anchor.jpg'
-        },
-        songname: '交流密码：我说的你听懂了吗？（3-6岁）',
-        status: 'stop',
-        src: 'https://media.alearning.com.cn/podcast/book/2/202.mp3'
-      }
-      $wxapp.globalData.curplay = this.curplay
-      $wxapp.emitter.emit('onload')
-      $wxapp.emitter.on('tab-change', (active) => {
-//        self.currentTab = active
-        if (active === 1) {
-          this.$invoke('me', 'onShow')
-        }
-//        self.$apply()
-      })
-    }
-
     onShow () {
+      console.log('index on show')
       this.currentTab = 0
+      console.log('on show page ....')
+      console.log($wxapp.globalData.options.stickys)
+
 //      if ($wxapp.globalData.playing) {
 //        this.showToolbar = false
 //      }

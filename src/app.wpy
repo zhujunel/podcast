@@ -55,21 +55,17 @@
       hasLogin: false,
       hide: false,
       playlist: [],
-      album: {},
       playindex: 0,
       list_am: [],
       index_am: 0,
       playing: false,
       playtype: 1,
       curplay: {
-        id: '2',
-        anchor: {
-          name: '叶青',
-          avatar: 'https://media.alearning.com.cn/podcast/book/2/anchor.jpg'
-        },
-        songname: '交流密码：我说的你听懂了吗？（3-6岁）',
-        status: 'stop',
-        src: 'https://media.alearning.com.cn/podcast/book/2/202.mp3'
+        id: '',
+        authorInfo: {},
+        title: {},
+        url: '',
+        play_status: 'stop'
       },
       shuffle: 1,
       globalStop: true,
@@ -84,55 +80,55 @@
     }
 
     onLaunch () {
-      const cookie = wx.getStorageSync('cookie') || ''
-      const jwt = wx.getStorageSync('jwt')
-      const gb = wx.getStorageSync('globalData')
-      gb && (this.globalData = gb)
-      this.globalData.cookie = cookie
+//      const cookie = wx.getStorageSync('cookie') || ''
+//      const jwt = wx.getStorageSync('jwt')
+//      const gb = wx.getStorageSync('globalData')
+//      gb && (this.globalData = gb)
+//      this.globalData.cookie = cookie
       const that = this
-      if (!jwt.token) {
-        wx.login({
-          success: function (res) {
-            if (res.code) {
-              console.log('code' + res.code)
-              let encryptedData = 'ency'
-              let iv = 'iv'
+//      if (!jwt.token) {
+//        wx.login({
+//          success: function (res) {
+//            if (res.code) {
+//              console.log('code' + res.code)
+//              let encryptedData = 'ency'
+//              let iv = 'iv'
 //              that.getOptions()
-              that.getUserInfo((data) => {
-                encryptedData = data.encryptedData || 'ency'
-                iv = data.iv
-                wx.request({
-                  method: 'POST',
-                  url: 'http://api.picker.la/v1/app/S11SeYT2W/signin',
-                  header: {
-                    Authorization: ''
-                  },
-                  data: {
-                    username: encryptedData,
-                    user_login: encryptedData,
-                    user_pass: iv,
-                    password: iv,
-                    grant_type: 'password',
-                    auth_approach: 'wxapp',
-                    code: res.code
-                  },
-                  success: (res) => {
-                    if (!Object.is(res.data, undefined)) {
+//              that.getUserInfo((data) => {
+//                encryptedData = data.encryptedData || 'ency'
+//                iv = data.iv
+//                wx.request({
+//                  method: 'POST',
+//                  url: 'http://api.picker.la/v1/app/S11SeYT2W/signin',
+//                  header: {
+//                    Authorization: ''
+//                  },
+//                  data: {
+//                    username: encryptedData,
+//                    user_login: encryptedData,
+//                    user_pass: iv,
+//                    password: iv,
+//                    grant_type: 'password',
+//                    auth_approach: 'wxapp',
+//                    code: res.code
+//                  },
+//                  success: (res) => {
+//                    if (!Object.is(res.data, undefined)) {
 //                    console.log(res.data)
-                      wx.setStorageSync('jwt', res.data.data)
-                    }
-                  }
-                })
-              })
-            } else {
-              console.log('获取用户登录态失败！' + res.errMsg)
-            }
-          }
-        })
-      } else {
-        console.log(jwt.userId)
+//                      wx.setStorageSync('jwt', res.data.data)
+//                    }
+//                  }
+//                })
+//              })
+//            } else {
+//              console.log('获取用户登录态失败！' + res.errMsg)
+//            }
+//          }
+//        })
+//      } else {
+//        console.log(jwt.userId)
 //        console.log('not register')
-      }
+//      }
 
       // 播放列表中下一首
       wx.onBackgroundAudioStop(() => {
@@ -180,9 +176,9 @@
     playing (type, cb, seek) {
       const that = this
       const m = that.globalData.curplay
-//      console.log(m.id + '----')
+      console.log(m.id + '----')
       wx.playBackgroundAudio({
-        dataUrl: m.src,
+        dataUrl: m.url,
         title: m.songname,
         success (res) {
           if (seek !== undefined) {
@@ -265,9 +261,8 @@
     playNext (cb, pos) {
       // 播放列表中下一首
       this.prePlay()
-      const list = this.globalData.album.list
+      const list = this.globalData.playlist
       let index = this.globalData.playindex
-//      console.log(JSON.stringify(list))
 //      if (t === 1) {
       index++
 //      } else {
@@ -275,12 +270,8 @@
 //      }
       index = index > list.length - 1 ? 0 : (index < 0 ? list.length - 1 : index)
       index = pos !== undefined ? pos : index
-      this.globalData.curplay = list[index] || this.globalData.curplay
+      this.globalData.curplay = Object.assign({}, list[index], {play_status: 'playing'}) || this.globalData.curplay
       this.globalData.playindex = index
-      this.globalData.curplay.anchor = this.globalData.album.anchor
-      this.globalData.curplay.author = this.globalData.album.author
-      this.globalData.curplay.id = this.globalData.album.id
-//      console.log(this.globalData.curplay)
       // 发出播放事件
 //      this.seekMuskc()
       this.emitter.emit('playing')
@@ -297,26 +288,21 @@
         that.downloadPercent = 0
         return
       }
-//      console.log(this.globalData.curplay.src)
-      if (that.src !== this.globalData.curplay.src) {
-        that.curplay = this.globalData.curplay
+//      if (that.curplay.id !== this.globalData.curplay.id) {
+//        that.curplay = this.globalData.curplay
 //        that.duration = this.formatDuration(this.globalData.curplay.duration || this.globalData.curplay.dt)
-//        console.log(that.duration + 'duration ----')
-//        wx.setNavigationBarTitle({ title: this.globalData.curplay.name })
+        wx.setNavigationBarTitle({ title: this.globalData.curplay.title })
         that.$apply()
-      }
+//      }
       const _that = this
       wx.getBackgroundAudioPlayerState({
         complete (res) {
           let {time, playtime, downloadPercent} = 0
           let playing = false
-//          console.log(res.status)
-//          console.log(res.duration)
           if (res.status !== 2) {
             time = res.currentPosition / res.duration * 100
             playtime = res.currentPosition
             downloadPercent = res.downloadPercent
-//            console.log(time + ':' + playtime)
           }
           if (res.status === 1) {
             playing = true
@@ -324,7 +310,6 @@
           _that.globalData.playing = playing
           that.playtime = _that.formatDuration(playtime * 1000)
           that.percent = time
-//          console.log(time)
           that.playing = playing
           that.downloadPercent = downloadPercent
           that.$apply()
