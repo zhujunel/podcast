@@ -260,7 +260,6 @@
         clearInterval(seek)
       })
       $wxapp.emitter.on('onload', (e) => {
-        console.log('onload evt')
         that.curplay = $wxapp.globalData.curplay
       })
       const {option} = this

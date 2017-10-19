@@ -87,49 +87,6 @@
 //      gb && (this.globalData = gb)
 //      this.globalData.cookie = cookie
       const that = this
-//      if (!jwt.token) {
-//        wx.login({
-//          success: function (res) {
-//            if (res.code) {
-//              console.log('code' + res.code)
-//              let encryptedData = 'ency'
-//              let iv = 'iv'
-//              that.getOptions()
-//              that.getUserInfo((data) => {
-//                encryptedData = data.encryptedData || 'ency'
-//                iv = data.iv
-//                wx.request({
-//                  method: 'POST',
-//                  url: 'http://api.picker.la/v1/app/S11SeYT2W/signin',
-//                  header: {
-//                    Authorization: ''
-//                  },
-//                  data: {
-//                    username: encryptedData,
-//                    user_login: encryptedData,
-//                    user_pass: iv,
-//                    password: iv,
-//                    grant_type: 'password',
-//                    auth_approach: 'wxapp',
-//                    code: res.code
-//                  },
-//                  success: (res) => {
-//                    if (!Object.is(res.data, undefined)) {
-//                    console.log(res.data)
-//                      wx.setStorageSync('jwt', res.data.data)
-//                    }
-//                  }
-//                })
-//              })
-//            } else {
-//              console.log('获取用户登录态失败！' + res.errMsg)
-//            }
-//          }
-//        })
-//      } else {
-//        console.log(jwt.userId)
-//        console.log('not register')
-//      }
 
       // 播放列表中下一首
       wx.onBackgroundAudioStop(() => {

@@ -136,8 +136,8 @@
           this.userInfo = data
         })
 //        const { data } = await http({
-//          method: api.user.blog.method,
-//          url: `${api.user.blog.url}?page=1`
+//          method: api.user.method,
+//          url: `${api.user.url}?page=1`
 //        })
 //        this.blogs = data.data
 

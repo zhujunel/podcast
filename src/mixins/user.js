@@ -116,11 +116,8 @@ export default class userMixin extends wepy.mixin {
 
   /* ========================= 其他方法 ========================= */
 
-  // 获取用户公开信息（微信）
+  // 获取用户公开信息
   _wxUserInfo (callback) {
-    // console.log('code _--------')
-    // console.log(this.code)
-    // console.log('lalala ---------')
     wepy.getUserInfo({
       success: (res) => {
         console.log('wepy.getUserInfo.success:', res)
