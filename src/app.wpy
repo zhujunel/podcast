@@ -65,7 +65,8 @@
         authorInfo: {},
         title: {},
         url: '',
-        play_status: 'stop'
+        play_status: 'stop',
+        play_style: {}
       },
       shuffle: 1,
       globalStop: true,
@@ -176,7 +177,6 @@
     playing (type, cb, seek) {
       const that = this
       const m = that.globalData.curplay
-      console.log(m.id + '----')
       wx.playBackgroundAudio({
         dataUrl: m.url,
         title: m.songname,

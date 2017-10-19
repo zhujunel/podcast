@@ -58,6 +58,10 @@
         display: flex;
         flex-flow: row;
         width: 50%;
+        &.is-playing {
+          box-shadow: inset 3px 0 0 $blue-medium;
+          /*animation: loading-fade 1.6s ease-in-out infinite;*/
+        }
         .album {
           width: rpx(74);
           height: rpx(74);
@@ -114,7 +118,7 @@
 <template>
   <view class="tab">
     <view class="toolbar" wx:if="{{showToolbar}}">
-      <view class="song" @tap="tap" style="background-position:-{{percent}}% -{{downloadPercent}}% ">
+      <view class="song {{curplay.play_status === 'playing' ? 'is-playing' : ''}}" @tap="tap" style="background-position:-{{percent}}% -{{downloadPercent}}%">
         <image class="album" src="{{curplay.authorInfo.avatar}}" background-size="cover"></image>
         <view class="info">
           <text class="title">{{curplay.title}}</text>
@@ -244,10 +248,8 @@
     onLoad () {
       const that = this
       $wxapp.emitter.on('playing', e => {
-        console.log('playing event')
         clearInterval(seek)
         that.curplay = $wxapp.globalData.curplay
-//        console.log(that.curplay)
         that.$apply()
         $wxapp.playStatus(that)
         seek = setInterval(() => {

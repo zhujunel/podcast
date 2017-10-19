@@ -1,20 +1,20 @@
 <template>
-  <view>
-    <repeat for="{{list}}" key="index" index="index" item="item">
-      <podcast-card :item.sync="item"></podcast-card>
-    </repeat>
-  </view>
+  <!--<repeat wx:for="{{list}}" key="index" index="index" item="item">-->
+    <!--<view wx:for="{{list}}">-->
+    <!--<podcast-card :item.sync="item"></podcast-card>-->
+    <!--</view>-->
+  <!--</repeat>-->
 </template>
 <script>
   import wepy from 'wepy'
   import PodcastCard from '../components/podcast-card'
-//  import PodcastHeader from './podcast-card'
-//  import FoldableCard from '../components/FoldableCard'
+  //  import PodcastHeader from './podcast-card'
+  //  import FoldableCard from '../components/FoldableCard'
   import http from '../mixins/http'
   import base from '../mixins/base'
   import {api} from '../config'
   import moment from 'moment'
-//  import http from '../utils/request'
+  //  import http from '../utils/request'
   export default class Index extends wepy.component {
     mixins = [base, http]
     components = {
@@ -26,18 +26,35 @@
     }
     methods = {
     }
+    events = {
+      'onload': ($event) => {
+      }
+    };
     /**
      * lifecycles hook
      */
     async onComponentLoad () {
       await this.loadData()
+      this.$apply()
     }
     async onReload () {
       this.page = 1
+      await this.loadData()
     }
-    async loadData () {
 
-      await this.$request(api.common.list, {
+    async onPullDownRefresh() {
+      this.page = 1
+      await this.loadData()
+    }
+
+    async onReachBottom () {
+      this.page++
+      await this.loadData()
+    }
+
+    async loadData () {
+      const req = Object.assign({}, api.common.list, {data: {page: this.page}})
+      await this.$request(req, {
         success: async ({code, data}) => {
           if (this.page === 1) {
             this.list = data.data

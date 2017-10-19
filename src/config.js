@@ -12,29 +12,37 @@ const hosts = {
 
 const basic_token = 'Basic token='
 const PICKER_APPID = 'S11SeYT2W'
+const APP_API = `/app/${PICKER_APPID}`
 // apis
 const api = {
+  user: {
+    login: {
+      method: 'POST',
+      url: `${APP_API}/wxlogin`,
+      headers: {}
+    }
+  },
   common: {
     get: {
       method: 'GET',
-      url: `/app/${PICKER_APPID}/posts`,
+      url: `${APP_API}/posts`,
       data: {}
     },
     options: {
       method: 'GET',
-      url: `/app/${PICKER_APPID}/options?key=_wxapp`
+      url: `${APP_API}/options?key=_wxapp`
     },
     sticky: {
       method: 'GET',
-      url: `/app/${PICKER_APPID}/posts`
+      url: `${APP_API}/posts`
     },
     list: {
       method: 'GET',
-      url: `/app/${PICKER_APPID}/posts?term=category`
+      url: `${APP_API}/posts?term=category`
     },
     recommend: {
       method: 'GET',
-      url: `/app/${PICKER_APPID}/posts`
+      url: `${APP_API}/posts`
     }
   }
 
@@ -54,6 +62,6 @@ function disposeUrl(obj, prefix) {
       obj[v] = disposeUrl(obj[v], prefix)
     }
   })
-  console.log(JSON.stringify(obj))
+  // console.log(JSON.stringify(obj))
   return obj
 }

@@ -164,9 +164,7 @@
       <view class="foldable-card__content" wx:if="{{isExpanded}}">
         <slot></slot>
       </view>
-      <view class="card is-compact">
-        <slot name="footer">lalal</slot>
-      </view>
+      <slot name="footer"></slot>
     </view>
 
   </view>
@@ -186,11 +184,11 @@
       },
       tapableHeader: {
         type: Boolean,
-        default: true
+        default: false
       },
       expanded: {
         type: Boolean,
-        default: false
+        default: true
       },
       type: String,
       className: String,
@@ -222,18 +220,17 @@
       headerTapAction ($event) {
 //        console.log($event.source.id)
 //        if ($event.source.data.id === this.item) {
-        this.isExpanded = !this.isExpanded
-        console.log(this.id)
-//        }
-//        return this.tapableHeader ? this.handleTap() : null
-//        this.current = this.item
 //        this.isExpanded = !this.isExpanded
-      },
-      handleTap () {
+//        console.log(this.id)
+//        }
+        return this.tapableHeader ? this.handleTap() : null
+//        this.current = this.item
 //        this.isExpanded = !this.isExpanded
       }
     }
-
+    handleTap () {
+      this.isExpanded = !this.isExpanded
+    }
     onLoad () {
       this.isExpanded = this.expanded
     }

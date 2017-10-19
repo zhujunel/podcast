@@ -36,13 +36,21 @@ export default class httpMixin extends wepy.mixin {
    * @param  {[type]}  item [description]
    * @return {Boolean}      [description]
    */
-  $request ({url = '', headers = {}, methods = 'GET', data = {}},
-         {
-           success = () => {
-           }, fail = () => {
-         }, complete = () => {
-         }
-         }) {
+  $request ({
+              url = '',
+              headers = {},
+              methods = 'GET',
+              data = {}
+            },
+            {
+              success = () => {
+              },
+              fail = () => {
+
+              },
+              complete = () => {
+              }
+            }) {
     // 增强体验：加载中
     wx.showNavigationBarLoading()
 

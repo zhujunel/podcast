@@ -21,7 +21,10 @@ export default class userMixin extends wepy.mixin {
       return user
     }
     // 首次获取用户信息
-    this.$login(() => {
+    this.$login((res) => {
+      // console.log('res -----')
+      // console.log(JSON.stringify(res))
+      this.code = res.code
       // 再获取用户信息
       this._wxUserInfo(callback)
     })
@@ -115,11 +118,17 @@ export default class userMixin extends wepy.mixin {
 
   // 获取用户公开信息（微信）
   _wxUserInfo (callback) {
+    // console.log('code _--------')
+    // console.log(this.code)
+    // console.log('lalala ---------')
     wepy.getUserInfo({
       success: (res) => {
         console.log('wepy.getUserInfo.success:', res)
         // 缓存用户信息
         const user = wepy.$instance.$updateGlobalData('user', res.userInfo)
+        user.iv = res.iv
+        user.code = this.code
+        user.encryptedData = res.encryptedData
         this.isFunction(callback) && callback(user)
         this.$apply()
       },
@@ -130,9 +139,9 @@ export default class userMixin extends wepy.mixin {
           nickName: '未授权',
           avatarUrl: '/images/icon/icon-avatar@2x.png'
         })
-
+        // res.code = loginRes.code
         // 串行回调
-        this.isFunction(callback) && callback(user)
+        this.isFunction(callback) && callback(res)
         this.$apply()
 
         // 尝试授权

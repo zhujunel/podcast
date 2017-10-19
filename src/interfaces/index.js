@@ -5,19 +5,24 @@ const interfaces = {
   async getUserInfo () {
     const loginData = await wepy.login()
     const userinfo = await wepy.getUserInfo()
+    console.log(JSON.stringify(loginData))
     userinfo.code = loginData.code
     return userinfo
   },
   async login () {
     let userinfoRaw = {}
     let userinfo = {}
-
+    console.log("login .....")
     try {
       userinfoRaw = await interfaces.getUserInfo()
+      console.log(userinfoRaw)
+      // console.log('user info raw .......')
+      // console.log(JSON.stringify(userinfoRaw))
       userinfo = await wepy.request({
         url: api.user.login.url,
         method: api.user.login.method,
         header: {
+          // 'approach': 'wechat',
           'x-wechat-code': userinfoRaw.code,
           'x-wechat-encrypted': userinfoRaw.encryptedData,
           'x-wechat-iv': userinfoRaw.iv
@@ -27,8 +32,8 @@ const interfaces = {
       })
 
       await wepy.setStorage({
-        key: '_session',
-        data: userinfo.data.data.session
+        key: '_token',
+        data: userinfo.data.token
       })
     } catch (e) {
       wepy.showModal({

@@ -5,58 +5,6 @@ $gray: #A1a1a1;
 // See https://wpcalypso.wordpress.com/devdocs/docs/coding-guidelines/css.md#media-queries
 // ==========================================================================
 
-$breakpoints: 480px, 660px, 960px, 1040px, 1280px, 1600px; // Think very carefully before adding a new breakpoint
-
-@mixin breakpoint( $sizes... ) {
-  @each $size in $sizes {
-    @if type-of($size) == string {
-      $approved-value: 0;
-      @each $breakpoint in $breakpoints {
-        $and-larger: ">" + $breakpoint;
-        $and-smaller: "<" + $breakpoint;
-
-        @if $size == $and-smaller {
-          $approved-value: 1;
-          @media (max-width: $breakpoint) {
-            @content;
-          }
-        } @else {
-          @if $size == $and-larger {
-            $approved-value: 2;
-            @media (min-width: $breakpoint + 1) {
-              @content;
-            }
-          } @else {
-            @each $breakpoint-end in $breakpoints {
-              $range: $breakpoint + "-" + $breakpoint-end;
-              @if $size == $range {
-                $approved-value: 3;
-                @media (min-width: $breakpoint + 1) and (max-width: $breakpoint-end) {
-                  @content;
-                }
-              }
-            }
-          }
-        }
-      }
-      @if $approved-value == 0 {
-        $sizes: "";
-        @each $breakpoint in $breakpoints {
-          $sizes: $sizes + " " + $breakpoint;
-        }
-        // TODO - change this to use @error, when it is supported by node-sass
-        @warn "ERROR in breakpoint( #{ $size } ): You can only use these sizes[ #{$sizes} ] using the following syntax [ <#{ nth( $breakpoints, 1 ) } >#{ nth( $breakpoints, 1 ) } #{ nth( $breakpoints, 1 ) }-#{ nth( $breakpoints, 2 ) } ]";
-      }
-    } @else {
-      $sizes: "";
-      @each $breakpoint in $breakpoints {
-        $sizes: $sizes + " " + $breakpoint;
-      }
-      // TODO - change this to use @error, when it is supported by node-sass
-      @warn "ERROR in breakpoint( #{ $size } ): Please wrap the breakpoint $size in parenthesis. You can use these sizes[ #{$sizes} ] using the following syntax [ <#{ nth( $breakpoints, 1 ) } >#{ nth( $breakpoints, 1 ) } #{ nth( $breakpoints, 1 ) }-#{ nth( $breakpoints, 2 ) } ]";
-    }
-  }
-}
 
 // Alerts
 $alert-yellow: #f0b849;
@@ -66,7 +14,7 @@ $alert-purple: #855DA6;
 // Primary Accent (Blues)
 $blue-wordpress: #3B4859;
 $blue-light: #EFF2F7;
-$blue-medium: #3B7CFF;
+$blue-medium: #2196F3;
 $link-highlight: tint($blue-medium, 20%);
 @import "../../shared/mixins/mixins";
 
@@ -94,18 +42,10 @@ $link-highlight: tint($blue-medium, 20%);
   }
   @include clear-fix;
 
-  @include breakpoint(">480px") {
-    margin-bottom: 16px;
-    padding: 24px;
-  }
-
   // Compact Card
   &.is-compact {
     margin-bottom: 1px;
-
-    //@include breakpoint(">480px") {
     padding: 16px 24px;
-    //}
   }
 
   &.is-card-link {
