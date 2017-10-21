@@ -756,10 +756,10 @@
     <view wx:if="{{currentTab === 0}}">
     <adswiper :config.sync="swiper"></adswiper>
 
-    <view style="margin-bottom: 120rpx;">
+    <view style="margin-bottom: 150rpx;">
 
     <repeat for="{{list}}" key="index" index="index" item="item">
-      <podcast-card :item.sync="item"></podcast-card>
+      <podcast-card :item.sync="item" :id="item.id" style="margin-top: 20px"></podcast-card>
     </repeat>
       <!--<podcast-browser-list />-->
     </view>
@@ -863,6 +863,12 @@
     }
     events = {
       'tab-change': (active, $event) => {
+      },
+      'header-tap': () => {
+//        console.log('page header tap')
+//        wx.navigateTo({
+//          url: `/pages/detail?id=${this.id}&parent=${this.id}`
+//        })
       }
     }
     computed = {

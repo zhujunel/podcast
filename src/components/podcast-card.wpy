@@ -5,71 +5,88 @@
     display: block;
     margin-right: 20rpx;
   }
+  $gray:                   #A1a1a1;
+  $gray-light:             lighten( $gray, 33% ); //#f3f6f8
   .more {
     width: 32rpx;
     height: 32rpx;
     color: $gray-light;
   }
+  .margin{
+    margin-top: rpx(50)
+  }
 </style>
 <template>
   <view>
-    <foldable-card :expanded="isExpanded">
-      <view class="connected-application-item__header" slot="header">
-        <view class="podcast__header">
-          <view class="podcasts-browser-item">
-            <view class="podcasts-browser-item__info">
-              <view class="podcast-icon animate__appear">
-                <image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"
-                       mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
-              </view>
-              <view class="podcasts-browser-item__title">
-                {{ item.title }}
-              </view>
-              <view class="podcasts-browser-item__author">- {{ item.authorInfo.user_nicename }}</view>
-            </view>
+    <view class="card animate-box fadeInUp animated-fast foldable-card is-compact is-expanded margin" >
+      <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction({{item}})">
 
+        <view class="foldable-card__main">
+          <view class="connected-application-item__header">
+            <view class="podcast__header">
+              <view class="podcasts-browser-item">
+                <view class="podcasts-browser-item__info">
+                  <view class="podcast-icon animate__appear">
+                    <image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"
+                           mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
+                  </view>
+                  <view class="podcasts-browser-item__title">
+                    {{ item.title }}
+                  </view>
+                  <view class="podcasts-browser-item__author">- {{ item.authorInfo.user_nicename }}</view>
+                </view>
+
+              </view>
+
+            </view>
           </view>
 
         </view>
-      </view>
-      <view slot="summary">
-        <navigator url="/pages/detail?id={{ item.id }}&parent={{ item.id }}">{{ item.title }}</navigator>
-      </view>
-      <view slot="expandedSummary">
-        <navigator url="/pages/detail?id={{ item.id }}&parent={{ item.id }}"><image class="more" src="../images/more.svg"></image></navigator>
-      </view>
-      <view class="plugin-meta__banner {{ item._.header_collapsed ? '': 'is-collapsed'}}"
-            wx:if="{{item.featured_image}}">
-        <image class="plugin-meta__banner-image post-image__image"
-               mode="{{item._.header_collapsed ? 'aspectFit': 'aspectFill'}}" src="{{item.featured_image}}"
-               @tap="tapImage({{item.featured_image}})"></image>
-      </view>
-      <view class="card is-compact is-info" wx:if="{{item.content}}">
-        {{ item.content}}
-      </view>
-      <view class="podcast {{item.list ? '': 'is-placeholder'}}">
-        <scroll-view scroll-x="true" class="episode">
-          <!--{{(curplay.id === item.id && curplay.play_status === 'playing') ? 'is-playing' : ''}}"-->
-          <view
-            class="episode-audio_card is-compact"
-            wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-            <!-- 有播放状态的专辑 -->
-            <image class="gridicon player" src="../images/quick/pause_big.png" @tap="playItem({{item}})"
-                   hidden="{{!(curplay.id === item.id && curplay.play_status == 'playing')}}"></image>
-            <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
-                   hidden="{{!(curplay.id === item.id && curplay.play_status == 'stop')}}"></image>
-            <!-- 没有状态的专辑 -->
-            <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
-                   hidden="{{!(curplay.id !== item.id)}}"></image>
-
-            <view class="episode-audio_card__info">
-              <view class="episode-audio_card__title">{{item.title}}</view>
-            </view>
+        <view class="foldable-card__secondary">
+          <view class="foldable-card__summary">
+            <slot name="summary"></slot>
           </view>
-        </scroll-view>
-      </view>
+          <view class="foldable-card__summary-expanded">
+            <navigator url="/pages/detail?id={{ item.id }}&parent={{ item.id }}"><image class="more" src="../images/more.svg"></image></navigator>
+          </view>
+        </view>
 
-    </foldable-card>
+        <!--<button class="foldable-card__action foldable-card__expand"></button>-->
+      </view>
+      <view class="foldable-card__content" wx:if="{{isExpanded}}">
+        <view class="plugin-meta__banner {{ item._.header_collapsed ? '': 'is-collapsed'}}"
+              wx:if="{{item.featured_image}}">
+          <image class="plugin-meta__banner-image post-image__image"
+                 mode="{{item._.header_collapsed ? 'aspectFit': 'aspectFill'}}" src="{{item.featured_image}}"
+                 @tap="tapImage({{item.featured_image}})"></image>
+        </view>
+        <view class="card is-compact is-info" wx:if="{{item.content}}">
+          {{ item.content}}
+        </view>
+        <view class="podcast {{item.list ? '': 'is-placeholder'}}">
+          <scroll-view scroll-x="true" class="episode">
+            <!--{{(curplay.id === item.id && curplay.play_status === 'playing') ? 'is-playing' : ''}}"-->
+            <view
+              class="episode-audio_card is-compact"
+              wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+              <!-- 有播放状态的专辑 -->
+              <image class="gridicon player" src="../images/quick/pause_big.png" @tap="playItem({{item}})"
+                     hidden="{{!(curplay.id === item.id && curplay.play_status == 'playing')}}"></image>
+              <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
+                     hidden="{{!(curplay.id === item.id && curplay.play_status == 'stop')}}"></image>
+              <!-- 没有状态的专辑 -->
+              <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
+                     hidden="{{!(curplay.id !== item.id)}}"></image>
+
+              <view class="episode-audio_card__info">
+                <view class="episode-audio_card__title">{{item.title}}</view>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+      <slot name="footer"></slot>
+    </view>
 
   </view>
 
@@ -78,8 +95,8 @@
   /* eslint-disable no-undef */
 
   import wepy from 'wepy'
-  import FoldableCard from '../components/FoldableCard'
-  import Card from '../components/card'
+//  import FoldableCard from '../components/FoldableCard'
+//  import Card from '../components/card'
 
   const $wxapp = wepy.$instance
 
@@ -100,8 +117,8 @@
       }
     }
     components = {
-      'card': Card,
-      'foldable-card': FoldableCard
+//      'card': Card,
+//      'foldable-card': FoldableCard
     }
     methods = {
       playItem (song, e) {
@@ -142,6 +159,14 @@
           complete () {
           }
         })
+      },
+      headerTapAction (item, $event) {
+        wx.navigateTo({
+          url: `/pages/detail?id=${item.id}&parent=${item.id}`,
+          success (res) {
+          }
+        })
+//        this.$emit('header-tap', $event)
       }
     }
 
@@ -153,7 +178,9 @@
       this.curplay = $wxapp.globalData.curplay
       this.$apply()
     }
-
+    onLoad () {
+//      this.id = this.item.id
+    }
     async onReload () {
       this.page = 1
     }

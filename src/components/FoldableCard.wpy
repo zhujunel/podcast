@@ -144,7 +144,7 @@
 <template>
   <view>
 
-    <view class="card animate-box fadeInUp animated-fast foldable-card is-compact {{isExpanded ? 'is-expanded' : ''}}">
+    <view class="card animate-box fadeInUp animated-fast foldable-card is-compact {{isExpanded ? 'is-expanded' : ''}}" >
       <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction">
 
         <view class="foldable-card__main">
@@ -176,8 +176,9 @@
   export default class Card extends wepy.component {
     props = {
       id: {
-        type: String,
-        default: ''
+        type: Number,
+        default: '',
+        twoWay: true
       },
       item: {
         type: Object
@@ -218,14 +219,11 @@
     }
     methods = {
       headerTapAction ($event) {
-//        console.log($event.source.id)
-//        if ($event.source.data.id === this.item) {
-//        this.isExpanded = !this.isExpanded
-//        console.log(this.id)
-//        }
+        console.log($event)
         return this.tapableHeader ? this.handleTap() : null
 //        this.current = this.item
 //        this.isExpanded = !this.isExpanded
+//        this.$emit('header-tap', $event)
       }
     }
     handleTap () {

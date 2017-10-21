@@ -1,5 +1,6 @@
 // ENV
 const env = 'development' // 'development' or 'production'
+// const isProdMode = Object.is(process.env.NODE_ENV , 'production')
 
 // WXAPP VERSION
 const version = 1.0
@@ -7,7 +8,7 @@ const version = 1.0
 // development and production host
 const hosts = {
   development: 'http://api.picker.la/v1',
-  production: 'https://zy.picker.cc/api'
+  production: 'https://api.picker.cc/v1'
 }
 
 const basic_token = 'Basic token='
