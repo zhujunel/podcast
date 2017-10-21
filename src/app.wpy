@@ -321,9 +321,10 @@
     }
 
     /* ========================= 更新缓存信息 ======================== */
-    $updateGlobalData (name, obj) {
+    async $updateGlobalData (name, obj) {
+      console.log('更新。。。。')
       // 校验: globalData
-      console.log(this.globalData)
+//      console.log(this.globalData)
       if (!this.globalData) return
       // 校验: 操作字段
       if (typeof name !== 'string' || name === '') return {}

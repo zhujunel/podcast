@@ -52,7 +52,7 @@ export default class httpMixin extends wepy.mixin {
               }
             }) {
     // 增强体验：加载中
-    wx.showNavigationBarLoading()
+    // wx.showNavigationBarLoading()
 
     // 构造请求体
     const request = {
@@ -103,7 +103,7 @@ export default class httpMixin extends wepy.mixin {
         // 控制台调试日志
         console.log('[COMPLETE]', res)
         // 隐藏加载提示
-        wx.hideNavigationBarLoading()
+        // wx.hideNavigationBarLoading()
         // 停止下拉状态
         wx.stopPullDownRefresh()
         // 完成回调

@@ -1,5 +1,5 @@
 // ENV
-const env = 'development' // 'development' or 'production'
+const env = 'production' // 'development' or 'production'
 // const isProdMode = Object.is(process.env.NODE_ENV , 'production')
 
 // WXAPP VERSION
