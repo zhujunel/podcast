@@ -1,4 +1,6 @@
-const WxNotificationCenter = require('./WxNotificationCenter.js')
+// const WxNotificationCenter = require('./WxNotificationCenter.js')
+import mitt from 'mitt'
+const emitter = mitt()
 
 export default class Event {
   // // 订单列表更新事件
@@ -30,17 +32,21 @@ export default class Event {
   // // 地址详情更新
   // static ADDRESS_DETAIL_UPDATE = 'ADDRESS_DETAIL_UPDATE';
   // // 地址列表更新
-  // static ADDRESS_LIST_UPDATE = 'ADDRESS_LIST_UPDATE';
+  static PODCAST_LIST_UPDATE = 'PODCAST_LIST_UPDATE';
   static TAB_BAR_CHANGE = 'TAB_BAR_CHANGE'
-  static listen (eventName, callback, observer) {
-    WxNotificationCenter.addNotification(eventName, callback, observer)
+  static LOADED = 'LOADED'
+  static on (eventName, callback) {
+    emitter.on(eventName, callback)
+  // WxNotificationCenter.addNotification(eventName, callback, observer)
   }
 
   static emit (eventName, params) {
-    WxNotificationCenter.postNotificationName(eventName, params)
+    emitter.emit(eventName, params)
+    // WxNotificationCenter.postNotificationName(eventName, params)
   }
 
-  static remove (eventName, observer) {
-    WxNotificationCenter.removeNotification(eventName, observer)
-  }
+  // emove (eventName, callback) {
+  //   emitter.off(eventName, callback)
+  // WxNotificationCenter.removeNotification(eventName, observer)
+  // }
 }

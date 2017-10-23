@@ -6,18 +6,20 @@
     </view>
     <view class="tab_item">
       <repeat for="{{page.list}}" key="index" index="index" item="item">
-        <podcast-card :item.sync="item" :id="item.id" style="margin-top: 20px" />
+        <podcast-card :item.sync="item" :id="item.id" style="margin-top: 20px"></podcast-card>
       </repeat>
+      <Loadmore :page.sync="page"></Loadmore>
+      <!-- 加载提示 -->
       <view style="height: 100rpx;"></view>
     </view>
-    <me class="tab_item" wx:if="{{currentTab === 1}}" />
+    <me class="tab_item" wx:if="{{currentTab === 1}}"/>
     <tab-bar :active.sync="currentTab" :curplay.sync="curplay"/>
   </view>
 </template>
 
 <script>
 
-  /* eslint-disable no-undef,no-throw-literal,no-unused-expressions */
+  /* eslint-disable no-undef,no-throw-literal,no-unused-expressions,no-unused-vars */
   import wepy from 'wepy'
   import base from '../../mixins/_base'
   import pagination from '../../mixins/pagination'
@@ -27,13 +29,16 @@
   import podcast from '../../api/podcast'
   import Cache from '../../utils/Cache'
   import Tips from '../../utils/Tips'
-//  import WxUtils from '../../utils/WxUtils'
-//  import Event from '../../utils/Event'
+  //  import WxUtils from '../../utils/WxUtils'
+  import Event from '../../utils/Event'
   //  import Copyright from '../../components/common/copyright'
+  import Loadmore from '../../components/ui/loadmore'
   import AdSwiper from '../../components/AdSwiper'
   import TabBar from '../../components/TabBar'
   import Me from '../../components/profile'
   import PodcastCard from '../../components/podcast-card'
+
+  import moment from 'moment'
 
   const $wxapp = wepy.$instance
 
@@ -53,8 +58,8 @@
         authorInfo: {}
       },
       page: {
-        list: [
-        ]
+        added: [],
+        list: []
       }
     }
     data = {...this.def}
@@ -68,12 +73,34 @@
       this.curplay = Object.assign({}, sticky, {play_status: 'stop'})
       $wxapp.globalData.curplay = this.curplay
       this.page = podcast.page()
-//      console.log(this.page)
       await this.next()
+      for (let item of this.page.list) {
+        item._ = {
+          header_collapsed: false,
+          expanded: true
+        }
+        item.modified = moment(item.modified).fromNow()
+//        item.list = await podcast.loadEpisodes(item)
+//        item.loaded = true
+      }
+      //      await this.loadDataItems()
       this.loaded()
 //      await this.next()
       this.preload()
+      Event.on(Event.LOADED, async () => {
+//        for (let i of this.page.list) {
+//          if (!i.loaded) {
+//            i.list = await podcast.loadEpisodes(i)
+//            i.loaded = true
+//            this.loaded()
+//          }
+//        }
+      })
+
+//      $wxapp.emitter.emit('tab-change')
+//      this.$apply()
       $wxapp.emitter.on('tab-change', async (active) => {
+        console.log('tab-change ve')
         if (active === 1) {
           this.$invoke('me', 'onShow')
         } else {
@@ -81,12 +108,58 @@
         }
       })
     }
-    async loadData () {
+
+    async loadEpisodes (item) {
+
     }
+
+    /**
+     * 到达底部
+     */
+//    async onReachBottom () {
+//      console.log('到底部。。。。')
+//      await this.next().then((me) => {
+//        console.log(me)
+//      })
+//    }
     async onShow () {
       this.currentTab = 0
     }
+
+    watch = {
+      'page': (newValue, oldValue) => {
+//        if (newValue !== oldValue) {
+//          for (let item of this.page.list) {
+//            (async () => {
+//              if (!item.loaded) {
+//                const data = await podcast.loadEpisodes(i)
+//                item.list = data
+//                this.$apply()
+//              }
+//            })()
+//          }
+//        }
+        //        if (oldValue.added) {
+//          for (let item of newValue.added) {
+//            for (let i of this.page.list) {
+//              if (item.id === i.id) {
+//                console.log(item.id + 'xxxx')
+//                (async () => {
+//                  const data = await podcast.loadEpisodes(i)
+//                  i.list = data
+//                  this.$apply()
+//                })()
+//              }
+//            }
+//          }
+//        }
+      }
+    }
+
     preload () {
+//      Event.on(Event.PODCAST_LIST_UPDATE, async (item) => {
+//        await podcast.loadEpisodes(item, item.id)
+//      })
 //      Tips.setLoading()
       // 推荐的内容信息 内容列表
       // 状态信息/推荐商品异步加载
@@ -126,6 +199,7 @@
     }
 
     components = {
+      'Loadmore': Loadmore,
       'tab-bar': TabBar,
       'ad-swiper': AdSwiper,
       me: Me,

@@ -1,7 +1,7 @@
 import http from './Http'
 
 export default class Pagination {
-  constructor (url, processFunc) {
+  constructor (url, beforeFunc, afterFunc) {
     // 数据访问地址
     this.url = url
     // 数据集合
@@ -13,7 +13,8 @@ export default class Pagination {
     // 总数据数
     this.count = 0
     // 数据处理函数
-    this.processFunc = processFunc
+    this.beforeFunc = beforeFunc
+    this.afterFunc = afterFunc
     // 正在加载中
     this.loading = false
     // 参数
@@ -24,6 +25,7 @@ export default class Pagination {
     this.empty = true
     // 是否需要清除
     this.toClear = false
+    // 本次新增加的数据
   }
 
   /**
@@ -53,15 +55,17 @@ export default class Pagination {
         return this
       }
       this.empty = false
-      // 处理数据
-      this._processData(data.data)
+      // 前置处理数据
+      await this.__before(data.data)
       // 设置数据
       if (this.toClear) {
         this.list = data.data
         this.toClear = false
       } else {
         this.list = this.list.concat(data.data)
+        // this.__after(data.data)
       }
+
       this.start++
       // this.start += this.count
       if (data.data.length < this.pagesize) {
@@ -82,6 +86,7 @@ export default class Pagination {
     this.start = 1
     this.reachBottom = false
   }
+
   clear () {
     this.toClear = false
     this.start = 1
@@ -91,14 +96,23 @@ export default class Pagination {
   /**
    * 处理数据（私有）
    */
-  _processData (data) {
-    if (this.processFunc) {
+  async __before (data) {
+    if (this.beforeFunc) {
       for (let i in data) {
-        const result = this.processFunc(data[i])
+        const result = await this.beforeFunc(data[i])
         if (result) {
           data[i] = result
         }
       }
+    }
+  }
+
+  /**
+   *
+   * @private
+   */
+  __after () {
+    if (this.afterFunc) {
     }
   }
 }
