@@ -34,7 +34,6 @@ export default class Event {
   // // 地址列表更新
   static PODCAST_LIST_UPDATE = 'PODCAST_LIST_UPDATE';
   static TAB_BAR_CHANGE = 'TAB_BAR_CHANGE'
-  static LOADED = 'LOADED'
   static on (eventName, callback) {
     emitter.on(eventName, callback)
   // WxNotificationCenter.addNotification(eventName, callback, observer)

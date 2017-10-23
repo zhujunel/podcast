@@ -83,22 +83,8 @@
 //        item.list = await podcast.loadEpisodes(item)
 //        item.loaded = true
       }
-      //      await this.loadDataItems()
       this.loaded()
-//      await this.next()
       this.preload()
-      Event.on(Event.LOADED, async () => {
-//        for (let i of this.page.list) {
-//          if (!i.loaded) {
-//            i.list = await podcast.loadEpisodes(i)
-//            i.loaded = true
-//            this.loaded()
-//          }
-//        }
-      })
-
-//      $wxapp.emitter.emit('tab-change')
-//      this.$apply()
       $wxapp.emitter.on('tab-change', async (active) => {
         console.log('tab-change ve')
         if (active === 1) {
@@ -109,83 +95,14 @@
       })
     }
 
-    async loadEpisodes (item) {
-
-    }
-
-    /**
-     * 到达底部
-     */
-//    async onReachBottom () {
-//      console.log('到底部。。。。')
-//      await this.next().then((me) => {
-//        console.log(me)
-//      })
-//    }
     async onShow () {
       this.currentTab = 0
     }
 
     watch = {
-      'page': (newValue, oldValue) => {
-//        if (newValue !== oldValue) {
-//          for (let item of this.page.list) {
-//            (async () => {
-//              if (!item.loaded) {
-//                const data = await podcast.loadEpisodes(i)
-//                item.list = data
-//                this.$apply()
-//              }
-//            })()
-//          }
-//        }
-        //        if (oldValue.added) {
-//          for (let item of newValue.added) {
-//            for (let i of this.page.list) {
-//              if (item.id === i.id) {
-//                console.log(item.id + 'xxxx')
-//                (async () => {
-//                  const data = await podcast.loadEpisodes(i)
-//                  i.list = data
-//                  this.$apply()
-//                })()
-//              }
-//            }
-//          }
-//        }
-      }
     }
 
     preload () {
-//      Event.on(Event.PODCAST_LIST_UPDATE, async (item) => {
-//        await podcast.loadEpisodes(item, item.id)
-//      })
-//      Tips.setLoading()
-      // 推荐的内容信息 内容列表
-      // 状态信息/推荐商品异步加载
-//      Cache.status().then(status => {
-//        this.status = status;
-//        return goods.page(true).next();
-//      }).then(({list}) => {
-//        if (list.length > 5) {
-//          this.goods = list.slice(0, 5);
-//        } else {
-//          this.goods = list;
-//        }
-//        return Cache.reduce();
-//      }).then(data => {
-//        this.reduce = data;
-//        return Cache.notices();
-//      }).then(data => {
-//        this.notices = data.filter(item => item.isHome == 1);
-//        this.loaded();
-//      });
-//      // 页面缓存预加载
-//      Cache.categories().then();
-//      Cache.coupon().then(({ownList}) => {
-//        this.coupon = ownList.length;
-//        this.$apply();
-//      });
     }
 
     onShareAppMessage () {
