@@ -125,11 +125,16 @@
 
     config = {
       pages: [
-        'pages/home/home'
+        'pages/index',
+        'pages/home/login',
+        'pages/detail/index'
       ],
       window: {
         backgroundTextStyle: 'dark',
-        backgroundColor: '#F5F5F5'
+        backgroundColor: '#F5F5F5',
+        navigationBarTextStyle: 'black',
+        navigationBarBackgroundColor: '#ffffff',
+        navigationBarTitleText: '育儿柚道'
       }
     }
     globalData = {
@@ -162,6 +167,164 @@
       globalStop: true,
       currentPosition: 0,
       staredList: []
+    }
+
+    playing (type, cb, seek) {
+      const that = this
+      const m = that.globalData.curplay
+      wx.playBackgroundAudio({
+        dataUrl: m.url,
+        title: m.songname,
+        success (res) {
+          if (seek !== undefined) {
+            wx.seekBackgroundAudio({position: seek})
+          }
+          that.globalData.globalStop = false
+          that.globalData.playing = true
+//          nt.postNotificationName('music_toggle', {
+//            playing: true,
+//            music: that.globalData.curplay
+//          })
+          cb && cb()
+        },
+        fail () {
+          console.log('fail --- play next')
+//          that
+        }
+      })
+    }
+
+    // 音频播放
+    stopMusic (type, cb) {
+      wx.stopBackgroundAudio()
+    }
+
+    pauseMusic () {
+      wx.pauseBackgroundAudio()
+    }
+
+    seekMusic (type, seek, cb) {
+//      const that = this
+//      const m = this.globalData.curplay
+//      if (!m.id) return
+//      this.globalData.playtype = type
+      this.playing(type, cb, seek)
+    }
+
+    sleep (s) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('promise resolved')
+        }, s * 1000)
+      })
+    }
+
+    playStatus (that) {
+      if (this.globalData.globalStop) {
+        that.percent = 0.1
+        that.playing = false
+        that.downloadPercent = 0
+        return
+      }
+      const _that = this
+      wx.getBackgroundAudioPlayerState({
+        complete (res) {
+          let {time, playtime, downloadPercent} = 0
+          let playing = false
+          if (res.status !== 2) {
+            time = res.currentPosition / res.duration * 100
+            playtime = res.currentPosition
+            downloadPercent = res.downloadPercent
+//            console.log(time + ':' + playtime)
+          }
+          if (res.status === 1) {
+            playing = true
+          }
+          _that.globalData.playing = playing
+          that.playtime = _that.formatDuration(playtime * 1000)
+          that.percent = time
+//          console.log(time)
+          that.playing = playing
+          that.downloadPercent = downloadPercent
+          that.$apply()
+        }
+      })
+    }
+
+    prePlay () {
+      // 歌曲切换，停止当前音乐
+      this.globalData.playing = false
+      this.globalData.globalStop = true
+      wx.pauseBackgroundAudio()
+    }
+
+    playNext (cb, pos) {
+      // 播放列表中下一首
+      this.prePlay()
+      const list = this.globalData.playlist
+      let index = this.globalData.playindex
+//      if (t === 1) {
+      index++
+//      } else {
+//        index--
+//      }
+      index = index > list.length - 1 ? 0 : (index < 0 ? list.length - 1 : index)
+      index = pos !== undefined ? pos : index
+      this.globalData.curplay = Object.assign({}, list[index], {play_status: 'playing'}) || this.globalData.curplay
+      this.globalData.playindex = index
+      // 发出播放事件
+//      this.seekMuskc()
+      this.emitter.emit('playing')
+      this.playing()
+      cb && cb()
+    }
+
+    playAlrc (that) {
+      if (this.globalData.globalStop) {
+        that.playtime = '00:00'
+        that.duration = '00:00'
+        that.percent = 0.1
+        that.playing = false
+        that.downloadPercent = 0
+        return
+      }
+//      if (that.curplay.id !== this.globalData.curplay.id) {
+//        that.curplay = this.globalData.curplay
+//        that.duration = this.formatDuration(this.globalData.curplay.duration || this.globalData.curplay.dt)
+//      wx.setNavigationBarTitle({title: this.globalData.curplay.title})
+      that.$apply()
+//      }
+      const _that = this
+      wx.getBackgroundAudioPlayerState({
+        complete (res) {
+          let {time, playtime, downloadPercent} = 0
+          let playing = false
+          if (res.status !== 2) {
+            time = res.currentPosition / res.duration * 100
+            playtime = res.currentPosition
+            downloadPercent = res.downloadPercent
+          }
+          if (res.status === 1) {
+            playing = true
+          }
+          _that.globalData.playing = playing
+          that.playtime = _that.formatDuration(playtime * 1000)
+          that.percent = time
+          that.playing = playing
+          that.downloadPercent = downloadPercent
+          that.$apply()
+        }
+      })
+    }
+
+    formatNumber (n) {
+      n = n.toString()
+      return n[1] ? n : '0' + n
+    }
+
+    formatDuration (duration) {
+      duration = new Date(duration)
+      return this.formatNumber(duration.getMinutes()) + ':' + this.formatNumber(duration.getSeconds())
     }
   }
 </script>

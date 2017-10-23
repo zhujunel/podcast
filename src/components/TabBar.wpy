@@ -204,7 +204,7 @@
     methods = {
       tap () {
         wx.navigateTo({
-          url: `/pages/detail?id=${$wxapp.globalData.curplay.id}&parent=${$wxapp.globalData.curplay.parent}`,
+          url: `/pages/detail/index?id=${$wxapp.globalData.curplay.id}&parent=${$wxapp.globalData.curplay.parent}`,
           success (res) {
           }
         })

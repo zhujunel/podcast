@@ -1,22 +1,22 @@
 import base from './base'
-import wepy from 'wepy';
+import wepy from 'wepy'
 
 export default class auth extends base {
   /**
    * 一键登录
    */
   static async login() {
-    const _token = this.getConfig("_token");
+    const _token = this.getConfig('_token')
     if (_token !== undefined && _token !== null && _token !== '') {
       try {
-        await this.verifyToken(_token);
+        await this.verifyToken(_token)
       } catch (e) {
-        console.warn('check token fail', _token);
-        await this.doLogin();
+        console.warn('check token fail', _token)
+        await this.doLogin()
       }
     } else {
-      console.warn('token not exists', _token);
-      await this.doLogin();
+      console.warn('token not exists', _token)
+      await this.doLogin()
     }
   }
 
@@ -27,30 +27,31 @@ export default class auth extends base {
     try {
       // 检查
       if (this.hasConfig('user')) {
-        return true;
+        return true
       }
       // 重新登录
-      await this.login();
+      await this.login()
       // 获取用户信息
-      const rawUser = userInfo !== null ? userInfo : await wepy.getUserInfo();
-      // 检查是否通过
-      await this.checkUserInfo(rawUser);
+      const rawUser = userInfo !== undefined && userInfo !== null ? userInfo : await wepy.getUserInfo()
+      console.log(rawUser)
+      // 检查是否通过 校验数据完整性
+      await this.checkUserInfo(rawUser)
       // 解密信息
-      const {user} = await this.decodeUserInfo(rawUser);
+      const data = await this.decodeUserInfo(rawUser)
       // 保存登录信息
-      await this.setConfig('user', user);
-      return true;
+      await this.setConfig('user', JSON.stringify(data))
+      return true
     } catch (error) {
-      console.error('授权失败', error);
+      console.error('授权失败', error)
       if (param.block) {
-        const url = `/pages/home/login?redirect=${param.redirect}`;
+        const url = `/pages/home/login?redirect=${param.redirect}`
         if (param.redirect) {
-          wepy.redirectTo({url});
+          wepy.redirectTo({url})
         } else {
-          wepy.navigateTo({url});
+          wepy.navigateTo({url})
         }
       }
-      return false;
+      return false
     }
   }
 
@@ -58,40 +59,42 @@ export default class auth extends base {
    * 服务端检查数据完整性
    */
   static async checkUserInfo(rawUser) {
-    const url = `${this.baseUrl}/auth/check_userinfo`;
+    const url = `${this.baseUrl}/auth/check_userinfo`
     const param = {
+      action: 'check_user_info',
       rawData: rawUser.rawData,
-      signature: rawUser.signature,
-      thirdSession: this.getConfig('third_session'),
-      app_code: this.getShopCode()
-    };
-    return await this.get(url, param);
+      signature: rawUser.signature
+      // thirdSession: this.getConfig('third_session'),
+      // app_code: this.getShopCode()
+    }
+    return await this.post(url, param)
   }
 
   /**
    * 服务端解密用户信息
    */
   static async decodeUserInfo(rawUser) {
-    const url = `${this.baseUrl}/auth/decode_userinfo`;
+    const url = `${this.baseUrl}/auth/decode_userinfo`
     const param = {
+      action: 'decode_userinfo',
       encryptedData: rawUser.encryptedData,
-      iv: rawUser.iv,
-      thirdSession: this.getConfig('third_session'),
-      app_code: this.getShopCode()
-    };
-    return await this.get(url, param);
+      iv: rawUser.iv
+      // thirdSession: this.getConfig('third_session'),
+      // app_code: this.getShopCode()
+    }
+    return await this.post(url, param)
   }
 
   /**
    * 执行登录操作
    */
   static async doLogin() {
-    await this.removeConfig('_token');
-    const {code} = await wepy.login();
-    const {token} = await this.token(code);
-    await this.setConfig('_token', token);
+    await this.removeConfig('_token')
+    const {code} = await wepy.login()
+    const {token} = await this.token(code)
+    await this.setConfig('_token', token)
     // await this.setConfig('third_session', third_session);
-    await this.login();
+    await this.login()
   }
 
   /**
@@ -99,7 +102,7 @@ export default class auth extends base {
    */
   static async token(jsCode) {
     // const appCode = wepy.$instance.globalData.app_code;
-    const url = `${this.baseUrl}/auth/token?code=${jsCode}`;
+    const url = `${this.baseUrl}/auth/token?code=${jsCode}`
     return await this.get(url)
   }
 
@@ -107,49 +110,49 @@ export default class auth extends base {
    * 检查登录情况
    */
   static async verifyToken(token) {
-    const url = `${this.baseUrl}/auth`;
+    const url = `${this.baseUrl}/auth`
     const data = await this.post(url, {
       action: 'verify_token',
       token: token
     })
-    return data;
+    return data
   }
 
   /**
-   * 获取店铺标识符
+   * 获取就用标识符
    */
-  static getShopCode() {
-    return wepy.$instance.globalData.app_code;
+  static getAppCode() {
+    return wepy.$instance.globalData.app_code
   }
 
   /**
    * 设置权限值
    */
   static getConfig(key) {
-    return wepy.$instance.globalData.auth[key];
+    return wepy.$instance.globalData.auth[key]
   }
 
   /**
    * 检查是否存在权限制
    */
   static hasConfig(key) {
-    const value = this.getConfig(key);
-    return value !== null && value !== '';
+    const value = this.getConfig(key)
+    return value !== undefined && value !== null && value !== ''
   }
 
   /**
    * 读取权限值
    */
   static async setConfig(key, value) {
-    await wepy.setStorage({key: key, data: value});
-    wepy.$instance.globalData.auth[key] = value;
+    await wepy.setStorage({key: key, data: value})
+    wepy.$instance.globalData.auth[key] = value
   }
 
   /**
    * 删除权限值
    */
   static async removeConfig(key) {
-    wepy.$instance.globalData.auth[key] = null;
-    await wepy.removeStorage({key: key});
+    wepy.$instance.globalData.auth[key] = null
+    await wepy.removeStorage({key: key})
   }
 }

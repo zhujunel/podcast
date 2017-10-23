@@ -11,6 +11,32 @@ export default class podcast extends base {
     return new Page(url, this.__before.bind(this), this.__after.bind(this))
   }
 
+  /**
+   * 获取节目信息
+   * @param id
+   * @returns {Promise.<*>}
+   */
+  static async detail (id) {
+    const url = `${this.baseUrl}/posts`
+    const data = await this.get(url, {id: id})
+    return data
+  }
+
+  /**
+   * 获取列表
+   * @param parent
+   * @returns {Promise.<*>}
+   */
+  static async list (parent) {
+    const url = `${this.baseUrl}/posts`
+    const data = await this.get(url, {parent: parent})
+    return data
+  }
+  static async loadEpisodes (item) {
+    const url = `${this.baseUrl}/posts`
+    const data = await this.get(url, {parent: item.id})
+    return data
+  }
   static async __before (item) {
     item.list = await this.loadEpisodes(item)
     item.loaded = true
@@ -19,10 +45,5 @@ export default class podcast extends base {
 
   static async __after (item) {
     // $wxapp.emitter.emit(Event.PODCAST_LIST_UPDATE, item)
-  }
-  static async loadEpisodes (item) {
-    const url = `${this.baseUrl}/posts`
-    const data = await this.get(url, {parent: item.id})
-    return data
   }
 }

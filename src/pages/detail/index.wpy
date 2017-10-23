@@ -327,10 +327,10 @@
           <view class="no" wx:if="{{!(curplay.id === song.id)}}">{{ index + 1 }}.</view>
 
           <view class="playing" wx:if="{{playing && curplay.id === song.id}}">
-            <image class="icon" src="../images/status/pause_mini.png"></image>
+            <image class="icon" src="../../images/status/pause_mini.png"></image>
           </view>
           <view class="playing" wx:if="{{!playing && curplay.id === song.id}}">
-            <image class="icon" src="../images/status/play_mini.png"></image>
+            <image class="icon" src="../../images/status/play_mini.png"></image>
           </view>
           <view class="song-name">{{song.title}}</view>
 
@@ -339,31 +339,29 @@
       </block>
     </view>
     <view class="quick">
-      <!--<image class="share" src="../images/quick/share.png" @tap="share"></image>-->
-      <image class="player" src="../images/quick/play_big.png" hidden="{{playing}}" @tap="playAll"></image>
-      <image class="player" src="../images/quick/pause_big.png" hidden="{{!playing}}" @tap="pauseAll"></image>
+      <!--<image class="share" src="../../images/quick/share.png" @tap="share"></image>-->
+      <image class="player" src="../../images/quick/play_big.png" hidden="{{playing}}" @tap="playAll"></image>
+      <image class="player" src="../../images/quick/pause_big.png" hidden="{{!playing}}" @tap="pauseAll"></image>
     </view>
   </view>
 </template>
 <script>
   /* eslint-disable no-undef,no-unused-vars */
   import wepy from 'wepy'
-  import http from '../mixins/http'
-  import base from '../mixins/base'
-  import {api} from '../config'
+  import base from '../../mixins/_base'
+  import podcastApi from '../../api/podcast'
 
-  const device = wx.getSystemInfoSync()  //  获取设备信息
   const $wxapp = wepy.$instance
   let seek = 0
 
   export default class Detail extends wepy.page {
+    mixins = [base]
     config = {
-      'navigationBarTitleText': '育儿柚道',
-      'navigationBarTextStyle': 'white',
-      'navigationBarBackgroundColor': '#3b3a40',
+//      'navigationBarTitleText': '育儿柚道',
+//      'navigationBarTextStyle': 'white',
+//      'navigationBarBackgroundColor': '#3b3a40',
       'disableScroll': false
     }
-    mixins = [base, http]
     data = {
       detail: {},
       list: [],
@@ -399,7 +397,7 @@
       pauseAll() {
         if (this.curplay.play_status === 'playing') {
           this.curplay.play_status = 'stop'
-          $wxapp.stopMusic()
+          $wxapp.pauseMusic()
         }
       },
       playAll() {
@@ -467,39 +465,35 @@
     }
 
     async getDetail(id) {
-      const req = Object.assign(api.common.get, {data: {id: id}})
-      await this.$request(req, {
-        success: ({code, data}) => {
-          this.detail = data
+      this.detail = await podcastApi.detail(id)
+//      const req = Object.assign(api.common.get, {data: {id: id}})
+//      await this.$request(req, {
+//        success: ({code, data}) => {
+//          this.detail = data
 //          this.curplay = Object.assign({}, this.sticky, {play_status: 'stop'})
 //          $wxapp.globalData.curplay = this.curplay
-        }
-      })
+//        }
+//      })
     }
     async getList(id, parent) {
-      const req = Object.assign(api.common.get, {data: {parent: parent}})
-      await this.$request(req, {
-        success: ({code, data}) => {
-          this.list = data
-          const cur = this.list.find((item) => {
-            if (item.id.toString() === id) {
-              return item
-            }
-          })
-          this.curplay = Object.assign({}, cur, {play_status: 'stop'})
+      this.list = await podcastApi.list(parent)
+      const cur = this.list.find((item) => {
+        if (item.id.toString() === id) {
+          return item
         }
       })
+      this.curplay = Object.assign({}, cur, {play_status: 'stop'})
     }
     async onLoad(option) {
       await this.getDetail(option.parent)
       await this.getList(option.id, option.parent)
+      this.loaded()
 //      const _id = !option.id ? $wxapp.globalData.curplay.id : option.id
 //      this.scrollHeight = device.windowHeight - 300
 
       const that = this
       $wxapp.emitter.on('playing', (e) => {
         that.curplay = $wxapp.globalData.curplay
-        console.log(JSON.stringify(this.curplay))
         if (that.curplay.play_status === 'playing') {
           $wxapp.playAlrc(that)
           seek = setInterval(() => {

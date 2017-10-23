@@ -8,12 +8,13 @@
       <repeat for="{{page.list}}" key="index" index="index" item="item">
         <podcast-card :item.sync="item" :id="item.id" style="margin-top: 20px"></podcast-card>
       </repeat>
-      <Loadmore :page.sync="page"></Loadmore>
+
       <!-- 加载提示 -->
+      <Loadmore :page.sync="page"></Loadmore>
       <view style="height: 100rpx;"></view>
     </view>
-    <me class="tab_item" wx:if="{{currentTab === 1}}"/>
-    <tab-bar :active.sync="currentTab" :curplay.sync="curplay"/>
+    <me class="tab_item" wx:if="{{currentTab === 1}}"></me>
+    <tab-bar :active.sync="currentTab" :curplay.sync="curplay"></tab-bar>
   </view>
 </template>
 
@@ -37,8 +38,7 @@
   import TabBar from '../../components/TabBar'
   import Me from '../../components/profile'
   import PodcastCard from '../../components/podcast-card'
-
-  import moment from 'moment'
+//  import moment from 'moment'
 
   const $wxapp = wepy.$instance
 
@@ -74,15 +74,16 @@
       $wxapp.globalData.curplay = this.curplay
       this.page = podcast.page()
       await this.next()
-      for (let item of this.page.list) {
-        item._ = {
-          header_collapsed: false,
-          expanded: true
-        }
-        item.modified = moment(item.modified).fromNow()
+      // 处理时间格式
+//      for (let item of this.page.list) {
+//        item._ = {
+//          header_collapsed: false,
+//          expanded: true
+//        }
+//        item.modified = moment(item.modified).fromNow()
 //        item.list = await podcast.loadEpisodes(item)
 //        item.loaded = true
-      }
+//      }
       this.loaded()
       this.preload()
       $wxapp.emitter.on('tab-change', async (active) => {
@@ -99,16 +100,18 @@
       this.currentTab = 0
     }
 
-    watch = {
-    }
+    watch = {}
 
     preload () {
     }
 
     onShareAppMessage () {
-      return {}
+      return {
+        title: '育儿柚道',
+        desc: '育儿柚道-育儿有道！',
+        path: '/pages/index'
+      }
     }
-
     methods = {
       share () {
         Tips.modal('当前版本过低，请更新微信或点击右上角进行分享')
@@ -124,7 +127,9 @@
     }
     mixins = [base, pagination]
     config = {
-      navigationBarTitleText: '育儿柚道',
+      'navigationBarTitleText': '育儿柚道',
+      'navigationBarTextStyle': 'white',
+      'navigationBarBackgroundColor': '#3b3a40',
       enablePullDownRefresh: true
     }
   }
@@ -146,8 +151,6 @@
       transform: translate(0, 1px); /* only nudges vertically */
     }
   }
-
-  /*@import '../stylesheets/style';*/
 
   .tab_item {
     height: 100%;
