@@ -59,7 +59,7 @@ export default class auth extends base {
    * 服务端检查数据完整性
    */
   static async checkUserInfo(rawUser) {
-    const url = `${this.baseUrl}/auth/check_userinfo`
+    const url = `${this.baseUrl}/auth`
     const param = {
       action: 'check_user_info',
       rawData: rawUser.rawData,

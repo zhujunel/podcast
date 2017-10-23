@@ -134,7 +134,8 @@
       const result = await auth.user({block: true, redirect: true})
       if (!result) return
       this.userInfo = JSON.parse($wxapp.globalData.auth.user)
-      this.$apply()
+      this.loaded()
+//      this.$apply()
     }
 
     computed = {

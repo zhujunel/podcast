@@ -1,3 +1,180 @@
+<template>
+  <view>
+    <view class="card animate-box fadeInUp animated-fast foldable-card is-compact is-expanded margin" >
+      <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction({{item}})">
+
+        <view class="foldable-card__main">
+          <view class="connected-application-item__header">
+            <view class="podcast__header">
+              <view class="podcasts-browser-item">
+                <view class="podcasts-browser-item__info">
+                  <view class="podcast-icon animate__appear">
+                    <image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"
+                           mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
+                  </view>
+                  <view class="podcasts-browser-item__title">
+                    {{ item.title }}
+                  </view>
+                  <view class="podcasts-browser-item__author">- {{ item.authorInfo.user_nicename }}</view>
+                </view>
+
+              </view>
+
+            </view>
+          </view>
+
+        </view>
+        <view class="foldable-card__secondary">
+          <view class="foldable-card__summary">
+            <slot name="summary"></slot>
+          </view>
+          <view class="foldable-card__summary-expanded">
+            <!--<navigator url="/pages/detail/index?id={{ item.id }}&parent={{ item.id }}">-->
+            <image class="more" src="../images/more.svg"></image>
+            <!--</navigator>-->
+          </view>
+        </view>
+
+        <!--<button class="foldable-card__action foldable-card__expand"></button>-->
+      </view>
+      <view class="foldable-card__content" wx:if="{{isExpanded}}">
+        <view class="plugin-meta__banner {{ item._.header_collapsed ? '': 'is-collapsed'}}"
+              wx:if="{{item.featured_image}}">
+          <image class="plugin-meta__banner-image post-image__image"
+                 mode="{{item._.header_collapsed ? 'aspectFit': 'aspectFill'}}" src="{{item.featured_image}}"
+                 @tap="tapImage({{item.featured_image}})"></image>
+        </view>
+        <view class="card is-compact is-info" wx:if="{{item.content}}">
+          {{ item.content}}
+        </view>
+        <view class="podcast {{item.list ? '': 'is-placeholder'}}">
+          <scroll-view scroll-x="true"  class="episode">
+            <!--{{(curplay.id === item.id && curplay.play_status === 'playing') ? 'is-playing' : ''}}"-->
+            <view class="content">
+              <view
+                class="episode-audio_card is-compact"
+                wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+                <!-- 有播放状态的专辑 -->
+                <image class="gridicon player" src="../images/quick/pause_big.png" @tap="playItem({{item}})"
+                       hidden="{{!(curplay.id === item.id && curplay.play_status == 'playing')}}"></image>
+                <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
+                       hidden="{{!(curplay.id === item.id && curplay.play_status == 'stop')}}"></image>
+                <!-- 没有状态的专辑 -->
+                <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
+                       hidden="{{!(curplay.id !== item.id)}}"></image>
+
+                <view class="episode-audio_card__info">
+                  <view class="episode-audio_card__title">{{item.title}}</view>
+                </view>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+      <slot name="footer"></slot>
+    </view>
+
+  </view>
+
+</template>
+<script>
+  /* eslint-disable no-undef */
+
+  import wepy from 'wepy'
+//  import FoldableCard from '../components/FoldableCard'
+//  import Card from '../components/card'
+
+  const $wxapp = wepy.$instance
+
+  export default class PodcastHeader extends wepy.component {
+    props = {
+      id: String,
+      item: Object,
+      isExpanded: {
+        type: Boolean,
+        default: true
+      }
+    }
+    data = {
+      id: '',
+      imageList: [],
+      curplay: {
+        id: ''
+      }
+    }
+    components = {
+//      'card': Card,
+//      'foldable-card': FoldableCard
+    }
+    methods = {
+      playItem (song) {
+        console.log(this.curplay)
+        console.log(song)
+        wx.showToast({
+          title: '加载中',
+          icon: 'loading',
+          duration: 1000
+        })
+
+        if (this.curplay.id === song.id) {
+          if (this.curplay.play_status === 'playing') {
+            this.curplay.play_status = 'stop'
+            $wxapp.pauseMusic()
+          } else {
+            this.curplay.play_status = 'playing'
+            $wxapp.playing()
+          }
+        } else {
+          console.log('no this item')
+          $wxapp.stopMusic()
+          this.curplay.play_status = 'playing'
+          this.curplay = Object.assign({}, song, {play_status: 'playing'})
+          $wxapp.globalData.curplay = this.curplay
+          $wxapp.playing()
+        }
+        $wxapp.emitter.emit('playing')
+      },
+      handleTap () {
+        this.item._.header_collapsed = !this.item._.header_collapsed
+      },
+      tapImage (image) {
+//        const current = e.target.src
+        this.imageList.push(image)
+        wx.previewImage({
+          current: image,
+          urls: this.imageList,
+          fail () {
+          },
+          complete () {
+          }
+        })
+      },
+      headerTapAction (item, $event) {
+        wx.navigateTo({
+          url: `/pages/detail/index?id=${item.id}&parent=${item.id}`,
+          success (res) {
+          }
+        })
+//        this.$emit('header-tap', $event)
+      }
+    }
+
+    async onComponentLoad (value) {
+      this.curplay = $wxapp.globalData.curplay
+    }
+
+    async onShow (value) {
+      this.curplay = $wxapp.globalData.curplay
+      this.$apply()
+    }
+    onLoad () {
+//      this.id = this.item.id
+    }
+    async onReload () {
+      this.page = 1
+    }
+  }
+</script>
 <style lang="scss">
   @import "../stylesheets/style";
 
@@ -546,178 +723,3 @@
     vertical-align: bottom;
   }
 </style>
-<template>
-  <view>
-    <view class="card animate-box fadeInUp animated-fast foldable-card is-compact is-expanded margin" >
-      <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction({{item}})">
-
-        <view class="foldable-card__main">
-          <view class="connected-application-item__header">
-            <view class="podcast__header">
-              <view class="podcasts-browser-item">
-                <view class="podcasts-browser-item__info">
-                  <view class="podcast-icon animate__appear">
-                    <image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"
-                           mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
-                  </view>
-                  <view class="podcasts-browser-item__title">
-                    {{ item.title }}
-                  </view>
-                  <view class="podcasts-browser-item__author">- {{ item.authorInfo.user_nicename }}</view>
-                </view>
-
-              </view>
-
-            </view>
-          </view>
-
-        </view>
-        <view class="foldable-card__secondary">
-          <view class="foldable-card__summary">
-            <slot name="summary"></slot>
-          </view>
-          <view class="foldable-card__summary-expanded">
-            <navigator url="/pages/detail/index?id={{ item.id }}&parent={{ item.id }}"><image class="more" src="../images/more.svg"></image></navigator>
-          </view>
-        </view>
-
-        <!--<button class="foldable-card__action foldable-card__expand"></button>-->
-      </view>
-      <view class="foldable-card__content" wx:if="{{isExpanded}}">
-        <view class="plugin-meta__banner {{ item._.header_collapsed ? '': 'is-collapsed'}}"
-              wx:if="{{item.featured_image}}">
-          <image class="plugin-meta__banner-image post-image__image"
-                 mode="{{item._.header_collapsed ? 'aspectFit': 'aspectFill'}}" src="{{item.featured_image}}"
-                 @tap="tapImage({{item.featured_image}})"></image>
-        </view>
-        <view class="card is-compact is-info" wx:if="{{item.content}}">
-          {{ item.content}}
-        </view>
-        <view class="podcast {{item.list ? '': 'is-placeholder'}}">
-          <scroll-view scroll-x="true"  class="episode">
-            <!--{{(curplay.id === item.id && curplay.play_status === 'playing') ? 'is-playing' : ''}}"-->
-            <view class="content">
-              <view
-                class="episode-audio_card is-compact"
-                wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-                <!-- 有播放状态的专辑 -->
-                <image class="gridicon player" src="../images/quick/pause_big.png" @tap="playItem({{item}})"
-                       hidden="{{!(curplay.id === item.id && curplay.play_status == 'playing')}}"></image>
-                <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
-                       hidden="{{!(curplay.id === item.id && curplay.play_status == 'stop')}}"></image>
-                <!-- 没有状态的专辑 -->
-                <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
-                       hidden="{{!(curplay.id !== item.id)}}"></image>
-
-                <view class="episode-audio_card__info">
-                  <view class="episode-audio_card__title">{{item.title}}</view>
-                </view>
-              </view>
-            </view>
-          </scroll-view>
-        </view>
-      </view>
-      <slot name="footer"></slot>
-    </view>
-
-  </view>
-
-</template>
-<script>
-  /* eslint-disable no-undef */
-
-  import wepy from 'wepy'
-//  import FoldableCard from '../components/FoldableCard'
-//  import Card from '../components/card'
-
-  const $wxapp = wepy.$instance
-
-  export default class PodcastHeader extends wepy.component {
-    props = {
-      id: String,
-      item: Object,
-      isExpanded: {
-        type: Boolean,
-        default: true
-      }
-    }
-    data = {
-      id: '',
-      imageList: [],
-      curplay: {
-        id: ''
-      }
-    }
-    components = {
-//      'card': Card,
-//      'foldable-card': FoldableCard
-    }
-    methods = {
-      playItem (song) {
-        console.log(this.curplay)
-        console.log(song)
-        wx.showToast({
-          title: '加载中',
-          icon: 'loading',
-          duration: 1000
-        })
-
-        if (this.curplay.id === song.id) {
-          if (this.curplay.play_status === 'playing') {
-            this.curplay.play_status = 'stop'
-            $wxapp.pauseMusic()
-          } else {
-            this.curplay.play_status = 'playing'
-            $wxapp.playing()
-          }
-        } else {
-          console.log('no this item')
-          $wxapp.stopMusic()
-          this.curplay.play_status = 'playing'
-          this.curplay = Object.assign({}, song, {play_status: 'playing'})
-          $wxapp.globalData.curplay = this.curplay
-          $wxapp.playing()
-        }
-        $wxapp.emitter.emit('playing')
-      },
-      handleTap () {
-        this.item._.header_collapsed = !this.item._.header_collapsed
-      },
-      tapImage (image) {
-//        const current = e.target.src
-        this.imageList.push(image)
-        wx.previewImage({
-          current: image,
-          urls: this.imageList,
-          fail () {
-          },
-          complete () {
-          }
-        })
-      },
-      headerTapAction (item, $event) {
-        wx.navigateTo({
-          url: `/pages/detail/index?id=${item.id}&parent=${item.id}`,
-          success (res) {
-          }
-        })
-//        this.$emit('header-tap', $event)
-      }
-    }
-
-    async onComponentLoad (value) {
-      this.curplay = $wxapp.globalData.curplay
-    }
-
-    async onShow (value) {
-      this.curplay = $wxapp.globalData.curplay
-      this.$apply()
-    }
-    onLoad () {
-//      this.id = this.item.id
-    }
-    async onReload () {
-      this.page = 1
-    }
-  }
-</script>
