@@ -33,7 +33,7 @@ export default class auth extends base {
       await this.login()
       // 获取用户信息
       const rawUser = userInfo !== undefined && userInfo !== null ? userInfo : await wepy.getUserInfo()
-      console.log(rawUser)
+      // console.log(rawUser)
       // 检查是否通过 校验数据完整性
       await this.checkUserInfo(rawUser)
       // 解密信息
