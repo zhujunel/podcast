@@ -1,4 +1,4 @@
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../stylesheets/style';
 
   $fontcolor: #7b7b7b;
@@ -36,46 +36,107 @@
       }
     }
   }
+  $fontcolor: #5B5B5B;
+  $activecolor: #2196F3;
   .tab {
-/*    border-top-left-radius: rpx(30);
-    border-top-right-radius: rpx(30);*/
     color: $fontcolor;
-    /*height: rpx(100);*/
-    width: 95%;
-    border-top-left-radius: rpx(16);
-    border-top-right-radius: rpx(16);
-    margin-left: 9px;
-    /*left: 10px;*/
-    /*right: 10px;*/
-    /* Mask: */
+    width: rpx(710);
+    border-top-left-radius: rpx(12);
+    border-top-right-radius: rpx(12);
+    margin-left: rpx(20);
     background: #FFFFFF;
-    border-top: 1px solid #e5e5e5;
-    /*box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.20);*/
-    /* Background: */
-    /*box-shadow: 0 -2px 15px 0 rgba(0,0,0,0.20);*/
-    /*-webkit-box-shadow:2px 2px 5px #333333;*/
-    /*box-shadow:2px 2px 2px 2px #333333;*/
-    box-shadow:-3px 0 3px rgba(0, 0, 0, 0.10), /*左边阴影*/
-    3px 0 3px rgba(0, 0, 0, 0.10); /*右边阴影*/
-    /* Photo Copy: */
-    font-size: rpx(24);
-    /*box-sizing: border-box;*/
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.30) inset, /*左边阴影*/
+    0 10px 20px rgba(0, 0, 0, 0.20); /*右边阴影*/
     white-space: nowrap;
     .tab_item {
-      border-left: 1px solid rgba(0, 0, 0, 0.05);
+      /*border-left: 1px solid rgba(0, 0, 0, 0.05);*/
       display: flex;
-      flex-flow: row;
+      flex-flow: column;
       /*display: inline-block;*/
       width: 25%;
       text-align: center;
+      align-content: center;
+      align-items: center;
+      padding: rpx(6);
+      height: rpx(100);
       .icon {
-        width: rpx(98);
-        height: rpx(98);
-        display: block;
-        margin: auto;
+        display: flex;
+        width: rpx(48);
+        height: rpx(48);
+      }
+      .icon-title {
+        font-size: rpx(24);
+      }
+      .icon-active {
+        color: #476DDC;
       }
     }
 
+    .player {
+      height: rpx(100);
+      overflow: hidden;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      line-height: initial;
+      &-pic {
+        position: relative;
+        float: left;
+        height: rpx(48);
+        width: rpx(48);
+        background-image: url(data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQAB…KeMAnLCf8ACCCAzE5d8ZHMS64IIA7oy+HDqgggIEpYdUZJnpE84IICeScSJYwQQE8IIIID/9k=);
+        background-size: 100%;
+        -webkit-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+      }
+      &-icons, &-controller {
+        position: absolute;
+        bottom: 0;
+      }
+      &-play, &-pause, &-play_next {
+        display: inline-block;
+        height: 100%;
+      }
+      &-info {
+        margin-left: 66px;
+        padding: 14px 7px 0 10px;
+        height: rpx(100);
+        box-sizing: border-box;
+        &-music {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          margin: 0 0 13px 5px;
+          -webkit-user-select: text;
+          -moz-user-select: text;
+          -ms-user-select: text;
+          user-select: text;
+          cursor: default;
+          padding-bottom: 2px;
+        }
+      }
+      &-controller {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+      }
+      &-icon {
+        width: 15px;
+        height: 15px;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        cursor: pointer;
+        opacity: .8;
+        vertical-align: middle;
+        padding: 0;
+        font-size: 12px;
+        margin: 0;
+        display: inline;
+      }
+    }
     .toolbar {
       /*width: calc(100% - 48rpx);*/
       display: flex;
@@ -90,13 +151,13 @@
     }
     .toolbar {
       .song {
-        border-top-left-radius: rpx(30);
-        background: #EDF6FF;
+        /*border-top-left-radius: rpx(30);*/
+        /*background: #EDF6FF;*/
         /* placeholder: */
         /*background-image: linear-gradient(90deg, #2C1BC5 0%, #53A0FD 18%, #FFFFFF 100%);*/
-        background: -webkit-linear-gradient(right, #edf6ff 0%, #edf6ff 50%, #fff 50%, #fff 100%);
+        /*background: -webkit-linear-gradient(right, #edf6ff 0%, #edf6ff 50%, #fff 50%, #fff 100%);*/
         /*background: linear-gradient(left, #ffa600 0%, #ffa600 50%, #fff 50%, #fff 100%);*/
-        background-size: 200% 200%;
+        /*background-size: 200% 200%;*/
         /*-webkit-animation: AnimationName 10s ease infinite;*/
         display: flex;
         flex-flow: row;
@@ -106,10 +167,10 @@
           /*animation: loading-fade 1.6s ease-in-out infinite;*/
         }
         .album {
-          width: rpx(74);
-          height: rpx(74);
-          margin: rpx(12) rpx(12) rpx(12) rpx(20);
-          border-radius: rpx(10);
+          width: rpx(75);
+          height: rpx(75);
+          margin: rpx(12) rpx(12) rpx(12) rpx(10);
+          border-radius: rpx(8);
         }
         .info {
           /*color: #418AF2;*/
@@ -122,6 +183,8 @@
           word-break: break-all;
           text-overflow: ellipsis; //文字隐藏后添加省略号
           white-space: nowrap; //强制不换行
+          text-shadow: 0 0 1px rgba(0,0,0,.3);
+          vertical-align: middle;
 
           .author {
             font-size: rpx(20);
@@ -156,13 +219,53 @@
       width: rpx(200);
       height: 100%;
     }
+
+    #timeline{
+      position: fixed;
+      bottom: 0px;
+      display: flex;
+      width: rpx(710);
+      z-index: 10;
+      left: rpx(20);
+      right: rpx(20);
+
+      .time {
+        display: block;
+        font-size: 20rpx;
+        color: rgba(0, 0, 0, 0.38);
+        z-index: 3;
+        text-align: center;
+        width: 100rpx;
+      }
+      progress {
+        width: rpx(708);
+        /*margin-left: 10rpx;*/
+        /*margin-right: 10rpx;*/
+        margin: 0 auto;
+        position: relative;
+        border-radius: rpx(4);
+      }
+      #dpstate {
+        position: absolute;
+        height: 4px;
+        background: #4385F4;
+        overflow: hidden;
+        left: 0;
+        /*top: 50%;*/
+        margin-top: -1px;
+      }
+    }
   }
 </style>
 <template>
 
   <view class="tab">
-    <view class="toolbar" wx:if="{{showToolbar}}">
-      <view class="song {{curplay.play_status === 'playing' ? 'is-playing' : ''}}" @tap="tap" style="background-position:-{{percent}}% -{{downloadPercent}}%">
+
+    <view class="player" wx:if="{{showToolbar}}">
+      <view class="player-pic">
+        <image class="album" src="{{curplay.authorInfo.avatar}}" background-size="cover"></image>
+      </view>
+      <view class="song" @tap="tap">
         <image class="album" src="{{curplay.authorInfo.avatar}}" background-size="cover"></image>
         <view class="info">
           <text class="title">{{curplay.title}}</text>
@@ -173,13 +276,24 @@
         </view>
       </view>
       <view class="tab_item" @tap="change(0)">
-        <image class="icon" src="../images/toolbar/discover{{active === 0 ? '_active' : ''}}.png"></image>
+        <image class="icon" src="../images/icon/icon-music-play.svg"></image>
       </view>
-      <view class="tab_item" @tap="change(1)">
-        <image class="icon" src="../images/toolbar/me{{active === 1 ? '_active' : ''}}.png"></image>
+      <view class="tab_item" @tap="change(0)">
+        <image class="icon" src="../images/icon/icon-music-pause.svg"></image>
+      </view>
+      <!--<view class="tab_item" @tap="change(1)">-->
+        <!--<image class="icon" src="../images/icon-music-play-next.svg"></image>-->
       </view>
     </view>
-
+    <view id="timeline" wx:if="{{playing}}">
+      <!--<text class="time">{{playtime}}</text>-->
+      <progress percent="{{downloadPercent}}" stroke-width="1" color="#A1C4FD">
+        <!--<text id="playstate" style="left:{{percent}}%"></text>-->
+        <text id="dpstate" style="width:{{percent}}%"></text>
+        <!--<slider @change="museek" color="#d33a31" left-icon="cancel" value="{{percent}}"/>-->
+      </progress>
+      <!--<text id="endtime" class="time">{{duration}}</text>-->
+    </view>
   </view>
 </template>
 <script>

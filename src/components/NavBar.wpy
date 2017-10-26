@@ -1,78 +1,39 @@
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../stylesheets/style';
 
-  $fontcolor: #7b7b7b;
+  $fontcolor: #5B5B5B;
   $activecolor: #2196F3;
-  .scrollable {
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-    .container {
-      height: 100%;
-      will-change: transform;
-      position: absolute;
-      .item {
-        height: 100%;
-        position: relative;
-        float: left;
-        box-sizing: border-box;
-        flex-flow: column;
-        .item-self {
-          position: absolute;
-          box-sizing: border-box;
-          margin: 30rpx 18rpx;
-          overflow: hidden;
-          padding: 20rpx;
-          width: 95%;
-          color: #aaa;
-          background-color: white;
-          box-shadow: 0 4rpx 30rpx 0rpx rgba(0, 0, 0, 0.05);
-          border-radius: 5px;
-          display: flex;
-          flex-flow: column;
-          flex-direction: column;
-          align-items:center;
-        }
-      }
-    }
-  }
   .tab {
-/*    border-top-left-radius: rpx(30);
-    border-top-right-radius: rpx(30);*/
     color: $fontcolor;
-    /*height: rpx(100);*/
-    width: 95%;
-    border-top-left-radius: rpx(16);
-    border-top-right-radius: rpx(16);
-    margin-left: 9px;
-    /*left: 10px;*/
-    /*right: 10px;*/
-    /* Mask: */
+    width: rpx(710);
+    border-top-left-radius: rpx(12);
+    border-top-right-radius: rpx(12);
+    margin-left: rpx(20);
     background: #FFFFFF;
-    border-top: 1px solid #e5e5e5;
-    /*box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.20);*/
-    /* Background: */
-    /*box-shadow: 0 -2px 15px 0 rgba(0,0,0,0.20);*/
-    /*-webkit-box-shadow:2px 2px 5px #333333;*/
-    /*box-shadow:2px 2px 2px 2px #333333;*/
-    box-shadow:-3px 0 3px rgba(0, 0, 0, 0.10), /*左边阴影*/
-    3px 0 3px rgba(0, 0, 0, 0.10); /*右边阴影*/
-    /* Photo Copy: */
-    font-size: rpx(24);
-    /*box-sizing: border-box;*/
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.30) inset, /*左边阴影*/
+    0 10px 20px rgba(0, 0, 0, 0.20); /*右边阴影*/
     white-space: nowrap;
     .tab_item {
-      border-left: 1px solid rgba(0, 0, 0, 0.05);
+      /*border-left: 1px solid rgba(0, 0, 0, 0.05);*/
       display: flex;
-      flex-flow: row;
+      flex-flow: column;
       /*display: inline-block;*/
       width: 25%;
       text-align: center;
+      align-content: center;
+      align-items: center;
+      padding: rpx(6);
+      height: rpx(100);
       .icon {
-        width: rpx(98);
-        height: rpx(98);
-        display: block;
-        margin: auto;
+        display: flex;
+        width: rpx(60);
+        height: rpx(60);
+      }
+      .icon-title {
+        font-size: rpx(24);
+      }
+      .icon-active {
+        color: #476DDC;
       }
     }
 
@@ -162,21 +123,9 @@
 
   <view class="tab">
     <view class="toolbar" wx:if="{{showToolbar}}">
-      <view class="song {{curplay.play_status === 'playing' ? 'is-playing' : ''}}" @tap="tap" style="background-position:-{{percent}}% -{{downloadPercent}}%">
-        <image class="album" src="{{curplay.authorInfo.avatar}}" background-size="cover"></image>
-        <view class="info">
-          <text class="title">{{curplay.title}}</text>
-          <view class="author">
-            <text>{{curplay.authorInfo.user_nicename}}</text>
-          </view>
-          <view class="timeline"></view>
-        </view>
-      </view>
-      <view class="tab_item" @tap="change(0)">
-        <image class="icon" src="../images/toolbar/discover{{active === 0 ? '_active' : ''}}.png"></image>
-      </view>
-      <view class="tab_item" @tap="change(1)">
-        <image class="icon" src="../images/toolbar/me{{active === 1 ? '_active' : ''}}.png"></image>
+      <view class="tab_item" wx:for="{{navs}}" wx:key="{{item.name}}" @tap="change({{item}})">
+        <image class="icon" src="../images/icon/icon-{{item.name}}{{item.name === cur.name ? '-active' : ''}}.svg"></image>
+        <text class="icon-title {{item.name === cur.name ? 'icon-active' : ''}}">{{item.title}}</text>
       </view>
     </view>
 
@@ -228,6 +177,21 @@
       }
     }
     data = {
+      navs: [
+        {
+          name: 'special',
+          title: '精选'
+        }, {
+          name: 'listen',
+          title: '柚道'
+        }, {
+          name: 'qa',
+          title: '柚答'
+        }, {
+          name: 'user',
+          title: '我的'
+        }
+      ],
       width: device.windowWidth,
       height: device.windowHeight,
       showToolbar: true,
@@ -238,7 +202,8 @@
       downloadPercent: 0,
       percent: 0,
       start: 100,
-      end: 0
+      end: 0,
+      cur: {}
     }
     watch = {
 //      curplay (newValue, oldValue) {
@@ -259,15 +224,20 @@
       },
       showDetail (e) {
       },
-      change (idx, e) {
-        const {onChange} = this
-        typeof onChange === 'function' && onChange(this, e) //  当手指碰触到slide时执行
-        this.active = +idx
+      change (item, e) {
+        this.cur.active = false
+        this.cur = item
+//        this.cur.active = true
+        this.$apply()
+//        const iconUrl = '../images/icon/icon'
+//        const {onChange} = this
+//        typeof onChange === 'function' && onChange(this, e) //  当手指碰触到slide时执行
+//        this.active = +idx
 //        if (this.active === 1) {
 //          this.$invoke('./profile', 'onShow')
 //        }
-        $wxapp.emitter.emit('tab-change', this.active)
-        this.$apply()
+//        $wxapp.emitter.emit('tab-change', this.active)
+//        this.$apply()
       },
       playingToggle () {
         this.playing = !this.playing
@@ -291,6 +261,7 @@
 
     onLoad () {
       const that = this
+      this.cur = this.navs[0]
       $wxapp.emitter.on('playing', e => {
         clearInterval(seek)
         that.curplay = $wxapp.globalData.curplay
