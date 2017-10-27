@@ -89,18 +89,13 @@
       })
 
       wx.onBackgroundAudioPause(() => {
-//        nt.postNotificationName('music_toggle', {
-//          playing: false,
-//          playtype: that.globalData.playtype,
-//          music: that.globalData.curplay || {}
-//        })
-        this.emitter.emit('playing_pause', {
+        this.emitter.emit('audio_toggle', {
           playing: false,
           curplay: this.globalData.curplay || {}
         })
-//        console.log('pause')
-        that.globalData.playing = false
-        this.globalData.globalStop = false
+//        that.globalData.playing = false
+//        that.globalData.globalStop = false
+//        that.globalData.curplay.status = false
 //        that.globalData.globalStop = that.globalData.hide ? true : false
         wx.getBackgroundAudioPlayerState({
           complete (res) {
@@ -182,6 +177,12 @@
       index_am: 0,
       playing: false,
       playtype: 1,
+      player: {
+        type: '',
+        index: [],
+        list: [],
+        cur: {}
+      },
       curplay: {
         id: '',
         authorInfo: {},
@@ -206,17 +207,15 @@
           if (seek !== undefined) {
             wx.seekBackgroundAudio({position: seek})
           }
-          that.globalData.globalStop = false
-          that.globalData.playing = true
-//          nt.postNotificationName('music_toggle', {
-//            playing: true,
-//            music: that.globalData.curplay
-//          })
+          that.globalData.curplay = Object.assign({}, {play_status: 'playing'}, m)
+          that.emitter.emit('audio_toggle', {
+            playing: true,
+            curplay: that.globalData.curplay || {}
+          })
           cb && cb()
         },
         fail () {
           console.log('fail --- play next')
-//          that
         }
       })
     }
@@ -247,12 +246,13 @@
     }
 
     playStatus (that) {
-      if (this.globalData.globalStop) {
-        that.percent = 0.1
-        that.playing = false
-        that.downloadPercent = 0
-        return
-      }
+//      console.log(this.globalData.globalStop)
+//      if (this.globalData.globalStop) {
+//        that.percent = 0.1
+//        that.playing = false
+//        that.downloadPercent = 0
+//        return
+//      }
       const _that = this
       wx.getBackgroundAudioPlayerState({
         complete (res) {
@@ -267,10 +267,9 @@
           if (res.status === 1) {
             playing = true
           }
-          _that.globalData.playing = playing
+//          _that.globalData.playing = playing
           that.playtime = _that.formatDuration(playtime * 1000)
           that.percent = time
-//          console.log(time)
           that.playing = playing
           that.downloadPercent = downloadPercent
           that.$apply()
@@ -301,7 +300,8 @@
       this.globalData.playindex = index
       // 发出播放事件
 //      this.seekMuskc()
-      this.emitter.emit('playing')
+//      this.emitter.emit('audio_toggle', {
+//      })
       this.playing()
       cb && cb()
     }

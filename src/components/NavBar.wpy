@@ -132,7 +132,7 @@
   </view>
 </template>
 <script>
-  /* eslint-disable no-undef,no-throw-literal,no-extra-bind,no-extra-parens,no-unused-vars */
+  /* eslint-disable no-undef,no-throw-literal,no-extra-bind,no-extra-parens,no-unused-vars,spaced-comment */
 
   import wepy from 'wepy'
 
@@ -260,9 +260,9 @@
     }
 
     onLoad () {
-      const that = this
+//      const that = this
       this.cur = this.navs[0]
-      $wxapp.emitter.on('playing', e => {
+/*      $wxapp.emitter.on('playing', e => {
         clearInterval(seek)
         that.curplay = $wxapp.globalData.curplay
         that.$apply()
@@ -276,7 +276,7 @@
       })
       $wxapp.emitter.on('onload', (e) => {
         that.curplay = $wxapp.globalData.curplay
-      })
+      })*/
       const {option} = this
       const CONFIG = Object.assign(this, DEFAULT, option)
       this.initTab(CONFIG)

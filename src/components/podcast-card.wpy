@@ -98,6 +98,7 @@
     data = {
       id: '',
       imageList: [],
+      playing: false,
       curplay: {
         id: ''
       }
@@ -107,16 +108,13 @@
 //      'foldable-card': FoldableCard
     }
     methods = {
-      playItem (song) {
-        console.log(this.curplay)
-        console.log(song)
+      playItem (audio) {
         wx.showToast({
           title: '加载中',
           icon: 'loading',
           duration: 1000
         })
-
-        if (this.curplay.id === song.id) {
+        if (this.curplay.id === audio.id) {
           if (this.curplay.play_status === 'playing') {
             this.curplay.play_status = 'stop'
             $wxapp.pauseMusic()
@@ -125,14 +123,12 @@
             $wxapp.playing()
           }
         } else {
-          console.log('no this item')
           $wxapp.stopMusic()
           this.curplay.play_status = 'playing'
-          this.curplay = Object.assign({}, song, {play_status: 'playing'})
+          this.curplay = Object.assign({}, {play_status: 'playing'}, audio)
           $wxapp.globalData.curplay = this.curplay
           $wxapp.playing()
         }
-        $wxapp.emitter.emit('playing')
       },
       handleTap () {
         this.item._.header_collapsed = !this.item._.header_collapsed
@@ -160,15 +156,25 @@
     }
 
     async onComponentLoad (value) {
-      this.curplay = $wxapp.globalData.curplay
+//      this.curplay = $wxapp.globalData.curplay
     }
 
     async onShow (value) {
-      this.curplay = $wxapp.globalData.curplay
-      this.$apply()
+//      this.curplay = $wxapp.globalData.curplay
+//      this.$apply()
     }
     onLoad () {
-//      this.id = this.item.id
+      $wxapp.emitter.on('audio_toggle', ({playing, curplay}) => {
+        this.playing = playing
+//        clearInterval(seek)
+//        $wxapp.playStatus(that)
+//        seek = setInterval(() => {
+//          $wxapp.playStatus(that)
+//        }, 1000)
+        this.curplay = curplay
+        this.$apply()
+        console.log(JSON.stringify(curplay))
+      })
     }
     async onReload () {
       this.page = 1

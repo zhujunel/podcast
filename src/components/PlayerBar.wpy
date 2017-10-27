@@ -74,72 +74,89 @@
 
     .player {
       height: rpx(100);
+      width: 100%;
       overflow: hidden;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
       line-height: initial;
+
       &-pic {
+        margin: rpx(12);
+        border-radius: rpx(12);
+        /*margin: rpx(1) rpx(20) rpx(2) rpx(1);*/
+        /*border-top-left-radius: rpx(12);*/
+        /*border-radius: rpx(100);*/
+        border: 1px solid #efefef;
+        /*border-top-left-radius: rpx(12);*/
         position: relative;
         float: left;
-        height: rpx(48);
-        width: rpx(48);
-        background-image: url(data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQAB…KeMAnLCf8ACCCAzE5d8ZHMS64IIA7oy+HDqgggIEpYdUZJnpE84IICeScSJYwQQE8IIIID/9k=);
-        background-size: 100%;
+        height: rpx(75);
+        width: rpx(75);
+        box-shadow: 0 rpx(4) rpx(10) 0 rgba(0, 0, 0, 0.05);
+        /*background-image: url(data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQAB…KeMAnLCf8ACCCAzE5d8ZHMS64IIA7oy+HDqgggIEpYdUZJnpE84IICeScSJYwQQE8IIIID/9k=);*/
+        /*background-size: 100%;*/
         -webkit-transition: all 0.3s ease;
         transition: all 0.3s ease;
       }
-      &-icons, &-controller {
-        position: absolute;
-        bottom: 0;
-      }
-      &-play, &-pause, &-play_next {
-        display: inline-block;
-        height: 100%;
-      }
       &-info {
-        margin-left: 66px;
-        padding: 14px 7px 0 10px;
+        margin-left: rpx(84);
+        padding: rpx(16) 0 0 rpx(8);
         height: rpx(100);
         box-sizing: border-box;
-        &-music {
+      }
+      &-audio {
+        position: relative;
+        display: flex;
+
+        &-info_wrap {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          margin: 0 0 13px 5px;
-          -webkit-user-select: text;
-          -moz-user-select: text;
-          -ms-user-select: text;
-          user-select: text;
-          cursor: default;
-          padding-bottom: 2px;
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          .title {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            word-break: break-all;
+            text-shadow: 0 0 2px rgba(0,0,0,.15);
+          }
+          .author {
+            white-space: nowrap;
+            font-size: rpx(24);
+            color:#666;
+            &:before {
+              content: '- '
+            }
+          }
+        }
+
+        &-controller {
+          position: relative;
+          right: 0;
+          margin-left: rpx(20);
+          padding-right: rpx(20);
+          display: flex;
+          /*height: 100%;*/
+          align-items: center;
+          .play {
+            float: left;
+            justify-content: center;
+            vertical-align: middle;
+            align-items: center;
+          }
+          .action {
+            display: inline-block;
+            padding: 0 rpx(20);
+            width: rpx(38);
+            height: rpx(38);
+          }
         }
       }
-      &-controller {
-        position: relative;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-      }
-      &-icon {
-        width: 15px;
-        height: 15px;
-        border: none;
-        background-color: transparent;
-        outline: none;
-        cursor: pointer;
-        opacity: .8;
-        vertical-align: middle;
-        padding: 0;
-        font-size: 12px;
-        margin: 0;
-        display: inline;
-      }
-    }
-    .toolbar {
-      /*width: calc(100% - 48rpx);*/
-      display: flex;
+
     }
     @-webkit-keyframes AnimationName {
       0% {
@@ -148,52 +165,6 @@
       100% {
         background-position: 0% 0%;
       }
-    }
-    .toolbar {
-      .song {
-        /*border-top-left-radius: rpx(30);*/
-        /*background: #EDF6FF;*/
-        /* placeholder: */
-        /*background-image: linear-gradient(90deg, #2C1BC5 0%, #53A0FD 18%, #FFFFFF 100%);*/
-        /*background: -webkit-linear-gradient(right, #edf6ff 0%, #edf6ff 50%, #fff 50%, #fff 100%);*/
-        /*background: linear-gradient(left, #ffa600 0%, #ffa600 50%, #fff 50%, #fff 100%);*/
-        /*background-size: 200% 200%;*/
-        /*-webkit-animation: AnimationName 10s ease infinite;*/
-        display: flex;
-        flex-flow: row;
-        width: 50%;
-        &.is-playing {
-          box-shadow: inset 3px 0 0 $blue-medium;
-          /*animation: loading-fade 1.6s ease-in-out infinite;*/
-        }
-        .album {
-          width: rpx(75);
-          height: rpx(75);
-          margin: rpx(12) rpx(12) rpx(12) rpx(10);
-          border-radius: rpx(8);
-        }
-        .info {
-          /*color: #418AF2;*/
-          flex: 1;
-          align-items: center;
-          justify-content: center;
-          font-size: rpx(24);
-          margin: rpx(20) rpx(20) rpx(20) rpx(8);
-          overflow: hidden;
-          word-break: break-all;
-          text-overflow: ellipsis; //文字隐藏后添加省略号
-          white-space: nowrap; //强制不换行
-          text-shadow: 0 0 1px rgba(0,0,0,.3);
-          vertical-align: middle;
-
-          .author {
-            font-size: rpx(20);
-            line-height: rpx(32);
-            color: #aaa;
-          }
-        }
-      }
-
     }
     .arrow {
       position: absolute;
@@ -214,31 +185,31 @@
         height: rpx(24);
       }
     }
-    .play {
-      display: flex;
-      width: rpx(200);
-      height: 100%;
-    }
+    /*.play {*/
+      /*display: flex;*/
+      /*width: rpx(200);*/
+      /*height: 100%;*/
+    /*}*/
 
     #timeline{
       position: fixed;
-      bottom: 0px;
+      bottom: 0;
       display: flex;
-      width: rpx(710);
+      /*width: rpx(710);*/
       z-index: 10;
-      left: rpx(20);
+      left: rpx(18);
       right: rpx(20);
 
       .time {
         display: block;
-        font-size: 20rpx;
+        font-size: rpx(20);
         color: rgba(0, 0, 0, 0.38);
         z-index: 3;
         text-align: center;
-        width: 100rpx;
+        width: rpx(100);
       }
       progress {
-        width: rpx(708);
+        width: rpx(706);
         /*margin-left: 10rpx;*/
         /*margin-right: 10rpx;*/
         margin: 0 auto;
@@ -262,42 +233,32 @@
   <view class="tab">
 
     <view class="player" wx:if="{{showToolbar}}">
-      <view class="player-pic">
-        <image class="album" src="{{curplay.authorInfo.avatar}}" background-size="cover"></image>
-      </view>
-      <view class="song" @tap="tap">
-        <image class="album" src="{{curplay.authorInfo.avatar}}" background-size="cover"></image>
-        <view class="info">
-          <text class="title">{{curplay.title}}</text>
-          <view class="author">
-            <text>{{curplay.authorInfo.user_nicename}}</text>
+      <image class="player-pic" src="{{curplay.authorInfo.avatar}}" mode="" />
+      <view class="player-info">
+        <view class="player-audio">
+          <view class="player-audio-info_wrap">
+            <text class="title">{{curplay.title}}</text>
+            <text class="author">{{curplay.authorInfo.user_nicename}}</text>
           </view>
-          <view class="timeline"></view>
+          <view class="player-audio-controller">
+            <view class="play">
+              <image class="action" src="../images/icon/icon-music-{{playing ? 'pause': 'play'}}.svg" @tap="toggle"></image>
+              <image class="action" src="../images/icon/icon-music-play-next.svg" @tap="playNext"></image>
+            </view>
+          </view>
         </view>
       </view>
-      <view class="tab_item" @tap="change(0)">
-        <image class="icon" src="../images/icon/icon-music-play.svg"></image>
-      </view>
-      <view class="tab_item" @tap="change(0)">
-        <image class="icon" src="../images/icon/icon-music-pause.svg"></image>
-      </view>
-      <!--<view class="tab_item" @tap="change(1)">-->
-        <!--<image class="icon" src="../images/icon-music-play-next.svg"></image>-->
-      </view>
+
     </view>
     <view id="timeline" wx:if="{{playing}}">
-      <!--<text class="time">{{playtime}}</text>-->
-      <progress percent="{{downloadPercent}}" stroke-width="1" color="#A1C4FD">
-        <!--<text id="playstate" style="left:{{percent}}%"></text>-->
+      <progress percent="{{downloadPercent}}" stroke-width="2" activeColor="#aaa" backgroundColor="#fff" active>
         <text id="dpstate" style="width:{{percent}}%"></text>
-        <!--<slider @change="museek" color="#d33a31" left-icon="cancel" value="{{percent}}"/>-->
       </progress>
-      <!--<text id="endtime" class="time">{{duration}}</text>-->
     </view>
   </view>
 </template>
 <script>
-  /* eslint-disable no-undef,no-throw-literal,no-extra-bind,no-extra-parens,no-unused-vars */
+  /* eslint-disable no-undef,no-throw-literal,no-extra-bind,no-extra-parens,no-unused-vars,spaced-comment */
 
   import wepy from 'wepy'
 
@@ -345,7 +306,7 @@
       width: device.windowWidth,
       height: device.windowHeight,
       showToolbar: true,
-      playing: true,
+      playing: false,
       tabAnimationData: null,
       animationViewName: 'tabAnimationData',
       XORY: 'Y',
@@ -366,6 +327,17 @@
           success (res) {
           }
         })
+      },
+      toggle () {
+        if (this.playing) {
+          $wxapp.pauseMusic()
+        } else {
+          $wxapp.playing()
+        }
+//        if (this.curplay.status === '')
+      },
+      playNext() {
+        $wxapp.playNext()
       },
       updatePlayer (curplay) {
         this.curplay = curplay
@@ -405,28 +377,19 @@
 
     onLoad () {
       const that = this
-      $wxapp.emitter.on('playing', e => {
+      $wxapp.emitter.on('audio_toggle', ({playing, curplay}) => {
         clearInterval(seek)
-        that.curplay = $wxapp.globalData.curplay
-        that.$apply()
         $wxapp.playStatus(that)
         seek = setInterval(() => {
           $wxapp.playStatus(that)
         }, 1000)
-      })
-      $wxapp.emitter.on('playing-stop', (e) => {
-        clearInterval(seek)
-      })
-      $wxapp.emitter.on('onload', (e) => {
-        that.curplay = $wxapp.globalData.curplay
+        this.playing = playing
+        this.curplay = curplay
+        this.$apply()
       })
       const {option} = this
       const CONFIG = Object.assign(this, DEFAULT, option)
       this.initTab(CONFIG)
-//      $wxapp.emitter.on('tab-change', (active) => {
-//        that.active = active
-//        that.$apply()
-//      })
     }
   }
 </script>

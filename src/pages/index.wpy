@@ -15,9 +15,9 @@
 
     <me class="tab_item" wx:if="{{currentTab === 1}}"></me>
 
-    <swiper class="tabbar" current="1" style="height: 100rpx;">
+    <swiper class="tabbar" current="{{currentBar}}" style="height: 100rpx;" bindchange="tabchange">
         <swiper-item>
-          <nav-bar :active.sync="currentTab" :curplay.sync="curplay"></nav-bar>
+          <nav-bar></nav-bar>
         </swiper-item>
       <swiper-item>
         <player-bar :active.sync="currentTab" :curplay.sync="curplay"></player-bar>
@@ -63,6 +63,7 @@
       share: null,
       notices: null,
       currentTab: 0,
+      currentBar: 1,
       curplay: {
         title: '',
         authorInfo: {}
@@ -185,6 +186,10 @@
 //      }
       this.loaded()
       this.preload()
+      $wxapp.emitter.on('audio_toggle', () => {
+        this.currentBar = 1
+        this.$apply()
+      })
       $wxapp.emitter.on('tab-change', async (active) => {
         if (active === 1) {
           this.$invoke('me', 'onShow')
@@ -213,6 +218,12 @@
     methods = {
       share () {
         Tips.modal('当前版本过低，请更新微信或点击右上角进行分享')
+      },
+      tabchange (event) {
+        const detail = event.detail
+        if (detail.source === 'touch') {
+          this.currentBar = event.current
+        }
       }
     }
 
