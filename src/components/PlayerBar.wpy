@@ -118,6 +118,7 @@
           flex: 1;
           flex-direction: column;
           .title {
+            color: #4285F4;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -125,6 +126,7 @@
             text-shadow: 0 0 2px rgba(0,0,0,.15);
           }
           .author {
+            line-height: rpx(44);
             white-space: nowrap;
             font-size: rpx(24);
             color:#666;
@@ -138,7 +140,7 @@
           position: relative;
           right: 0;
           margin-left: rpx(20);
-          padding-right: rpx(20);
+          padding-right: rpx(30);
           display: flex;
           /*height: 100%;*/
           align-items: center;
@@ -150,9 +152,8 @@
           }
           .action {
             display: inline-block;
-            padding: 0 rpx(20);
-            width: rpx(38);
-            height: rpx(38);
+            width: rpx(64);
+            height: rpx(64);
           }
         }
       }
@@ -242,8 +243,8 @@
           </view>
           <view class="player-audio-controller">
             <view class="play">
-              <image class="action" src="../images/icon/icon-music-{{playing ? 'pause': 'play'}}.svg" @tap="toggle"></image>
-              <image class="action" src="../images/icon/icon-music-play-next.svg" @tap="playNext"></image>
+              <image class="action" src="../images/icon/icon-music-{{playing ? 'pause': 'play'}}-mini.svg" @tap="toggle"></image>
+              <image class="action" src="../images/icon/icon-music-play-next-mini.svg" @tap="playNext"></image>
             </view>
           </view>
         </view>

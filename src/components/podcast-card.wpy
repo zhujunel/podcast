@@ -1,6 +1,6 @@
 <template>
   <view>
-    <view class="card animate-box fadeInUp animated-fast foldable-card is-compact is-expanded margin" >
+    <view class="podcast-card foldable-card is-expanded margin" >
       <view class="foldable-card__header is-clickable has-border" @tap="headerTapAction({{item}})">
 
         <view class="foldable-card__main">
@@ -9,8 +9,7 @@
               <view class="podcasts-browser-item">
                 <view class="podcasts-browser-item__info">
                   <view class="podcast-icon animate__appear">
-                    <image class="podcast-icon__img" style="width: 40px; height: 40px; background-color: #eeeeee;"
-                           mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
+                    <image class="podcast-icon__img" mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
                   </view>
                   <view class="podcasts-browser-item__title">
                     {{ item.title }}
@@ -30,7 +29,7 @@
           </view>
           <view class="foldable-card__summary-expanded">
             <!--<navigator url="/pages/detail/index?id={{ item.id }}&parent={{ item.id }}">-->
-            <image class="more" src="../images/more.svg"></image>
+            <!--<image class="more" src="../images/more.svg"></image>-->
             <!--</navigator>-->
           </view>
         </view>
@@ -38,15 +37,16 @@
         <!--<button class="foldable-card__action foldable-card__expand"></button>-->
       </view>
       <view class="foldable-card__content" wx:if="{{isExpanded}}">
+        <view class="" wx:if="{{item.content}}" style="color: #4A4A4A;  margin: 0 auto 60rpx auto;">
+          {{ item.content}}
+        </view>
         <view class="plugin-meta__banner {{ item._.header_collapsed ? '': 'is-collapsed'}}"
               wx:if="{{item.featured_image}}">
           <image class="plugin-meta__banner-image post-image__image"
                  mode="{{item._.header_collapsed ? 'aspectFit': 'aspectFill'}}" src="{{item.featured_image}}"
                  @tap="tapImage({{item.featured_image}})"></image>
         </view>
-        <view class="card is-compact is-info" wx:if="{{item.content}}">
-          {{ item.content}}
-        </view>
+
         <view class="podcast {{item.list ? '': 'is-placeholder'}}">
           <scroll-view scroll-x="true"  class="episode">
             <!--{{(curplay.id === item.id && curplay.play_status === 'playing') ? 'is-playing' : ''}}"-->
@@ -55,12 +55,12 @@
                 class="episode-audio_card is-compact"
                 wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="item" wx:key="id">
                 <!-- 有播放状态的专辑 -->
-                <image class="gridicon player" src="../images/quick/pause_big.png" @tap="playItem({{item}})"
+                <image class="gridicon player" src="../images/icon/icon-music-pause-mini.svg" @tap="playItem({{item}})"
                        hidden="{{!(curplay.id === item.id && curplay.play_status == 'playing')}}"></image>
-                <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
+                <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{item}})"
                        hidden="{{!(curplay.id === item.id && curplay.play_status == 'stop')}}"></image>
                 <!-- 没有状态的专辑 -->
-                <image class="gridicon player" src="../images/quick/play_big.png" @tap="playItem({{item}})"
+                <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{item}})"
                        hidden="{{!(curplay.id !== item.id)}}"></image>
 
                 <view class="episode-audio_card__info">
@@ -183,10 +183,60 @@
 </script>
 <style lang="scss">
   @import "../stylesheets/style";
+  .podcast-card {
+    display: block;
+    position: relative;
+    margin: 0 rpx(30) rpx(30) rpx(30);
+    box-sizing: border-box;
+    background: $white;
+    /* Rectangle: */
+    box-shadow: 0 5px 10px 0 rgba(0,0,0,0.05);
+    border-radius: rpx(12);
+    .animate-box {
+      opacity: 0;
+    }
+    .fadeInUp {
+      -webkit-animation-name: fadeInUp;
+      animation-name: fadeInUp;
+    }
+    .animated-fast {
+      -webkit-animation-duration: .5s;
+      animation-duration: .5s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+    }
+    @include clear-fix;
+
+    // Compact Card
+    &.is-compact {
+      margin-bottom: 1px;
+      padding: 16px 24px;
+    }
+
+    &.is-card-link {
+      padding-right: 48px;
+    }
+
+    &.is-error {
+      box-shadow: inset 3px 0 0 $alert-red;
+    }
+
+    &.is-info {
+      box-shadow: inset 3px 0 0 $blue-wordpress;
+    }
+
+    &.is-success {
+      box-shadow: inset 3px 0 0 $alert-green;
+    }
+
+    &.is-warning {
+      box-shadow: inset 3px 0 0 $alert-yellow;
+    }
+  }
 
   .player {
-    width: 64rpx;
-    height: 64rpx;
+    width: rpx(64);
+    height: rpx(64);
     display: block;
     margin-right: 20rpx;
   }
@@ -208,6 +258,7 @@
     position: relative;
     top: 0;
     left: -16px;
+    /*width: 100%;*/
     width: calc( 100% + 32px );
     overflow: hidden;
     margin-top: -16px;
@@ -219,7 +270,7 @@
     image {
       display: block;
       width: auto;
-      max-height: rpx(288);
+      max-height: rpx(320);
       margin: 0 auto;
     }
 
@@ -231,13 +282,13 @@
   .plugin-icon {
     float: left;
     margin-right: 16px;
-    width: 56px;
-    height: 56px;
+    /*width: 56px;*/
+    /*height: 56px;*/
     position: relative;
     transition: opacity .15s ease-in-out;
 
-    width: 40px;
-    height: 40px;
+    /*width: 40px;*/
+    /*height: 40px;*/
 
     .gridicon {
       position: absolute;
@@ -441,9 +492,7 @@
     }
   }
   .podcasts-browser-item {
-    border-left: 1px solid lighten( $gray, 30% );
     box-sizing: border-box;
-    cursor: pointer;
     display: block;
     float: left;
     margin: 0;
@@ -492,15 +541,16 @@
       overflow: hidden;
       margin-top: 16rpx;
     }
-    .podcast-icon {
+    .podcast-icon__img {
       margin-left: 0px;
       float: left;
+      border: 1px solid #f5f5f5;
       margin-right: 16rpx;
+      border-radius: 50%;
       width: 80rpx;
       height: 80rpx;
       position: relative;
       transition: opacity .15s ease-in-out;
-
       &.is-placeholder {
         background-color: lighten($gray, 30%);
         animation: loading-fade 1.6s ease-in-out infinite;
@@ -640,11 +690,15 @@
         margin: rpx(20) rpx(32) rpx(10) auto;
       }
       &-audio_card {
-        /*min-width: rpx(400);*/
+        min-width: rpx(400);
         /*display: block;*/
         /*position: relative;*/
         box-sizing: border-box;
         background: #fefefe;
+        /* placeholder: */
+        /*background: #FFFFFF;*/
+        /*border: 1px solid rgba(0,0,0,0.05);*/
+        /*box-shadow: 0 2px 10px 0 rgba(0,0,0,0.08);*/
         box-shadow: 0 0 0 1px transparentize(lighten($gray, 30%), .10),0 2px 4px lighten($gray, 30%);
         /*width: auto;*/
         transform:translate(rpx(30));

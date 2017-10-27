@@ -63,7 +63,7 @@
       share: null,
       notices: null,
       currentTab: 0,
-      currentBar: 1,
+      currentBar: 0,
       curplay: {
         title: '',
         authorInfo: {}
