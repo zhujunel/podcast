@@ -103,7 +103,7 @@ $breakpoints: 480px, 660px, 960px, 1040px, 1280px, 1600px; // Think very careful
   .foldable-card.is-expanded & {
     margin-bottom: 0px;
     height: inherit;
-    min-height: 64px;
+    min-height: rpx(100);
   }
 
   .foldable-card.is-expanded.is-compact & {
@@ -150,12 +150,11 @@ button.foldable-card__action {
 }
 
 .foldable-card__main {
-  max-width: calc( 100% - 36px );
+  max-width: calc( 100% - 36rpx );
   display: flex;
   align-items: center;
   margin-right: 5px;
-
-    flex: 1 1;
+  flex: 1 1;
 }
 
 .foldable-card__secondary {
@@ -205,7 +204,6 @@ button.foldable-card__action {
     }
   }
 }
-
 .foldable-card__summary,
 .foldable-card__summary-expanded {
   margin-right: 10px;

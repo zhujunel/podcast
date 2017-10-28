@@ -188,7 +188,7 @@
           name: 'qa',
           title: '柚答'
         }, {
-          name: 'user',
+          name: 'me',
           title: '我的'
         }
       ],
@@ -236,7 +236,7 @@
 //        if (this.active === 1) {
 //          this.$invoke('./profile', 'onShow')
 //        }
-//        $wxapp.emitter.emit('tab-change', this.active)
+        $wxapp.emitter.emit('tab-change', this.cur)
 //        this.$apply()
       },
       playingToggle () {

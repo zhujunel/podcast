@@ -113,33 +113,6 @@
     }
   }
 
-  .podcast__header {
-    display: flex;
-    text {
-      flex: 2;
-      display: block;
-      overflow: hidden;
-      margin-top: rpx(16);
-    }
-    .podcast-icon {
-      margin-left: 0px;
-      float: left;
-      margin-right: rpx(16);
-      width: rpx(80);
-      height: rpx(80);
-      position: relative;
-      transition: opacity .15s ease-in-out;
-
-      &.is-placeholder {
-        background-color: lighten($gray, 30%);
-        animation: loading-fade 1.6s ease-in-out infinite;
-        opacity: 0.3;
-      }
-      &.is-fallback {
-        background: lighten($gray, 20%);
-      }
-    }
-  }
 </style>
 <template>
   <view>

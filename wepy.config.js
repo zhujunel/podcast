@@ -1,5 +1,5 @@
 /* eslint-disable padded-blocks */
-const path = require('path');
+const path = require('path')
 const prod = process.env.NODE_ENV === 'production'
 module.exports = {
   wpyExt: '.wpy',
@@ -28,7 +28,7 @@ module.exports = {
       plugins: [
         'transform-decorators-legacy',
         'transform-export-extensions',
-        'syntax-export-extensions',
+        'syntax-export-extensions'
       ]
     }
   },
@@ -38,7 +38,7 @@ module.exports = {
       config: {
         find: /([\w\[\]a-d\.]+)\s*instanceof Function/g,
         replace: function (matchs, word) {
-          return ' typeof ' + word + " ==='function' ";
+          return ' typeof ' + word + " ==='function' "
         }
       }
     }
@@ -47,7 +47,7 @@ module.exports = {
 
 if (prod) {
 
-  delete module.exports.compilers.babel.sourcesMap;
+  delete module.exports.compilers.babel.sourcesMap
   // 压缩sass
   // module.exports.compilers['sass'] = {outputStyle: 'compressed'}
 

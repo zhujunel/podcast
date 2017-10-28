@@ -135,7 +135,6 @@
       if (!result) return
       this.userInfo = JSON.parse($wxapp.globalData.auth.user)
       this.loaded()
-//      this.$apply()
     }
 
     computed = {

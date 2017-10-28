@@ -1,11 +1,11 @@
 <template>
 
   <view class="body">
-    <view wx:if="{{currentTab === 0}}">
+    <view wx:if="{{currentTab === 'special'}}">
       <ad-swiper :config.sync="swiper"></ad-swiper>
       <view class="tab_item">
         <repeat for="{{page.list}}" key="index" index="index" item="item">
-          <podcast-card :item.sync="item" :id="item.id" style="margin-top: 20px"></podcast-card>
+          <podcast-card :item.sync="item" :id="item.id"></podcast-card>
         </repeat>
         <!-- 加载提示 -->
         <Loadmore :page.sync="page"></Loadmore>
@@ -13,14 +13,14 @@
       </view>
     </view>
 
-    <me class="tab_item" wx:if="{{currentTab === 1}}"></me>
+    <me class="tab_item" wx:if="{{currentTab === 'me'}}"></me>
 
     <swiper class="tabbar" current="{{currentBar}}" style="height: 100rpx;" bindchange="tabchange">
         <swiper-item>
-          <nav-bar></nav-bar>
+          <nav-bar :active.sync="currentTab"></nav-bar>
         </swiper-item>
       <swiper-item>
-        <player-bar :active.sync="currentTab" :curplay.sync="curplay"></player-bar>
+        <player-bar :curplay.sync="curplay"></player-bar>
       </swiper-item>
     </swiper>
   </view>
@@ -62,7 +62,7 @@
       reduce: null,
       share: null,
       notices: null,
-      currentTab: 0,
+      currentTab: 'special',
       currentBar: 0,
       curplay: {
         title: '',
@@ -191,7 +191,9 @@
         this.$apply()
       })
       $wxapp.emitter.on('tab-change', async (active) => {
-        if (active === 1) {
+        this.currentTab = active.name
+        this.$apply()
+        if (active.name === 'me') {
           this.$invoke('me', 'onShow')
         } else {
           await this.onShow()
@@ -200,7 +202,7 @@
     }
 
     async onShow () {
-      this.currentTab = 0
+      this.currentTab = 'special'
     }
 
     watch = {}

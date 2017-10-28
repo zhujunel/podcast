@@ -1,6 +1,8 @@
 /* eslint-disable func-call-spacing,no-unexpected-multiline,no-unused-vars,no-unused-vars */
 import base from './base'
 import Page from '../utils/Page'
+import moment from 'moment'
+moment.locale('zh-cn')
 
 export default class podcast extends base {
   /**
@@ -32,13 +34,25 @@ export default class podcast extends base {
     const data = await this.get(url, {parent: parent})
     return data
   }
+
   static async loadEpisodes (item) {
     const url = `${this.baseUrl}/posts`
     const data = await this.get(url, {parent: item.id})
     return data
   }
+
+  /**
+   * 前置数据处理
+   * @param item
+   * @returns {Promise.<*>}
+   * @private
+   */
   static async __before (item) {
     item.list = await this.loadEpisodes(item)
+    item.modified = moment(item.modified).fromNow()
+    item.list.forEach((value) => {
+      value.modified = moment(value.modified).fromNow()
+    })
     item.loaded = true
     return item
   }
