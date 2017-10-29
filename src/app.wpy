@@ -122,7 +122,8 @@
       pages: [
         'pages/index',
         'pages/home/login',
-        'pages/detail/index'
+        'pages/detail/index',
+        'pages/feed/index'
       ],
       window: {
         backgroundTextStyle: 'dark',

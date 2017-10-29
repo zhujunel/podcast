@@ -39,12 +39,15 @@
       }
     }
 
+    async onScrollBottom () {
+      await this.next()
+    }
     /**
      * 到达底部
      */
     async onReachBottom () {
       await this.next()
-    };
+    }
 
     /**
      * 重新加载

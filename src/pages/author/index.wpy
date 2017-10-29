@@ -1,0 +1,513 @@
+<style type="scss" scoped>
+  Page, .body {
+    font-family: '\5FAE\8F6F\96C5\9ED1', arial;
+    background: #FAFAFC;
+    /*background: #ECEDF0;*/
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    /*box-sizing: border-box;*/
+    position: relative;
+  }
+  .book-content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    font-size: 26rpx;
+    color: #808080;
+    .bookinfo {
+      height: 200rpx;
+      background: #fff;
+      /*border-bottom: 1px solid rgba(255,255,255,0.70);*/
+      box-shadow: 0 -4px 30px 0 rgba(0,0,0,0.10);
+      display: flex;
+      align-items: center;
+      text-align: left;
+      margin: 0 auto;
+      width: 100%;
+      .cover {
+        margin-left: 34rpx;
+        width: 94rpx;
+        height: 147.58rpx;
+      }
+      .detail {
+        margin-left: 34rpx;
+        /*flex: 1;*/
+        line-height: 36rpx;
+        font-size: 24rpx;
+        display: flex;
+        flex-flow: column;
+        .title {
+          display: block;
+          font-size: 28rpx;
+          margin-bottom: 10rpx;
+        }
+        .author {
+          overflow:hidden;
+          word-break:break-all;
+          min-width:0;
+          width: 558rpx;
+          white-space:nowrap;
+          text-overflow:ellipsis;//文字隐藏后添加省略号
+        }
+      }
+    }
+    #timeline{
+      position: relative;
+      display: flex;
+      width: 96%;
+      z-index: 10;
+      left: 0rpx;
+      right: 0rpx;
+
+      .time {
+        display: block;
+        font-size: 20rpx;
+        color: rgba(0, 0, 0, 0.38);
+        z-index: 3;
+        text-align: center;
+        width: 100rpx;
+      }
+      progress {
+        width: 730rpx;
+        /*margin-left: 10rpx;*/
+        /*margin-right: 10rpx;*/
+        margin: 0 auto;
+        /*color: #fafafa;*/
+        position: relative;
+        border-radius: 4rpx;
+      }
+      #playstate {
+        position: absolute;
+        display: block;
+        height: 15rpx;
+        width: 15rpx;
+        overflow: hidden;
+        background: #fff;
+        /* Oval 3: */
+        /*background: #418AF2;*/
+        /*border: 1px solid #FFFFFF;*/
+        /*box-shadow: 0 0 10px 0 #418AF2;*/
+
+        /* Oval 3: */
+        box-shadow: 0 0px 5px 0 rgba(74, 144, 226, 1);
+        border: 3rpx solid #4385F4;
+        border-radius: 50%;
+        top: 50%;
+        margin-left: 20rpx;
+        left: 0;
+        /*let: 20rpx;*/
+        /*right: 20rpx;*/
+        transform: translate3d(-50%, -50%, 0);
+        z-index: 2;
+      }
+      #dpstate {
+        position: absolute;
+        height: 2px;
+        width: 0rpx;
+        background: #4385F4;
+        overflow: hidden;
+        left: 0;
+        top: 50%;
+        margin-top: -1px;
+      }
+      slider {
+        position: absolute;
+        left: 20rpx;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        opacity: 0;
+        z-index: 10;
+      }
+    }
+
+  }
+
+  #anchor {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    height: 176rpx;
+    background: #fff;
+    .avatar {
+      width: 94rpx;
+      height: 94rpx;
+      margin-left: 30rpx;
+      background-position: center center;
+      border-radius: 50%;
+    }
+    .info {
+      margin-left: 30rpx;
+      display: flex;
+      /*flex-direction: column;*/
+      /*justify-content: space-between;*/
+      line-height: 38rpx;
+      .name {
+        flex: 1;
+        font-size: 34rpx;
+      }
+      .detail {
+        flext: 2;
+        margin-left: 34rpx;
+        font-size: 26rpx;
+        color: rgba(0, 0, 0, 0.54);
+      }
+    }
+
+  }
+  .playlist {
+    font-size: 26rpx;
+    /* 作者介绍、朗读者介绍: */
+    color: rgba(0,0,0,0.58);
+    /*border-top: 1px solid #ededed;*/
+    .item {
+      display: flex;
+      height: 100rpx;
+      padding: 20rpx;
+      align-items: center;
+      text-align: left;
+      &.even {
+        background: #fff;
+        /*border-bottom: 1px solid #ededed;*/
+        vertical-align: middle;
+      }
+      &.current {
+        background: #FAFAFA;
+        color: #4385F4;
+      }
+      .no {
+        text-align: center;
+        width: 60rpx;
+        display: flex;
+        align-items: center;
+        /*margin:0 auto;*/
+        justify-content: center;
+      }
+      .name {
+        margin: 0 auto;
+        padding-left: 34rpx;
+        overflow: hidden;
+        flex: 1;
+      }
+      .playing {
+        width: 60rpx;
+        justify-content: center;
+        vertical-align: middle;
+        align-items: center;
+        text-align: center;
+        .icon {
+          justify-content: center;
+          vertical-align: middle;
+          align-items: center;
+          text-align: center;
+          padding: 10rpx;
+          width: 24rpx;
+          height: 24rpx;
+        }
+      }
+    }
+
+  }
+
+  .readerinfo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin: 0 auto;
+    padding: 10rpx;
+    height: 160rpx;
+    background: #fff;
+    border-bottom: 1px solid #ededed;
+    padding-left: 20rpx;
+    .avatar {
+      margin: 10rpx;
+      width: 90rpx;
+      height: 90rpx;
+      border-radius: 50%;
+    }
+    .author {
+      display: flex;
+      padding: 10rpx;
+      .title {
+        flex:1;
+        font-size: 28rpx;
+        display: inline-block;
+        margin-bottom: 10rpx;
+      }
+      .detail {
+        flex: 1;
+        display: inline-block;
+      }
+    }
+  }
+
+  .play {
+    width: 100rpx;
+    height: 100rpx;
+    display: block;
+    margin-right: 34rpx;
+    .action image {
+      width: 100rpx;
+      height: 100rpx;
+    }
+  }
+  .quick {
+    position:fixed;
+    bottom: 20rpx;
+    right: 30rpx;
+    z-index: 100;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    vertical-align: middle;
+    .player {
+      width: 100rpx;
+      height: 100rpx;
+    }
+    .share {
+      margin-right: 20rpx;
+      width: 54rpx;
+      height: 54rpx;
+    }
+  }
+  #quickbar{
+    position:fixed;
+    bottom: 60rpx;
+    right: 5rpx;
+    z-index: 100;
+    /* Mask: */
+    border-top: 1px solid rgba(255,255,255,0.60);
+    box-shadow: 0 4px 20px 0 rgba(0,0,0,0.20);
+    /* Photo Copy: */
+    font-size: 24rpx;
+    /*box-sizing: border-box;*/
+    white-space:nowrap;
+    display: flex;
+  }
+</style>
+
+<template>
+  <view class="body">
+  <view id="anchor">
+    <image class="avatar" src="{{detail.authorInfo.avatar}}" backbround-size="cover" mode="aspectFill"></image>
+    <view class="info">
+      <text class="name">{{detail.authorInfo.user_nicename}}</text>
+      <text class="detail">{{detail.authorInfo.content}}</text>
+    </view>
+  </view>
+
+  <view class="book-content">
+    <view class="bookinfo">
+      <image class="cover" src="{{detail.featured_image}}" background-size="cover" mode="aspectFill"></image>
+      <view class="detail">
+        <text class="title">{{detail.title}}</text>
+        <text class="author">{{detail.content}}</text>
+      </view>
+    </view>
+    <view id="timeline" wx:if="{{playing}}">
+      <!--<text class="time">{{playtime}}</text>-->
+      <progress percent="{{downloadPercent}}" stroke-width="1"  color="#fafafa">
+        <text id="playstate" style="left:{{percent}}%"></text>
+        <text id="dpstate" style="width:{{percent}}%"></text>
+        <slider @change="museek" color="#d33a31" left-icon="cancel" value="{{percent}}"/>
+      </progress>
+      <!--<text id="endtime" class="time">{{duration}}</text>-->
+    </view>
+
+  </view>
+    <view class="playlist">
+      <block wx:for="{{list}}" wx:for-item="song" wx:key="index">
+        <view class="item even {{curplay.id === song.id ? 'current': ''}}"
+              @tap="playItem('{{song}}')">
+          <view class="no" wx:if="{{!(curplay.id === song.id)}}">{{ index + 1 }}.</view>
+
+          <view class="playing" wx:if="{{playing && curplay.id === song.id}}">
+            <image class="icon" src="../../images/status/pause_mini.png"></image>
+          </view>
+          <view class="playing" wx:if="{{!playing && curplay.id === song.id}}">
+            <image class="icon" src="../../images/status/play_mini.png"></image>
+          </view>
+          <view class="song-name">{{song.title}}</view>
+
+        </view>
+
+      </block>
+    </view>
+    <view class="quick">
+      <!--<image class="share" src="../../images/quick/share.png" @tap="share"></image>-->
+      <image class="player" src="../../images/quick/play_big.png" hidden="{{playing}}" @tap="playAll"></image>
+      <image class="player" src="../../images/quick/pause_big.png" hidden="{{!playing}}" @tap="pauseAll"></image>
+    </view>
+  </view>
+</template>
+<script>
+  /* eslint-disable no-undef,no-unused-vars */
+  import wepy from 'wepy'
+  import base from '../../mixins/_base'
+  import podcastApi from '../../api/podcast'
+
+  const $wxapp = wepy.$instance
+  let seek = 0
+
+  export default class Detail extends wepy.page {
+    mixins = [base]
+    config = {
+//      'navigationBarTitleText': '育儿柚道',
+//      'navigationBarTextStyle': 'white',
+//      'navigationBarBackgroundColor': '#3b3a40',
+      'disableScroll': false
+    }
+    data = {
+      detail: {},
+      list: [],
+      animationData: null,
+//      }),
+//      item: {
+//        play_status: 'stop'
+//      },
+      src: '',
+      mode: 'loop',
+      loading: true,
+      downloadPercent: 0,
+      percent: 50,
+      playing: false,
+      curplay: {
+        play_status: 'stop'
+      }
+    }
+    props = {
+      option: Object
+    }
+    computed = {
+      playing () {
+        return $wxapp.globalData.curplay.play_status === 'playing'
+      }
+    }
+    methods = {
+      share() {
+        wx.showShareMenu({
+          withShareTicket: true
+        })
+      },
+      pauseAll() {
+        if (this.curplay.play_status === 'playing') {
+          this.curplay.play_status = 'stop'
+          $wxapp.pauseMusic()
+        }
+      },
+      playAll() {
+        $wxapp.globalData.playlist = this.list
+        this.curplay.play_status = 'playing'
+        $wxapp.globalData.curplay = Object.assign({}, this.list[0], {play_status: 'playing'})
+        $wxapp.globalData.playindex = 0
+        $wxapp.playing()
+        $wxapp.emitter.emit('playing')
+//        $wxapp.playing()
+      },
+      playItem(song, e) {
+        wx.showToast({
+          title: '加载中',
+          icon: 'loading',
+          duration: 1000
+        })
+
+        if (this.curplay.id === song.id) {
+//          console.log('当前暂停')
+          if (this.curplay.play_status === 'playing') {
+            this.curplay.play_status = 'stop'
+            $wxapp.stopMusic()
+          } else {
+            this.curplay.play_status = 'playing'
+            $wxapp.playing()
+          }
+        } else {
+          this.curplay.play_status = 'playing'
+          this.curplay = Object.assign({}, song, {play_status: 'playing'})
+          $wxapp.globalData.curplay = this.curplay
+          $wxapp.playing()
+        }
+        $wxapp.emitter.emit('playing')
+      },
+      museek (e) {
+        let nextime = e.detail.value
+        const that = this
+        nextime = $wxapp.globalData.curplay.dt * nextime / 100000
+        $wxapp.globalData.currentPosition = nextime
+        $wxapp.seekMusic(1, $wxapp.globalData.currentPosition, () => {
+          this.percent = e.detail.value
+          that.$apply()
+        })
+      }
+    }
+    onShow() {
+      const that = this
+      if (that.curplay.play_status === 'playing') {
+        $wxapp.playAlrc(that)
+        seek = setInterval(() => {
+          $wxapp.playAlrc(that)
+        }, 1000)
+      }
+      if (this.curplay.play_status === 'stop') {
+        clearInterval(seek)
+      }
+    }
+    onShareAppMessage () {
+      return {
+        title: '育儿柚道',
+        desc: this.item.name,
+        path: '/pages/detail?id=' + this.item.id
+      }
+    }
+
+    async getDetail(id) {
+      this.detail = await podcastApi.detail(id)
+//      const req = Object.assign(api.common.get, {data: {id: id}})
+//      await this.$request(req, {
+//        success: ({code, data}) => {
+//          this.detail = data
+//          this.curplay = Object.assign({}, this.sticky, {play_status: 'stop'})
+//          $wxapp.globalData.curplay = this.curplay
+//        }
+//      })
+    }
+    async getList(id, parent) {
+      this.list = await podcastApi.list(parent)
+      const cur = this.list.find((item) => {
+        if (item.id.toString() === id) {
+          return item
+        }
+      })
+      this.curplay = Object.assign({}, cur, {play_status: 'stop'})
+    }
+    async onLoad(option) {
+      await this.getDetail(option.parent)
+      await this.getList(option.id, option.parent)
+      this.loaded()
+//      const _id = !option.id ? $wxapp.globalData.curplay.id : option.id
+//      this.scrollHeight = device.windowHeight - 300
+
+      const that = this
+      $wxapp.emitter.on('playing', (e) => {
+        that.curplay = $wxapp.globalData.curplay
+        if (that.curplay.play_status === 'playing') {
+          $wxapp.playAlrc(that)
+          seek = setInterval(() => {
+            $wxapp.playAlrc(that)
+          }, 1000)
+        }
+        if (that.curplay.play_status === 'stop') {
+          clearInterval(seek)
+        }
+      })
+      that.$apply()
+//      $wxapp.emitter.on('onload', (e) => {
+//        that.curplay = $wxapp.globalData.curplay
+//      })
+    }
+  }
+</script>

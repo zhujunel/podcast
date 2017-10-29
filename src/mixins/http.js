@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import wepy from 'wepy'
 
 export default class httpMixin extends wepy.mixin {
@@ -6,8 +7,8 @@ export default class httpMixin extends wepy.mixin {
         {
           success = () => {
           }, fail = () => {
-        }, complete = () => {
-        }
+          }, complete = () => {
+          }
         }) {
     const methods = 'GET'
     this.$request(
@@ -21,8 +22,8 @@ export default class httpMixin extends wepy.mixin {
          {
            success = () => {
            }, fail = () => {
-         }, complete = () => {
-         }
+           }, complete = () => {
+           }
          }) {
     const methods = 'POST'
     this.$request(
@@ -76,7 +77,7 @@ export default class httpMixin extends wepy.mixin {
         console.log('[SUCCESS]', statusCode, typeof data === 'object' ? data : data.toString().substring(0, 100))
 
         // 状态码正常 & 确认有数据
-        if (0 === +data.errno && data.data) {
+        if (+data.errno === 0 && data.data) {
           // 成功回调
           return setTimeout(() => {
             this.isFunction(success) && success({statusCode, ...data})

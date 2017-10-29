@@ -1,33 +1,26 @@
 <template>
 
   <view class="body">
-      <recommend  wx:if="{{currentTab === 'special'}}" />
-
-    <scroll-view
-      scroll-y style="height: 600px;"
-      @scrolltoupper="scrollToTop"
-      @scrolltolower="scrollToBottom"
-      @scroll="scroll" upper-threshold="0"
-      lower-threshold="0"
-      @touchstart="touchStart"
-      @touchend="touchEnd" wx:if="{{currentTab === 'listen'}}">
-      <view wx:if="{{isRefresh}}" class="refresh_root">
-        <view><text>正在刷新...</text></view>
+      <!--      <view class="special-card">
+              <swiper
+                indicator-dots="{{false}}"
+                autoplay="{{false}}"
+                vertical="{{false}}"
+                bindchange="bindSwiperChange">
+              </swiper>
+            </view>-->
+    <!--<view wx:if="{{currentTab === 'listen'}}">-->
+      <ad-swiper :config.sync="swiper"></ad-swiper>
+      <view class="tab_item">
+        <repeat for="{{page.list}}" key="index" index="index" item="item">
+          <podcast-card :item.sync="item" :id="item.id"></podcast-card>
+        </repeat>
+        <!-- 加载提示 -->
+        <Loadmore :page.sync="page"></Loadmore>
+        <view style="height: 100rpx;"></view>
       </view>
-      <view wx:if="{{currentTab === 'listen'}}">
-        <ad-swiper :config.sync="swiper"></ad-swiper>
-        <view class="tab_item">
-          <repeat for="{{page.list}}" key="index" index="index" item="item">
-            <podcast-card :item.sync="item" :id="item.id"></podcast-card>
-          </repeat>
-          <!-- 加载提示 -->
-          <Loadmore :page.sync="page"></Loadmore>
-          <view style="height: 100rpx;"></view>
-        </view>
-      </view>
-    </scroll-view>
-
-    <me class="tab_item" wx:if="{{currentTab === 'me'}}"></me>
+    <!--</view>-->
+    <!--<me class="tab_item" wx:if="{{currentTab === 'me'}}"></me>-->
 
     <swiper class="tabbar" current="{{currentBar}}" style="height: 100rpx;" bindchange="tabchange">
         <swiper-item>
@@ -44,26 +37,26 @@
 
   /* eslint-disable no-undef,no-throw-literal,no-unused-expressions,no-unused-vars */
   import wepy from 'wepy'
-  import base from '../mixins/_base'
-  import pagination from '../mixins/pagination'
+  import base from '../../mixins/_base'
+  import pagination from '../../mixins/pagination'
 
-  import auth from '../api/auth'
-  import app from '../api/app'
-  import podcast from '../api/podcast'
-  import Cache from '../utils/Cache'
-  import Tips from '../utils/Tips'
+  import auth from '../../api/auth'
+  import app from '../../api/app'
+  import podcast from '../../api/podcast'
+  import Cache from '../../utils/Cache'
+  import Tips from '../../utils/Tips'
   //  import WxUtils from '../../utils/WxUtils'
-  import Event from '../utils/Event'
+  import Event from '../../utils/Event'
   //  import Copyright from '../../components/common/copyright'
-  import MySwiper from '../components/ui/swiper'
-  import Loadmore from '../components/ui/loadmore'
-  import AdSwiper from '../components/AdSwiper'
+  import MySwiper from '../../components/ui/swiper'
+  import Loadmore from '../../components/ui/loadmore'
+  import AdSwiper from '../../components/AdSwiper'
 //  import TabBar from '../components/TabBar'
-  import NavBar from '../components/NavBar'
-  import PlayerBar from '../components/PlayerBar'
-  import Me from '../components/profile'
-  import PodcastCard from '../components/podcast-card'
-  import Recommend from '../components/recommend'
+  import NavBar from '../../components/NavBar'
+  import PlayerBar from '../../components/PlayerBar'
+  import Me from '../../components/profile'
+  import PodcastCard from '../../components/podcast-card'
+  import Recommend from '../../components/recommend'
 //  import moment from 'moment'
 
   const $wxapp = wepy.$instance
@@ -83,14 +76,10 @@
         title: '',
         authorInfo: {}
       },
-      isRefresh: false,
-      isLoadMore: false,
       page: {
         added: [],
         list: []
       },
-      scrollStatus: 'top', // 1 是滑动到顶部， 2是滑动中， 3 是滑动到底部
-      clientY: 0, // Y 方向手指安下的方向
       swiper: {
         direction: 'horizontal',
         slideLength: 2,
@@ -195,7 +184,7 @@
       this.page = podcast.page()
       await this.next()
       this.loaded()
-//      this.preload()
+      this.preload()
       $wxapp.emitter.on('audio_toggle', () => {
         this.currentBar = 1
         this.$apply()
@@ -205,15 +194,6 @@
         this.$apply()
         if (active.name === 'me') {
           this.$invoke('me', 'onShow')
-        } if (active.name === 'listen') {
-//          console.log(this.config)
-//          this.config.enablePullDownRefresh = false
-//          console.log(this.config)
-//          this.$redirect('./feed/index');
-//          console.log('active.naem ...')
-//          console.log(this.getCurrentPages())
-//          this.$root.config.enablePullDownRefresh = true
-          this.$apply()
         } else {
           await this.onShow()
         }
@@ -245,52 +225,6 @@
         if (detail.source === 'touch') {
           this.currentBar = event.current
         }
-      },
-      async touchStart (e) {
-        const touchPoint = e.touches[0]
-        const clientY = touchPoint.clientY
-        this.clientY = clientY
-//        if (this.clientY > 50) {
-//          this.isRefresh = true
-//        }
-      },
-      async touchEnd (e) {
-        const context = this
-        const upPoint = e.changedTouches[0]
-        const endY = upPoint.clientY
-        const pointTopintY = Math.abs(endY - this.clientY)
-        const status = this.scrollStatus
-        // 上拉刷新
-        if (status === 'top' && pointTopintY > 50) {
-//          this.isRefresh = true
-          this.reload()
-          console.log('top refresh...')
-        }
-        // 上拉加载
-        if (status === 'bottom' && pointTopintY > 50) {
-          this.isLoadMore = true
-          console.log('bottom loadmore...')
-          await this.next()
-        }
-        // 两秒后隐藏加载条
-        setTimeout(() => {
-          this.isRefresh = false
-          this.isLoadMore = false
-        }, 3000)
-      },
-      scrollToTop () {
-        this.scrollStatus = 'top'
-//        this.reload()
-        console.log('top')
-      },
-      async scrollToBottom () {
-        this.scrollStatus = 'bottom'
-        console.log('bottom')
-        await this.next()
-      },
-      scroll () {
-        this.scrollStatus = 'scrolling'
-        console.log('scrolling...')
       }
     }
 
@@ -305,13 +239,12 @@
       'podcast-card': PodcastCard,
       recommend: Recommend
     }
-
     mixins = [base, pagination]
     config = {
-      'navigationBarTitleText': '育儿柚道'
+//      'navigationBarTitleText': '育儿柚道',
 //      'navigationBarTextStyle': 'white',
 //      'navigationBarBackgroundColor': '#3b3a40',
-//      enablePullDownRefresh: true
+      enablePullDownRefresh: true
     }
   }
 </script>
@@ -364,17 +297,6 @@
   }
   .we-slide:nth-child(3){
     /*background-color: #FF8604*/
-  }
-  .refresh_root {
-    background-color: white;
-    width: 100%;
-    text-align: center;
-    margin-top: 2px;
-  }
-
-  .refresh {
-    width: 40px;
-    height: 40px;
   }
 
 
