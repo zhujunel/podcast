@@ -192,12 +192,23 @@
       const sticky = await app.getSticky(this.app.stickys[0])
       this.curplay = Object.assign({}, sticky, {play_status: 'stop'})
       $wxapp.globalData.curplay = this.curplay
+      // 初始化页面内容
       this.page = podcast.page()
       await this.next()
       this.loaded()
 //      this.preload()
       $wxapp.emitter.on('audio_toggle', () => {
         this.currentBar = 1
+        this.$apply()
+      })
+      $wxapp.emitter.on('liked', (item) => {
+        for (let i of this.page.list) {
+          if (i.id === item.id) {
+            i.i_like = item.i_like
+            i.like_count = item.like_count
+          }
+        }
+        Tips.success(item.i_like ? '已收藏' : '已取消')
         this.$apply()
       })
       $wxapp.emitter.on('tab-change', async (active) => {
@@ -264,12 +275,12 @@
         if (status === 'top' && pointTopintY > 50) {
 //          this.isRefresh = true
           this.reload()
-          console.log('top refresh...')
+//          console.log('top refresh...')
         }
         // 上拉加载
         if (status === 'bottom' && pointTopintY > 50) {
           this.isLoadMore = true
-          console.log('bottom loadmore...')
+//          console.log('bottom loadmore...')
           await this.next()
         }
         // 两秒后隐藏加载条

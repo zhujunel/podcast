@@ -1,6 +1,6 @@
 <template>
   <view>
-    <view class="podcast-card foldable-card is-expanded" >
+    <view class="podcast-card foldable-card is-expanded">
       <view class="podcast-card__header is-clickable has-border" @tap="headerTapAction({{item}})">
 
         <view class="foldable-card__main">
@@ -8,14 +8,14 @@
             <view class="podcast-icon animate__appear">
               <image class="podcast-icon__img" mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
             </view>
-              <view class="podcasts-browser-item__info">
-                <view class="podcasts-browser-item__title">
-                  {{ item.title }}
-                </view>
-                <view class="podcasts-browser-item__author">
-                  @ {{ item.authorInfo.user_nicename }} - {{ item.modified }}
-                </view>
+            <view class="podcasts-browser-item__info">
+              <view class="podcasts-browser-item__title">
+                {{ item.title }}
               </view>
+              <view class="podcasts-browser-item__author">
+                @ {{ item.authorInfo.user_nicename }} - {{ item.modified }}
+              </view>
+            </view>
           </view>
 
         </view>
@@ -36,7 +36,7 @@
         <view class="is-fold" wx:if="{{item.content}}">
           <text>{{ item.content}}</text>
           <!--<view class="more">-->
-            <!--<text class="icon-ios-arrow-{{item.contentFold ? 'down' : 'up'}}"></text>-->
+          <!--<text class="icon-ios-arrow-{{item.contentFold ? 'down' : 'up'}}"></text>-->
           <!--</view>-->
         </view>
         <view class=" plugin-meta__banner {{ item._.header_collapsed ? '': 'is-collapsed'}}"
@@ -47,7 +47,7 @@
         </view>
       </view>
       <view class="podcast {{item.list ? '': 'is-placeholder'}}">
-        <scroll-view scroll-x="true"  class="episode">
+        <scroll-view scroll-x="true" class="episode">
           <!--{{(curplay.id === item.id && curplay.play_status === 'playing') ? 'is-playing' : ''}}"-->
           <view class="content">
             <view
@@ -71,7 +71,22 @@
         </scroll-view>
       </view>
 
-      <slot name="footer"></slot>
+      <view class="podcast-actions">
+        <view class="post-actions__share">
+          <view class="podcast-actions__item" @tap="ilikeToggle({{item}})">
+            <image class="icon" src="../images/icon/icon-like{{item.i_like ? '-active': ''}}.svg"></image>
+            <text>{{item.like_count}}</text>
+          </view>
+          <view class="podcast-actions__item">
+            <image class="icon" src="../images/icon/icon-comment.svg"></image>
+            <text>0</text>
+          </view>
+        </view>
+
+        <view class="podcast-actions__item">
+          <image class="icon" src="../images/icon/icon-share.svg"></image>
+        </view>
+      </view>
     </view>
 
   </view>
@@ -81,15 +96,22 @@
   /* eslint-disable no-undef */
 
   import wepy from 'wepy'
-//  import FoldableCard from '../components/FoldableCard'
-//  import Card from '../components/card'
+  import base from '../mixins/_base'
+  //  import FoldableCard from '../components/FoldableCard'
+  //  import Card from '../components/card'
+  import postApi from '../api/podcast'
 
   const $wxapp = wepy.$instance
 
   export default class PodcastHeader extends wepy.component {
+    mixins = [base]
+
     props = {
       id: String,
-      item: Object,
+      item: {
+        type: Object,
+        twoway: true
+      },
       isExpanded: {
         type: Boolean,
         default: true
@@ -113,18 +135,30 @@
       fold (item) {
         this.isFold = !this.isFold
         item.contentFold = this.isFold
-//        if (Object.is(item.contentFold, undefined)) {
-//          item.contentFold = isFold
+      },
+      async ilikeToggle (item) {
+//        if (item.i_like === true) {
+//          item.i_like = false
 //        } else {
-//          item.contentFold = isFold
+//          item.i_like = true
 //        }
-//        this.curItem = item
-//        item._ = {}
-//        if (Object.is(item._.expanded, undefined)) {
-//          item._.expanded = true
-//        } else {
-//          item._.expanded = !item._.expanded
-//        }
+//        item.i_like = true
+//        item.like_count = 10
+//        console.log(JSON.stringify(item))
+//        this.$apply()
+        if (!item.i_like) {
+          const data = await postApi.newLike(item)
+          item.i_like = true
+          item.like_count = data.like_count
+          this.$apply()
+        } else {
+          const data = await postApi.unLike(item)
+          item.i_like = false
+          item.like_count = data.like_count
+          this.$apply()
+        }
+        $wxapp.emitter.emit('liked', item)
+//        this.loaded()
       },
       playItem (audio) {
         wx.showToast({
@@ -181,6 +215,7 @@
 //      this.curplay = $wxapp.globalData.curplay
 //      this.$apply()
     }
+
     onLoad () {
       $wxapp.emitter.on('audio_toggle', ({playing, curplay}) => {
         this.playing = playing
@@ -193,6 +228,7 @@
         this.$apply()
       })
     }
+
     async onReload () {
       this.page = 1
     }
@@ -200,6 +236,43 @@
 </script>
 <style lang="scss" scoped>
   @import "../stylesheets/style";
+
+  .podcast-actions {
+    box-sizing: border-box;
+    /*display: -webkit-box;*/
+    /*display: -ms-flexbox;*/
+    display: flex;
+    /*-webkit-box-orient: horizontal;*/
+    /*-webkit-box-direction: normal;*/
+    /*-ms-flex-direction: row;*/
+    flex-direction: row;
+    height: auto;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    margin: 10px 0;
+    font-size: rpx(24);
+    color: #D0D0D0;
+    .icon {
+      position: relative;
+      top: 3px;
+      margin-right: 6px;
+      width: rpx(36);
+      height: rpx(36);
+    }
+  }
+
+  .podcast-actions__item {
+    display: inline-block;
+    margin-right: rpx(24);
+  }
+
+  .post-actions__share {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin-left: 20px;
+  }
 
   .podcast-card__header {
     height: rpx(100);
@@ -222,7 +295,7 @@
   .podcast-card__content {
     display: none;
     /*.is-expand {*/
-      /*margin-bottom: rpx(32);*/
+    /*margin-bottom: rpx(32);*/
     /*}*/
     .is-fold {
       padding: 0 0 rpx(20) 0;
@@ -280,6 +353,7 @@
       }
     }
   }
+
   .podcast-card {
     z-index: 0;
     display: block;
@@ -289,7 +363,7 @@
     box-sizing: border-box;
     background: $white;
     /* Rectangle: */
-    box-shadow: 0 5px 10px 0 rgba(0,0,0,0.05);
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
     border-radius: rpx(12);
     .animate-box {
       opacity: 0;
@@ -337,20 +411,22 @@
     width: rpx(64);
     height: rpx(64);
     display: block;
-    margin-right: 20rpx;
+    margin-right: 20 rpx;
   }
-  $gray:                   #A1a1a1;
-  $gray-light:             lighten( $gray, 33% ); //#f3f6f8
-  $gray-dark:              darken( $gray, 38% ); //#2e4453
-  $white:                  rgba(255,255,255,1);
+
+  $gray: #A1a1a1;
+  $gray-light: lighten($gray, 33%); //#f3f6f8
+  $gray-dark: darken($gray, 38%); //#2e4453
+  $white: rgba(255, 255, 255, 1);
 
   .more {
-    width: 32rpx;
-    height: 32rpx;
+    width: 32 rpx;
+    height: 32 rpx;
     color: $gray-light;
   }
+
   /*.margin{*/
-    /*margin-top: rpx(50)*/
+  /*margin-top: rpx(50)*/
   /*}*/
 
   .plugin-meta__banner {
@@ -358,12 +434,11 @@
     top: 0;
     left: -16px;
     /*width: 100%;*/
-    width: calc( 100% + 32px );
+    width: calc(100% + 32px);
     overflow: hidden;
     /*margin-bottom: 16px;*/
-    box-shadow: inset 0 0 2px 2px rgba( lighten( $gray, 10 ), 0.1 );
-    background: rgba( lighten( $gray, 30 ), 0.3 );
-
+    box-shadow: inset 0 0 2px 2px rgba(lighten($gray, 10), 0.1);
+    background: rgba(lighten($gray, 30), 0.3);
 
     image {
       display: block;
@@ -374,10 +449,10 @@
 
   }
 
-
   .is-placeholder .plugin-meta__author {
     color: transparent !important;
   }
+
   .podcasts-browser-item {
     /*box-sizing: border-box;*/
     /*display: block;*/
@@ -387,6 +462,7 @@
     /*overflow: hidden;*/
     /*width: 100%;*/
   }
+
   .is-placeholder {
     color: transparent;
     width: 100%;
@@ -401,6 +477,7 @@
       content: ' ';
     }
   }
+
   .podcast__header {
     display: flex;
     .podcast-icon__img {
@@ -409,8 +486,8 @@
       border: 1px solid #f5f5f5;
       margin-right: rpx(16);
       border-radius: rpx(8);
-      width: 80rpx;
-      height: 80rpx;
+      width: rpx(80);
+      height: rpx(80);
       position: relative;
       transition: opacity .15s ease-in-out;
       &.is-placeholder {
@@ -423,9 +500,10 @@
       }
     }
   }
+
   .podcasts-browser__main-header {
     background: $white;
-    box-shadow: 0 0 0 1px transparentize( lighten( $gray, 20% ), 0.5 ), 0 1px 2px lighten( $gray, 30% );
+    box-shadow: 0 0 0 1px transparentize(lighten($gray, 20%), 0.5), 0 1px 2px lighten($gray, 30%);
     flex-direction: column;
     display: flex;
   }
@@ -439,7 +517,7 @@
 
     .is-placeholder & {
       color: transparent;
-      background-color: lighten( $gray, 30% );
+      background-color: lighten($gray, 30%);
       animation: loading-fade 1.6s ease-in-out infinite;
     }
   }
@@ -469,14 +547,14 @@
     margin-right: 0;
   }
 
-  .podcasts-browser-item  .rating {
+  .podcasts-browser-item .rating {
     padding-top: 10px;
     position: absolute;
     bottom: 16px;
     left: 16px;
   }
 
-  .podcasts-browser-item__published{
+  .podcasts-browser-item__published {
     display: flex;
     align-items: center;
     position: absolute;
@@ -496,17 +574,16 @@
   @keyframes comment-detail__author-more-info {
     0% {
       display: none;
-      transform: scaleY( 0 );
+      transform: scaleY(0);
     }
     1% {
       display: block;
-      transform: scaleY( 0 );
+      transform: scaleY(0);
     }
     100% {
-      transform: scaleY( 1 );
+      transform: scaleY(1);
     }
   }
-
 
   .podcast {
     z-index: 100;
@@ -514,7 +591,7 @@
     margin-bottom: rpx(32);
     /*width: rpx(700);*/
     width: rpx(780);
-    transform:translate(-30px);
+    transform: translate(-30px);
     .episode {
       /*display: flex;*/
       white-space: nowrap;
@@ -531,7 +608,7 @@
         margin: rpx(10) rpx(32) rpx(10) auto;
       }
       .content {
-        transform:translate(rpx(60));
+        transform: translate(rpx(60));
         min-width: rpx(400);
         position: relative;
         display: inline-block;
@@ -547,9 +624,9 @@
         /*background: #FFFFFF;*/
         /*border: 1px solid rgba(0,0,0,0.05);*/
         /*box-shadow: 0 2px 10px 0 rgba(0,0,0,0.08);*/
-        box-shadow: 0 0 0 1px transparentize(lighten($gray, 30%), .10),0 2px 4px lighten($gray, 30%);
+        box-shadow: 0 0 0 1px transparentize(lighten($gray, 30%), .10), 0 2px 4px lighten($gray, 30%);
         /*width: auto;*/
-        transform:translate(rpx(30));
+        transform: translate(rpx(30));
         margin-right: rpx(32);
         padding: rpx(24);
         text-align: left;
@@ -557,7 +634,7 @@
         /*display: inline-block;*/
         /*vertical-align:top;*/
         display: inline-flex;
-        align-items:center;
+        align-items: center;
         /*justify-content:center;*/
         &__info {
           display: flex;
@@ -584,7 +661,7 @@
         }
 
         &.is-placeholder {
-          background-color: lighten( $gray, 30% );
+          background-color: lighten($gray, 30%);
           animation: loading-fade 1.6s ease-in-out infinite;
           opacity: 0.3;
         }
@@ -622,7 +699,7 @@
     }
 
     &.is-placeholder {
-      background-color: lighten( $gray, 30% );
+      background-color: lighten($gray, 30%);
       animation: loading-fade 1.6s ease-in-out infinite;
     }
   }

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="42" viewBox="0 0 48 42">
+  <defs>
+    <path id="icon-like-a" d="M24.0051877,45.3333333 C18.6770422,45.3333333 0.0103754875,29.3333333 0.0103754875,17.4059588 C0.0103754875,4.62546233 14.546725,-0.598283253 23.066461,9.82459375 C23.3144889,10.1288754 23.6340399,10.6897629 24.0051877,10.6666667 C24.3307401,10.6464078 24.7099671,10.0794948 24.9264034,9.81259412 C33.4173402,-0.646281766 48.6256689,4.65275402 47.9800889,17.7083494 C47.9800889,29.3333333 29.3333333,45.3333333 24.0051877,45.3333333 Z"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd" transform="translate(0 -4)">
+    <mask id="icon-like-b" fill="#fff">
+      <use xlink:href="#icon-like-a"/>
+    </mask>
+    <use fill="#FFF" xlink:href="#icon-like-a"/>
+    <g fill="#D0D0D0" mask="url(#icon-like-b)">
+      <rect width="48" height="48"/>
+    </g>
+  </g>
+</svg>

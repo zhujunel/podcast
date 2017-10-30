@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <path id="icon-comment-a" d="M0,20.7333015 C0,32.1333015 10.8,41.4333015 24,41.4333015 L31.2,46.8333015 C33.3,48.3333015 36,46.8333015 36,44.4333015 L36,38.7333015 C43.2,35.1333015 48,28.5333015 48,20.7333015 C48,9.33330153 37.2,0.0333015281 24,0.0333015281 C10.8,0.0333015281 0,9.33330153 0,20.7333015 Z"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <mask id="icon-comment-b" fill="#fff">
+      <use xlink:href="#icon-comment-a"/>
+    </mask>
+    <use fill="#C2C4CA" xlink:href="#icon-comment-a"/>
+    <g fill="#D0D0D0" mask="url(#icon-comment-b)">
+      <rect width="48" height="48"/>
+    </g>
+  </g>
+</svg>

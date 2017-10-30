@@ -2,6 +2,7 @@
 import base from './base'
 import Page from '../utils/Page'
 import moment from 'moment'
+
 moment.locale('zh-cn')
 
 export default class podcast extends base {
@@ -38,6 +39,28 @@ export default class podcast extends base {
   static async loadEpisodes (item) {
     const url = `${this.baseUrl}/posts`
     const data = await this.get(url, {parent: item.id})
+    return data
+  }
+
+  /**
+   * Like
+   * @param item
+   * @returns {Promise.<*>}
+   */
+  static async newLike (item) {
+    const url = `${this.baseUrl}/posts/${item.id}/likes/new`
+    const data = await this.post(url, {})
+    return data
+  }
+
+  /**
+   * Un Like
+   * @param item
+   * @returns {Promise.<void>}
+   */
+  static async unLike (item) {
+    const url = `${this.baseUrl}/posts/${item.id}/likes/mine/delete`
+    const data = await this.post(url, {})
     return data
   }
 
