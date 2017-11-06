@@ -234,12 +234,12 @@
   <view class="tab">
 
     <view class="player" wx:if="{{showToolbar}}">
-      <image class="player-pic" src="{{curplay.authorInfo.avatar}}" mode="" />
+      <image class="player-pic" src="{{curplay.author.avatar}}" mode="" />
       <view class="player-info">
         <view class="player-audio">
           <view class="player-audio-info_wrap">
             <text class="title">{{curplay.title}}</text>
-            <text class="author">{{curplay.authorInfo.user_nicename}}</text>
+            <text class="author">{{curplay.author.nicename}}</text>
           </view>
           <view class="player-audio-controller">
             <view class="play">
@@ -378,6 +378,11 @@
 
     onLoad () {
       const that = this
+      // 加载推荐的内容
+      $wxapp.emitter.on('stickys-onload', (stikcy) => {
+        this.curplay = stikcy
+        this.$apply()
+      })
       $wxapp.emitter.on('audio_toggle', ({playing, curplay}) => {
         clearInterval(seek)
         $wxapp.playStatus(that)

@@ -1,35 +1,10 @@
 <template>
 
   <view class="body">
-      <recommend  wx:if="{{currentTab === 'special'}}" />
-
-    <scroll-view
-      scroll-y style="height: 600px;"
-      @scrolltoupper="scrollToTop"
-      @scrolltolower="scrollToBottom"
-      @scroll="scroll" upper-threshold="0"
-      lower-threshold="0"
-      @touchstart="touchStart"
-      @touchend="touchEnd" wx:if="{{currentTab === 'listen'}}">
-      <view wx:if="{{isRefresh}}" class="refresh_root">
-        <view><text>正在刷新...</text></view>
-      </view>
-      <view wx:if="{{currentTab === 'listen'}}">
-        <ad-swiper :config.sync="swiper"></ad-swiper>
-        <view class="tab_item">
-          <repeat for="{{page.list}}" key="index" index="index" item="item">
-            <podcast-card :item.sync="item" :id="item.id"></podcast-card>
-          </repeat>
-          <!-- 加载提示 -->
-          <Loadmore :page.sync="page"></Loadmore>
-          <view style="height: 100rpx;"></view>
-        </view>
-      </view>
-    </scroll-view>
-
+    <recommend  wx:if="{{currentTab === 'stickys'}}" />
+    <feed wx:if="{{currentTab === 'feed'}}"></feed>
     <me class="tab_item" wx:if="{{currentTab === 'me'}}"></me>
-
-    <swiper class="tabbar" current="{{currentBar}}" style="height: 100rpx;" bindchange="tabchange">
+    <swiper class="tabbar" current="{{currentBar}}" style="height: 100rpx;" @change="tabchange">
         <swiper-item>
           <nav-bar :active.sync="currentTab"></nav-bar>
         </swiper-item>
@@ -48,25 +23,19 @@
   import pagination from '../mixins/pagination'
 
   import auth from '../api/auth'
-  import app from '../api/app'
   import podcast from '../api/podcast'
   import Cache from '../utils/Cache'
   import Tips from '../utils/Tips'
-  //  import WxUtils from '../../utils/WxUtils'
   import Event from '../utils/Event'
-  //  import Copyright from '../../components/common/copyright'
   import MySwiper from '../components/ui/swiper'
   import Loadmore from '../components/ui/loadmore'
-  import AdSwiper from '../components/AdSwiper'
-//  import TabBar from '../components/TabBar'
   import NavBar from '../components/NavBar'
   import PlayerBar from '../components/PlayerBar'
   import Me from '../components/profile'
-  import PodcastCard from '../components/podcast-card'
+//  import PodcastCard from '../components/podcast-card'
   import Recommend from '../components/recommend'
 //  import moment from 'moment'
-
-  const $wxapp = wepy.$instance
+  import Feed from '../components/Feed'
 
   export default class AppHome extends wepy.page {
     def = {
@@ -77,7 +46,7 @@
       reduce: null,
       share: null,
       notices: null,
-      currentTab: 'special',
+      currentTab: 'stickys',
       currentBar: 0,
       curplay: {
         title: '',
@@ -88,164 +57,41 @@
       page: {
         added: [],
         list: []
-      },
-      scrollStatus: 'top', // 1 是滑动到顶部， 2是滑动中， 3 是滑动到底部
-      clientY: 0, // Y 方向手指安下的方向
-      swiper: {
-        direction: 'horizontal',
-        slideLength: 2,
-        /**
-         * swiper初始化后执行
-         * @param swiper
-         */
-        onInit (weswiper) {
-
-        },
-        /**
-         * 手指碰触slide时执行
-         * @param swiper
-         * @param event
-         */
-        onTouchStart (weswiper, event) {
-
-        },
-        /**
-         * 手指碰触slide并且滑动时执行
-         * @param swiper
-         * @param event
-         */
-        onTouchMove (weswiper, event) {
-
-        },
-        /**
-         * 手指离开slide时执行
-         * @param swiper
-         * @param event
-         */
-        onTouchEnd (weswiper, event) {
-
-        },
-        /**
-         *  slide达到过渡条件时执行
-         */
-        onSlideChangeStart (weswiper) {
-
-        },
-        /**
-         *  swiper从一个slide过渡到另一个slide结束时执行
-         */
-        onSlideChangeEnd (weswiper) {
-
-        },
-        /**
-         *  过渡时触发
-         */
-        onTransitionStart (weswiper) {
-
-        },
-        /**
-         *  过渡结束时执行
-         */
-        onTransitionEnd (weswiper) {
-
-        },
-        /**
-         *  手指触碰swiper并且拖动slide时执行
-         */
-        onSlideMove (weswiper) {
-
-        },
-        /**
-         * slide达到过渡条件 且规定了方向 向前（右、下）切换时执行
-         */
-        onSlideNextStart (weswiper) {
-
-        },
-        /**
-         *  slide达到过渡条件 且规定了方向 向前（右、下）切换结束时执行
-         */
-        onSlideNextEnd (weswiper) {
-
-        },
-        /**
-         *  slide达到过渡条件 且规定了方向 向前（左、上）切换时执行
-         */
-        onSlidePrevStart (swiper) {
-
-        },
-        /**
-         *  slide达到过渡条件 且规定了方向 向前（左、上）切换结束时执行
-         */
-        onSlidePrevEnd (weswiper) {
-
-        }
       }
     }
     data = {...this.def}
 
-    async onLoad ({sence}) {
-      console.log('index on load ...')
+    async onLoad (params, data) {
       await auth.login()
-      this.app = await Cache.app()
-      this.swiper = this.app.swiper
-      // 获取推广的节目内容
-      const sticky = await app.getSticky(this.app.stickys[0])
-      this.curplay = Object.assign({}, sticky, {play_status: 'stop'})
-      $wxapp.globalData.curplay = this.curplay
-      // 初始化页面内容
-      this.page = podcast.page()
-      await this.next()
-      this.loaded()
-//      this.preload()
-      $wxapp.emitter.on('audio_toggle', () => {
+    }
+
+    async onShow () {
+      this.$root.$parent.emitter.on('audio_toggle', () => {
         this.currentBar = 1
         this.$apply()
       })
-      $wxapp.emitter.on('liked', (item) => {
-        for (let i of this.page.list) {
-          if (i.id === item.id) {
-            i.i_like = item.i_like
-            i.like_count = item.like_count
-          }
-        }
-        Tips.success(item.i_like ? '已收藏' : '已取消')
+
+//      this.currentTab = 'special'
+      this.$root.$parent.emitter.on('tab-change', async (active) => {
+        this.currentTab = active
         this.$apply()
-      })
-      $wxapp.emitter.on('tab-change', async (active) => {
-        this.currentTab = active.name
-        this.$apply()
-        if (active.name === 'me') {
+        if (active === 'me') {
           this.$invoke('me', 'onShow')
-        } if (active.name === 'listen') {
-//          console.log(this.config)
-//          this.config.enablePullDownRefresh = false
-//          console.log(this.config)
-//          this.$redirect('./feed/index');
-//          console.log('active.naem ...')
-//          console.log(this.getCurrentPages())
-//          this.$root.config.enablePullDownRefresh = true
-          this.$apply()
+        } else if (active === 'feed') {
+          this.$invoke('feed', 'onShow')
         } else {
           await this.onShow()
         }
       })
     }
 
-    async onShow () {
-      this.currentTab = 'special'
-    }
-
     watch = {}
 
-    preload () {
-    }
-
     onShareAppMessage () {
-      return {
-        title: '育儿柚道',
-        desc: '育儿柚道-育儿有道！',
-        path: '/pages/index'
-      }
+      const title = '育儿柚道'
+      const url = '/pages/home/index'
+      const desc = '育儿柚道-育儿有道！'
+      return Tips.share(title, url, desc)
     }
     methods = {
       share () {
@@ -256,78 +102,29 @@
         if (detail.source === 'touch') {
           this.currentBar = event.current
         }
-      },
-      async touchStart (e) {
-        const touchPoint = e.touches[0]
-        const clientY = touchPoint.clientY
-        this.clientY = clientY
-//        if (this.clientY > 50) {
-//          this.isRefresh = true
-//        }
-      },
-      async touchEnd (e) {
-        const context = this
-        const upPoint = e.changedTouches[0]
-        const endY = upPoint.clientY
-        const pointTopintY = Math.abs(endY - this.clientY)
-        const status = this.scrollStatus
-        // 上拉刷新
-        if (status === 'top' && pointTopintY > 50) {
-//          this.isRefresh = true
-          this.reload()
-//          console.log('top refresh...')
-        }
-        // 上拉加载
-        if (status === 'bottom' && pointTopintY > 50) {
-          this.isLoadMore = true
-//          console.log('bottom loadmore...')
-          await this.next()
-        }
-        // 两秒后隐藏加载条
-        setTimeout(() => {
-          this.isRefresh = false
-          this.isLoadMore = false
-        }, 3000)
-      },
-      scrollToTop () {
-        this.scrollStatus = 'top'
-//        this.reload()
-        console.log('top')
-      },
-      async scrollToBottom () {
-        this.scrollStatus = 'bottom'
-        console.log('bottom')
-        await this.next()
-      },
-      scroll () {
-        this.scrollStatus = 'scrolling'
-        console.log('scrolling...')
       }
     }
 
     components = {
-      'my-swiper': MySwiper,
+//      'my-swiper': MySwiper,
       'Loadmore': Loadmore,
-//      'tab-bar': TabBar,
       'nav-bar': NavBar,
       'player-bar': PlayerBar,
-      'ad-swiper': AdSwiper,
       me: Me,
-      'podcast-card': PodcastCard,
-      recommend: Recommend
+//      'podcast-card': PodcastCard,
+      recommend: Recommend,
+      feed: Feed
     }
 
-    mixins = [base, pagination]
+//    mixins = [base, pagination]
     config = {
       'navigationBarTitleText': '育儿柚道'
-//      'navigationBarTextStyle': 'white',
-//      'navigationBarBackgroundColor': '#3b3a40',
-//      enablePullDownRefresh: true
     }
   }
 </script>
 
 <style lang="scss">
+  @import '../stylesheets/shared/functions';
   .tabbar {
     position: fixed;
     width: 100%;
@@ -388,10 +185,519 @@
     height: 40px;
   }
 
+  /*@import '../stylesheets/style';*/
+  .swiper {
+    width: 100%;
+    height: rpx(440);
+    .slide-image {
+      width: 100%;
+      height: rpx(440);
+    }
+  }
 
   /*.swiper {*/
     /*height: rpx(100);*/
     /*bottom: 0;*/
   /*}*/
+
+  @import "../stylesheets/style";
+  button[plain]{
+    border:none;
+  }
+
+  button.pain-btn[open-type="share"]{
+    background-color: transparent;
+    line-height: normal;
+    padding: 0;
+    margin: 0;
+  }
+  @mixin transform($args) {
+    -webkit-transform: $args;
+    -ms-transform: $args;
+    transform: $args;
+  }
+  @mixin translate($x: 0, $y: 0) {
+    @include transform(translate($x, $y));
+  }
+  @keyframes confetti {
+    60% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      @include transform(scale(1) translate(-50%, -50%));
+    }
+  }
+
+  .podcast-actions {
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    margin: 10px 0;
+    font-size: rpx(24);
+    color: #D0D0D0;
+
+  }
+
+  .podcast-actions__item {
+    display: inline-flex;
+    align-items: center;
+    align-content: center;
+    margin-right: rpx(30);
+    text{
+      margin-left: rpx(20);
+    }
+    .icon {
+      position: relative;
+      width: rpx(36);
+      height: rpx(36);
+    }
+  }
+
+  .post-actions__share {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin-left: 20px;
+  }
+
+  .podcast-card__header {
+    height: rpx(100);
+    width: 100%;
+    padding: rpx(16) 0 rpx(16) rpx(32);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    .foldable-card.is-expanded & {
+      margin-bottom: 0px;
+      height: inherit;
+      min-height: rpx(100);
+    }
+
+  }
+
+  .podcast-card__content {
+    display: none;
+    /*.is-expand {*/
+    /*margin-bottom: rpx(32);*/
+    /*}*/
+    .is-fold {
+      padding: 0 0 rpx(20) 0;
+      position: relative;
+      overflow: hidden;
+      text {
+        color: #4A4A4A;
+        word-break: break-all;
+        text-overflow: ellipsis;
+        display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
+        -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+        -webkit-line-clamp: 3; /** 显示的行数 **/
+        overflow: hidden; /** 隐藏超出的内容 **/
+      }
+      margin-bottom: rpx(10);
+    }
+    .is-expand {
+      padding: 0 0 rpx(20) 0;
+      position: relative;
+      overflow: hidden;
+      text {
+        color: #4A4A4A;
+      }
+    }
+    .more {
+      position: absolute;
+      bottom: 0;
+      left: 4px;
+      right: 4px;
+      text-align: center;
+      cursor: pointer;
+      padding: rpx(5) 0;
+      width: 100%;
+      color: #000;
+      &:after {
+        font-weight: 800;
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        box-shadow: inset 0 rpx(-15) rpx(30) #fff;
+        /*background: linear-gradient(180deg,hsla(0,0%,100%,0),hsla(0,0%,100%,.8));
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00ffffff",endColorstr="#ccffffff",GradientType=0);*/
+      }
+    }
+    .foldable-card.is-expanded & {
+      display: block;
+      padding: rpx(32);
+      border-top: 1px solid $gray-light;
+      .foldable-card.is-compact & {
+        padding: 8px;
+      }
+    }
+  }
+
+  .podcast-card {
+    z-index: 0;
+    display: block;
+    position: relative;
+    margin: rpx(30) rpx(30) 0 rpx(30);
+    /*margin: rpx(32) 0 0 0;*/
+    box-sizing: border-box;
+    background: $white;
+    /* Rectangle: */
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
+    border-radius: rpx(12);
+    .animate-box {
+      opacity: 0;
+    }
+    .fadeInUp {
+      -webkit-animation-name: fadeInUp;
+      animation-name: fadeInUp;
+    }
+    .animated-fast {
+      -webkit-animation-duration: .5s;
+      animation-duration: .5s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+    }
+    @include clear-fix;
+
+    // Compact Card
+    &.is-compact {
+      margin-bottom: 1px;
+      padding: 16px 24px;
+    }
+
+    &.is-card-link {
+      padding-right: 48px;
+    }
+
+    &.is-error {
+      box-shadow: inset 3px 0 0 $alert-red;
+    }
+
+    &.is-info {
+      box-shadow: inset 3px 0 0 $blue-wordpress;
+    }
+
+    &.is-success {
+      box-shadow: inset 3px 0 0 $alert-green;
+    }
+
+    &.is-warning {
+      box-shadow: inset 3px 0 0 $alert-yellow;
+    }
+  }
+
+  .player {
+    width: rpx(64);
+    height: rpx(64);
+    display: block;
+    margin-right: 20 rpx;
+  }
+
+  $gray: #A1a1a1;
+  $gray-light: lighten($gray, 33%); //#f3f6f8
+  $gray-dark: darken($gray, 38%); //#2e4453
+  $white: rgba(255, 255, 255, 1);
+
+  .more {
+    width: rpx(32);
+    height: rpx(32);
+    color: $gray-light;
+  }
+
+  /*.margin{*/
+  /*margin-top: rpx(50)*/
+  /*}*/
+
+  .plugin-meta__banner {
+    position: relative;
+    top: 0;
+    left: -16px;
+    /*width: 100%;*/
+    width: calc(100% + 32px);
+    overflow: hidden;
+    /*margin-bottom: 16px;*/
+    box-shadow: inset 0 0 2px 2px rgba(lighten($gray, 10), 0.1);
+    background: rgba(lighten($gray, 30), 0.3);
+
+    image {
+      display: block;
+      width: auto;
+      max-height: rpx(320);
+      margin: 0 auto;
+    }
+
+  }
+
+  .is-placeholder .plugin-meta__author {
+    color: transparent !important;
+  }
+
+  .podcasts-browser-item {
+    /*box-sizing: border-box;*/
+    /*display: block;*/
+    /*float: left;*/
+    /*margin: 0;*/
+    /*position: relative;*/
+    /*overflow: hidden;*/
+    /*width: 100%;*/
+  }
+
+  .is-placeholder {
+    color: transparent;
+    width: 100%;
+    height: rpx(100);
+    line-height: 24px;
+    margin-top: 8px;
+    background-color: lighten($gray, 30%);
+    animation: loading-fade 1.6s ease-in-out infinite;
+    opacity: 0.3;
+
+    &:before {
+      content: ' ';
+    }
+  }
+
+  .podcast__header {
+    display: flex;
+    .podcast-icon__img {
+      margin-left: 0px;
+      float: left;
+      border: 1px solid #f5f5f5;
+      margin-right: rpx(16);
+      border-radius: rpx(8);
+      width: rpx(80);
+      height: rpx(80);
+      position: relative;
+      transition: opacity .15s ease-in-out;
+      &.is-placeholder {
+        background-color: lighten($gray, 30%);
+        animation: loading-fade 1.6s ease-in-out infinite;
+        opacity: 0.3;
+      }
+      &.is-fallback {
+        background: lighten($gray, 20%);
+      }
+    }
+  }
+
+  .podcasts-browser__main-header {
+    background: $white;
+    box-shadow: 0 0 0 1px transparentize(lighten($gray, 20%), 0.5), 0 1px 2px lighten($gray, 30%);
+    flex-direction: column;
+    display: flex;
+  }
+
+  .podcasts-browser-item__title,
+  .podcasts-browser-item__author {
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+    .is-placeholder & {
+      color: transparent;
+      background-color: lighten($gray, 30%);
+      animation: loading-fade 1.6s ease-in-out infinite;
+    }
+  }
+
+  .podcasts-browser-item__title {
+    color: $gray-dark;
+    font-weight: 600;
+    font-size: rpx(30);
+    margin-top: 3px;
+  }
+
+  .podcasts-browser-item__author {
+    color: $gray;
+    font-size: 12px;
+  }
+
+  .podcasts-browser-item .plugin-icon.is-placeholder,
+  .podcasts-browser-item .plugin-icon[style*='undefined'] {
+    &:before {
+      width: 40px;
+      height: 40px;
+      font: normal 40px/40px Noticons;
+    }
+  }
+
+  .podcasts-browser-item .plugin-icon {
+    margin-right: 0;
+  }
+
+  .podcasts-browser-item .rating {
+    padding-top: 10px;
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .podcasts-browser-item__published {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    color: $alert-green;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    animation: appear .15s ease-in;
+
+    .gridicon {
+      margin-right: 3px;
+    }
+  }
+
+  @keyframes comment-detail__author-more-info {
+    0% {
+      display: none;
+      transform: scaleY(0);
+    }
+    1% {
+      display: block;
+      transform: scaleY(0);
+    }
+    100% {
+      transform: scaleY(1);
+    }
+  }
+
+  .podcast {
+    z-index: 100;
+    /*margin-top: rpx(30);*/
+    margin-bottom: rpx(32);
+    /*width: rpx(700);*/
+    width: rpx(780);
+    transform: translate(-30px);
+    .episode {
+      /*display: flex;*/
+      white-space: nowrap;
+      width: 100%;
+      ::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        color: transparent;
+      }
+      .empty {
+        width: rpx(220);
+        position: relative;
+        display: inline-block;
+        margin: rpx(10) rpx(32) rpx(10) auto;
+      }
+      .content {
+        transform: translate(rpx(60));
+        min-width: rpx(400);
+        position: relative;
+        display: inline-block;
+        margin: rpx(10) rpx(32) rpx(10) auto;
+      }
+      &-audio_card {
+        min-width: rpx(400);
+        /*display: block;*/
+        /*position: relative;*/
+        box-sizing: border-box;
+        background: #fefefe;
+        /* placeholder: */
+        /*background: #FFFFFF;*/
+        /*border: 1px solid rgba(0,0,0,0.05);*/
+        /*box-shadow: 0 2px 10px 0 rgba(0,0,0,0.08);*/
+        box-shadow: 0 0 0 1px transparentize(lighten($gray, 30%), .10), 0 2px 4px lighten($gray, 30%);
+        /*width: auto;*/
+        transform: translate(rpx(30));
+        margin-right: rpx(32);
+        padding: rpx(24);
+        text-align: left;
+
+        /*display: inline-block;*/
+        /*vertical-align:top;*/
+        display: inline-flex;
+        align-items: center;
+        /*justify-content:center;*/
+        &__info {
+          display: flex;
+        }
+        &__title {
+          font-size: 14px;
+          color: $gray-dark;
+          font-weight: 500;
+        }
+        &.is-error {
+          box-shadow: inset 3px 0 0 $alert-red;
+        }
+
+        &.is-info {
+          box-shadow: inset 3px 0 0 $blue-wordpress;
+        }
+
+        &.is-playing {
+          box-shadow: inset 3px 0 0 $blue-medium;
+        }
+
+        &.is-pause {
+          box-shadow: inset 3px 0 0 $alert-yellow;
+        }
+
+        &.is-placeholder {
+          background-color: lighten($gray, 30%);
+          animation: loading-fade 1.6s ease-in-out infinite;
+          opacity: 0.3;
+        }
+      }
+    }
+  }
+
+  .post-image {
+    position: relative;
+    width: 100%;
+    margin-top: 16px;
+    background-color: $gray-light;
+    text-align: center;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:hover {
+      cursor: zoom-out;
+    }
+
+    &.is-collapsed,
+    &.is-placeholder {
+      height: 144px;
+    }
+
+    &.is-collapsed {
+      background-size: cover;
+      background-position: center;
+
+      &:hover {
+        cursor: zoom-in;
+      }
+    }
+
+    &.is-placeholder {
+      background-color: lighten($gray, 30%);
+      animation: loading-fade 1.6s ease-in-out infinite;
+    }
+  }
+
+  .post-image__image {
+    vertical-align: bottom;
+  }
 
 </style>

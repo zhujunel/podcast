@@ -45,8 +45,11 @@ export default class Pagination {
     try {
       Object.assign(param, args)
       const data = await http.get(this.url, param)
+      // console.log('page ----')
+      // console.log(JSON.stringify(data.data))
       // 底部判断
       if (data.data === undefined || data.data === null || data.data.length < 1) {
+        console.log('data is null')
         if (this.toClear) {
           this.clear()
         } else {
@@ -59,10 +62,13 @@ export default class Pagination {
       await this.__before(data.data)
       // 设置数据
       if (this.toClear) {
+        // console.log('clear')
         this.list = data.data
         this.toClear = false
       } else {
+        // console.log('data...')
         this.list = this.list.concat(data.data)
+        // console.log(JSON.stringify(this.list))
         // this.__after(data.data)
       }
 

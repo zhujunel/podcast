@@ -140,19 +140,17 @@
               <view class="info" @tap="tap({{item}})">
                 <text class="title">
                   {{item.title}}
-                  sdfjasldfjasldfdsfjs
                 </text>
-                <text class="author" wx:if="{{item.type === 'book'}}">
-                  <!--{{item.author.name}}-->
-                </text>
+                <!--<text class="author" wx:if="{{item.type === 'book'}}">-->
+                  <!--{{item.author.nicename}}-->
+                <!--</text>-->
               </view>
               <view class="detail">
-                  {{item.excerpt}}
-                sdfasdflasdfkasdf
+                  {{item.except}}
               </view>
               <view class="anchor" @tap="tap({{item}})">
-                <!--<image class="avatar" src="{{item.anchor.avatar}}" mode="aspectFill"></image>-->
-                <!--<text class="name">{{item.anchor.name}}</text>-->
+                <image class="avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+                <text class="name">{{item.author.nicename}}</text>
               </view>
             </view>
 
@@ -573,18 +571,27 @@
       typeof onInit === 'function' && onInit(this)
     }
 
-    onShow() {
+    async onShow() {
+
     }
     async onLoad() {
-      this.page = podcast.page()
+      console.log('onload ...----re')
+      this.page = await podcast.stickys()
       await this.next()
       this.loaded()
+      $wxapp.emitter.emit('stickys-onload', this.page.list[0])
+//      console.log('recommend onload')
+//      this.page = await podcast.stickys()
+//      await this.next()
+//      this.loaded()
+//      console.log(this.page.list[0])
 //      console.log(JSON.stringify(this.option.curplay))
       const {option} = this
       const CONFIG = Object.assign(this, DEFAULT, option)
       CONFIG.items = this.page.list
       CONFIG.slideLength = this.page.list.length
       this.initSwiper(CONFIG)
+
       $wxapp.emitter.on('playing', (e) => {
         this.curplay = $wxapp.globalData.curplay
         this.curplay.status = 'playing'

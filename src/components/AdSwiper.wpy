@@ -1,15 +1,4 @@
 <style lang="scss" scoped>
-  /*@import '../stylesheets/style';*/
-  @import '../stylesheets/shared/functions';
-  .swiper {
-    width: 100%;
-    height: rpx(440);
-    .slide-image {
-      width: 100%;
-      height: rpx(440);
-    }
-  }
-
 </style>
 <template>
   <swiper

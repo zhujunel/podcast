@@ -1,19 +1,19 @@
 <template>
   <view>
     <view class="podcast-card foldable-card is-expanded">
-      <view class="podcast-card__header is-clickable has-border" @tap="headerTapAction({{item}})">
+      <view class="podcast-card__header is-clickable has-border">
 
         <view class="foldable-card__main">
           <view class="podcast__header">
             <view class="podcast-icon animate__appear">
-              <image class="podcast-icon__img" mode="aspectFill" src="{{item.authorInfo.avatar}}"></image>
+              <image class="podcast-icon__img" mode="aspectFill" src="{{item.author.avatar}}" @tap="showAuthor({{item.author.login}})"></image>
             </view>
-            <view class="podcasts-browser-item__info">
+            <view class="podcasts-browser-item__info" @tap="headerTapAction({{item}})">
               <view class="podcasts-browser-item__title">
                 {{ item.title }}
               </view>
               <view class="podcasts-browser-item__author">
-                @ {{ item.authorInfo.user_nicename }} - {{ item.modified }}
+                @ {{ item.author.nicename }} - {{ item.modified }}
               </view>
             </view>
           </view>
@@ -52,18 +52,18 @@
           <view class="content">
             <view
               class="episode-audio_card is-compact"
-              wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+              wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="audio" wx:key="id">
               <!-- 有播放状态的专辑 -->
-              <image class="gridicon player" src="../images/icon/icon-music-pause-mini.svg" @tap="playItem({{item}})"
-                     wx:if="{{(curplay.id === item.id && curplay.play_status === 'playing')}}"></image>
-              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{item}})"
-                     wx:if="{{(curplay.id === item.id && curplay.play_status === 'stop')}}"></image>
+              <image class="gridicon player" src="../images/icon/icon-music-pause-mini.svg" @tap="playItem({{audio}})"
+                     wx:if="{{(curplay.id === audio.id && curplay.play_status === 'playing')}}"></image>
+              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{audio}})"
+                     wx:if="{{(curplay.id === audio.id && curplay.play_status === 'stop')}}"></image>
               <!-- 没有状态的专辑 -->
-              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{item}})"
-                     wx:if="{{(curplay.id !== item.id)}}"></image>
+              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{audio}})"
+                     wx:if="{{(curplay.id !== audio.id)}}"></image>
 
               <view class="episode-audio_card__info">
-                <view class="episode-audio_card__title">{{item.title}}</view>
+                <view class="episode-audio_card__title">{{audio.title}}</view>
               </view>
             </view>
           </view>
@@ -82,9 +82,11 @@
             <text>0</text>
           </view>
         </view>
-
         <view class="podcast-actions__item">
-          <image class="icon" src="../images/icon/icon-share.svg"></image>
+          <button class="pain-btn" plain open-type="share" wx:if="{{share}}">
+            <image class="icon" src="../images/icon/icon-share.svg"></image>
+          </button>
+          <image class="icon" src="../images/icon/icon-share.svg" @tap="share" wx:else></image>
         </view>
       </view>
     </view>
@@ -93,17 +95,16 @@
 
 </template>
 <script>
-  /* eslint-disable no-undef */
+  /* eslint-disable no-undef,no-unused-vars */
 
   import wepy from 'wepy'
   import base from '../mixins/_base'
-  //  import FoldableCard from '../components/FoldableCard'
-  //  import Card from '../components/card'
   import postApi from '../api/podcast'
+  import WxUtils from '../utils/WxUtils'
 
   const $wxapp = wepy.$instance
 
-  export default class PodcastHeader extends wepy.component {
+  export default class PodcastCard extends wepy.component {
     mixins = [base]
 
     props = {
@@ -125,11 +126,10 @@
       curItem: {},
       curplay: {
         id: ''
-      }
+      },
+      share: null
     }
     components = {
-//      'card': Card,
-//      'foldable-card': FoldableCard
     }
     methods = {
       fold (item) {
@@ -137,28 +137,16 @@
         item.contentFold = this.isFold
       },
       async ilikeToggle (item) {
-//        if (item.i_like === true) {
-//          item.i_like = false
-//        } else {
-//          item.i_like = true
-//        }
-//        item.i_like = true
-//        item.like_count = 10
-//        console.log(JSON.stringify(item))
-//        this.$apply()
         if (!item.i_like) {
-          const data = await postApi.newLike(item)
+          const data = await postApi.newLike(item.id)
           item.i_like = true
           item.like_count = data.like_count
-          this.$apply()
         } else {
-          const data = await postApi.unLike(item)
+          const data = await postApi.unLike(item.id)
           item.i_like = false
           item.like_count = data.like_count
-          this.$apply()
         }
-        $wxapp.emitter.emit('liked', item)
-//        this.loaded()
+        this.$root.$parent.emitter.emit('liked', item)
       },
       playItem (audio) {
         wx.showToast({
@@ -197,12 +185,16 @@
           }
         })
       },
+      showAuthor (userId) {
+        this.$root.$navigate(`/pages/author/index?id=${userId}`)
+      },
       headerTapAction (item, $event) {
-        wx.navigateTo({
-          url: `/pages/detail/index?id=${item.id}&parent=${item.id}`,
-          success (res) {
-          }
-        })
+        this.$root.$navigate(`/pages/detail/index?id=${item.id}&parent=${item.id}`)
+//        wx.navigateTo({
+//          url: `/pages/detail/index?id=${item.id}&parent=${item.id}`,
+//          success (res) {
+//          }
+//        })
 //        this.$emit('header-tap', $event)
       }
     }
@@ -217,6 +209,7 @@
     }
 
     onLoad () {
+      this.share = WxUtils.canIUse('button.open-type.share')
       $wxapp.emitter.on('audio_toggle', ({playing, curplay}) => {
         this.playing = playing
 //        clearInterval(seek)
@@ -235,16 +228,54 @@
   }
 </script>
 <style lang="scss" scoped>
+  /*@import '../stylesheets/style';*/
+  .swiper {
+    width: 100%;
+    height: rpx(440);
+    .slide-image {
+      width: 100%;
+      height: rpx(440);
+    }
+  }
+
+  /*.swiper {*/
+  /*height: rpx(100);*/
+  /*bottom: 0;*/
+  /*}*/
+
   @import "../stylesheets/style";
+  button[plain]{
+    border:none;
+  }
+
+  button.pain-btn[open-type="share"]{
+    background-color: transparent;
+    line-height: normal;
+    padding: 0;
+    margin: 0;
+  }
+  @mixin transform($args) {
+    -webkit-transform: $args;
+    -ms-transform: $args;
+    transform: $args;
+  }
+  @mixin translate($x: 0, $y: 0) {
+    @include transform(translate($x, $y));
+  }
+  @keyframes confetti {
+    60% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      @include transform(scale(1) translate(-50%, -50%));
+    }
+  }
 
   .podcast-actions {
     box-sizing: border-box;
-    /*display: -webkit-box;*/
-    /*display: -ms-flexbox;*/
+    display: -webkit-box;
     display: flex;
-    /*-webkit-box-orient: horizontal;*/
-    /*-webkit-box-direction: normal;*/
-    /*-ms-flex-direction: row;*/
     flex-direction: row;
     height: auto;
     -webkit-box-pack: end;
@@ -253,18 +284,22 @@
     margin: 10px 0;
     font-size: rpx(24);
     color: #D0D0D0;
-    .icon {
-      position: relative;
-      top: 3px;
-      margin-right: 6px;
-      width: rpx(36);
-      height: rpx(36);
-    }
+
   }
 
   .podcast-actions__item {
-    display: inline-block;
-    margin-right: rpx(24);
+    display: inline-flex;
+    align-items: center;
+    align-content: center;
+    margin-right: rpx(30);
+    text{
+      margin-left: rpx(20);
+    }
+    .icon {
+      position: relative;
+      width: rpx(36);
+      height: rpx(36);
+    }
   }
 
   .post-actions__share {

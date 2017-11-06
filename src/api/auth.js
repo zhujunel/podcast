@@ -59,9 +59,9 @@ export default class auth extends base {
    * 服务端检查数据完整性
    */
   static async checkUserInfo(rawUser) {
-    const url = `${this.baseUrl}/auth`
+    const url = `${this.baseUrl}/auth/check`
     const param = {
-      action: 'check_user_info',
+      // action: 'check_user_info',
       rawData: rawUser.rawData,
       signature: rawUser.signature
       // thirdSession: this.getConfig('third_session'),
@@ -74,9 +74,9 @@ export default class auth extends base {
    * 服务端解密用户信息
    */
   static async decodeUserInfo(rawUser) {
-    const url = `${this.baseUrl}/auth/decode_userinfo`
+    const url = `${this.baseUrl}/auth/decode`
     const param = {
-      action: 'decode_userinfo',
+      // action: 'decode_userinfo',
       encryptedData: rawUser.encryptedData,
       iv: rawUser.iv
       // thirdSession: this.getConfig('third_session'),
@@ -110,9 +110,9 @@ export default class auth extends base {
    * 检查登录情况
    */
   static async verifyToken(token) {
-    const url = `${this.baseUrl}/auth`
+    const url = `${this.baseUrl}/auth/verify`
     const data = await this.post(url, {
-      action: 'verify_token',
+      // action: 'verify_token',
       token: token
     })
     return data

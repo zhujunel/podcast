@@ -17,7 +17,7 @@
     production: `https://api.picker.cc/${version}`
   }
   const APPID = 'S11SeYT2W'
-  const APP_API = `${hosts[env]}/app/${APPID}`
+  const APP_API = `${hosts[env]}/apps/${APPID}`
 
   /* eslint-disable no-undef,no-useless-return,no-unneeded-ternary,no-unused-vars,no-unused-expressions */
 
@@ -120,10 +120,11 @@
 
     config = {
       pages: [
+        'pages/author/index',
         'pages/index',
         'pages/home/login',
         'pages/detail/index',
-        'pages/feed/index'
+        'pages/feed/index',
       ],
       window: {
         backgroundTextStyle: 'dark',

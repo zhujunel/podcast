@@ -123,9 +123,9 @@
 
   <view class="tab">
     <view class="toolbar" wx:if="{{showToolbar}}">
-      <view class="tab_item" wx:for="{{navs}}" wx:key="{{item.name}}" @tap="change({{item}})">
-        <image class="icon" src="../images/icon/icon-{{item.name}}{{item.name === cur.name ? '-active' : ''}}.svg"></image>
-        <text class="icon-title {{item.name === cur.name ? 'icon-active' : ''}}">{{item.title}}</text>
+      <view class="tab_item" wx:for="{{navs}}" wx:key="{{item.name}}" @tap="changeNav({{item.name}})">
+        <image class="icon" src="../images/icon/icon-{{item.name}}{{item.name === active ? '-active' : ''}}.svg"></image>
+        <text class="icon-title {{item.name === active ? 'icon-active' : ''}}">{{item.title}}</text>
       </view>
     </view>
 
@@ -136,7 +136,6 @@
 
   import wepy from 'wepy'
 
-  const $wxapp = wepy.$instance
   const device = wx.getSystemInfoSync()  //  获取设备信息
   const DEFAULT = {
     /**
@@ -165,7 +164,7 @@
     props = {
       active: {
         twoWay: true,
-        type: Number
+        type: String
       },
       curplay: {
         twoWay: true,
@@ -179,10 +178,10 @@
     data = {
       navs: [
         {
-          name: 'special',
+          name: 'stickys',
           title: '精选'
         }, {
-          name: 'listen',
+          name: 'feed',
           title: '柚道'
         }, {
           name: 'qa',
@@ -203,7 +202,7 @@
       percent: 0,
       start: 100,
       end: 0,
-      cur: {}
+      curNav: ''
     }
     watch = {
 //      curplay (newValue, oldValue) {
@@ -212,11 +211,12 @@
     }
     methods = {
       tap () {
-        wx.navigateTo({
-          url: `/pages/detail/index?id=${$wxapp.globalData.curplay.id}&parent=${$wxapp.globalData.curplay.parent}`,
-          success (res) {
-          }
-        })
+//        this.$redirect()
+//        wx.navigateTo({
+//          url: `/pages/detail/index?id=${_wxapp.globalData.curplay.id}&parent=${_wxapp.globalData.curplay.parent}`,
+//          success (res) {
+//          }
+//        })
       },
       updatePlayer (curplay) {
         this.curplay = curplay
@@ -224,11 +224,18 @@
       },
       showDetail (e) {
       },
-      change (item, e) {
-        this.cur.active = false
-        this.cur = item
+      changeNav (navName) {
+//        console.log(navName)
+//        this.active = navName
+//        this.curNav.active = false
+//        this.curNav = navName
+//        this.$apply()
+//        console.log('lalaa -----' + JSON.stringify(this.curNav))
+//        this.$root.$parent.emitter.emit('test')
+//        this.active = navName
+        this.$root.$parent.emitter.emit('tab-change', navName)
 //        this.cur.active = true
-        this.$apply()
+//        this.$apply()
 //        const iconUrl = '../images/icon/icon'
 //        const {onChange} = this
 //        typeof onChange === 'function' && onChange(this, e) //  当手指碰触到slide时执行
@@ -236,7 +243,7 @@
 //        if (this.active === 1) {
 //          this.$invoke('./profile', 'onShow')
 //        }
-        $wxapp.emitter.emit('tab-change', this.cur)
+//        console.log(JSON.stringify(this.cur))
 //        this.$apply()
       },
       playingToggle () {
@@ -260,8 +267,12 @@
     }
 
     onLoad () {
+//      for (let cur of this.navs) {
+//        if (cur.name === this.active) {
+//        }
+//      }
 //      const that = this
-      this.cur = this.navs[0]
+//      this.curNav = this.navs[0]
 /*      $wxapp.emitter.on('playing', e => {
         clearInterval(seek)
         that.curplay = $wxapp.globalData.curplay

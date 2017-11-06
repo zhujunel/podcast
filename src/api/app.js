@@ -7,7 +7,7 @@ export default class app extends base {
    * 获取应用配置
    */
   static async options() {
-    const url = `${this.baseUrl}/options?key=_wxapp`
+    const url = `${this.baseUrl}?key=_wxapp`
     return await this.get(url)
   }
 
