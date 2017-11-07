@@ -575,7 +575,6 @@
 
     }
     async onLoad() {
-      console.log('onload ...----re')
       this.page = await podcast.stickys()
       await this.next()
       this.loaded()

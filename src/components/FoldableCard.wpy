@@ -139,7 +139,6 @@
       </view>
       <slot name="footer"></slot>
     </view>
-
   </view>
 
 </template>
@@ -192,7 +191,9 @@
     }
     methods = {
       headerTapAction ($event) {
-        console.log($event)
+//        console.log($event)
+//        console.log(this.href)
+//        this.$emit('header-tap', $event)
         return this.tapableHeader ? this.handleTap() : null
 //        this.current = this.item
 //        this.isExpanded = !this.isExpanded

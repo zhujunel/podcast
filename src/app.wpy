@@ -120,11 +120,12 @@
 
     config = {
       pages: [
-        'pages/author/index',
+//        'pages/detail/index',
         'pages/index',
         'pages/home/login',
         'pages/detail/index',
         'pages/feed/index',
+        'pages/author/index'
       ],
       window: {
         backgroundTextStyle: 'dark',

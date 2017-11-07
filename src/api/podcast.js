@@ -86,6 +86,27 @@ export default class podcast extends base {
   }
 
   /**
+   * 获取当前内容的评论回复
+   * @returns {Promise.<void>}
+   */
+  static async getReplies (postId) {
+    // TODO: 需要支持下拉加载与分页 @basil 1107
+    const url = `${this.baseUrl}/posts/${postId}/replies`
+    const data = await this.get(url)
+    return data
+  }
+
+  /**
+   * 新建评论j
+   * @param postId
+   * @returns {Promise.<void>}
+   */
+  static async repliesNew (postId, content) {
+    const url = `${this.baseUrl}/posts/${postId}/replies/new`
+    const data = await this.post(url, { content: content })
+    return data
+  }
+  /**
    * 前置数据处理
    * @param item
    * @returns {Promise.<*>}
