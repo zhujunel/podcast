@@ -187,7 +187,6 @@
   }
   .playlist {
     font-size: 26rpx;
-    /* 作者介绍、朗读者介绍: */
     color: rgba(0,0,0,0.58);
     border-bottom: 1px solid #ededed;
     margin-bottom: rpx(30);
@@ -534,13 +533,6 @@
       popup: Popup
     }
     mixins = [base]
-//    mixins = [base, pagination]
-    config = {
-//      'navigationBarTitleText': '育儿柚道',
-//      'navigationBarTextStyle': 'white',
-//      'navigationBarBackgroundColor': '#3b3a40',
-//      'disableScroll': false
-    }
     data = {
       userInfo: {
         nickName: '加载中...',
@@ -630,7 +622,6 @@
         $wxapp.globalData.playindex = 0
         $wxapp.playing()
         $wxapp.emitter.emit('playing')
-//        $wxapp.playing()
       },
       playItem(song, e) {
         wx.showToast({
@@ -716,7 +707,6 @@
       await this.getDetail(option.parent)
       await this.getList(option.id, option.parent)
       this.loaded()
-//      this.replies = await podcastApi.getReplies(option.id)
       await this.getReplies(option.id)
       this.loaded()
 

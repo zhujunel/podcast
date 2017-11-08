@@ -20,7 +20,7 @@ export default class podcast extends base {
    * 获取节目列表从全部分类中
    */
   static page () {
-    const url = `${this.baseUrl}/posts?type=post_format`
+    const url = `${this.baseUrl}/posts?category=podcast`
     return new Page(url, this.__before.bind(this), this.__after.bind(this))
   }
 

@@ -38,36 +38,40 @@
     border-bottom: $border;
     display: flex;
     flex-direction: column;
+    color: $grey;
 
     .item {
+      display: flex;
+      flex-direction: row;
       justify-content: center;
-
+      align-items: center;
       height: rpx(100);
-      position: relative;
+      /*position: relative;*/
       /*-webkit-box-sizing: border-box;*/
       /*-moz-box-sizing: border-box;*/
       box-sizing: border-box;
       padding: rpx(20);
       border-bottom: $border;
+
       .icon {
-        width: rpx(60);
-        height: rpx(60);
-        position: absolute;
+        width: rpx(48);
+        height: rpx(48);
         margin-left: rpx(15);
       }
       .arrow_left {
-        position: absolute;
-        right: rpx(20);
+        /*right: rpx(20);*/
         width: rpx(30);
         height: rpx(40);
-        margin-top: rpx(-32);
       }
       .title {
-        justify-content: center;
-        margin-top: rpx(10);
-        margin-left: rpx(100);
-        display: block;
+        margin-left: rpx(30);
+        flex: 1;
+        text-align: left;
         font-size: rpx(33);
+      }
+      .say {
+        color: #A1a1a1;
+        font-size: rpx(24);
       }
     }
   }
@@ -82,25 +86,24 @@
     <view class="list">
       <!--<block wx:for-items="{{list}}" wx:for-index="index" wx:for-item="item">-->
       <view class="item">
-        <image class="icon" src="../../images/podcast_on.png"></image>
+        <image class="icon" src="../../images/icon/icon-user-like.svg"></image>
+        <text class="title">我喜欢的 ({{profile.likes}})</text>
+        <view class="say" style="color:#A1a1a1;"> (敬请期待)</view>
+        <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
+      </view>
+      <view class="item">
+        <image class="icon" src="../../images/icon/icon-feed-active.svg"></image>
         <text class="title">我的柚道</text>
-        <image class="arrow_left" src="../images/arrow_left.png"></image>
+        <view class="say" style="color:#A1a1a1;"> (敬请期待)</view>
       </view>
       <view class="item">
-        <image class="icon" src="../../images/podcast_on.png"></image>
-        <text class="title">我的订阅 </text>
-        <image class="arrow_left" src="../images/arrow_left.png"></image>
-      </view>
-      <view class="item">
-        <image class="icon" src="../../images/ask_on.png"></image>
-        <text class="title">我的提问</text>
-        <image class="arrow_left" src="../images/arrow_left.png"></image>
+        <image class="icon" src="../../images/icon/icon-qa-active.svg"></image>
+        <text class="title">我的柚答</text>
+        <view class="say" style="color:#A1a1a1;"> (敬请期待)</view>
+        <!--<image class="arrow_left" src="../images/arrow_left.png"></image>-->
       </view>
       <!--</block>-->
     </view>
-    <!--<album :list="dAlbum"/>-->
-    <!--<emoji :list="dSetting"/>-->
-    <!--<setting :list="dEmoji"/>-->
   </view>
 </template>
 
@@ -109,11 +112,15 @@
   import wepy from 'wepy'
   import base from '../mixins/_base'
   import auth from '../api/auth'
+  import user from '../api/users'
 
   const $wxapp = wepy.$instance
   export default class profile extends wepy.component {
     mixins = [base]
     data = {
+      profile: {
+        likeds: 0
+      },
       userInfo: {
         nickName: '加载中...',
         // 头像占位图
@@ -128,15 +135,19 @@
         }
       }
     }
-
+    async onLoad () {
+//      console.log('alala - - on load me ')
+    }
     async onShow () {
+//      console.log('lalala --on shoe me ')
       // 权限校验
       const result = await auth.user({block: true, redirect: true})
       if (!result) return
       this.userInfo = JSON.parse($wxapp.globalData.auth.user)
       this.loaded()
+      this.profile = await user.me()
+      this.loaded()
     }
-
     computed = {
     }
   }

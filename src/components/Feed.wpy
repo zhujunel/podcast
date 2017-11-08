@@ -68,13 +68,6 @@
       ]
     }
 
-    events = {
-//      'index-broadcast': (...args) => {
-//        let $event = args[args.length - 1]
-//        console.log(`${this.$name} receive ${$event.name} from ${$event.source.name}`)
-//      }
-    }
-
     methods = {
       scrollToTop () {
         this.scrollStatus = 'top'
@@ -99,7 +92,6 @@
 //        }
       },
       async touchEnd (e) {
-//        const context = this
         const upPoint = e.changedTouches[0]
         const endY = upPoint.clientY
         const pointTopintY = Math.abs(endY - this.clientY)
@@ -108,12 +100,10 @@
         if (status === 'top' && pointTopintY > 50) {
 //          this.isRefresh = true
           this.reload()
-//          console.log('top refresh...')
         }
         // 上拉加载
         if (status === 'bottom' && pointTopintY > 50) {
           this.isLoadMore = true
-//          console.log('bottom loadmore...')
           await this.next()
         }
         // 两秒后隐藏加载条

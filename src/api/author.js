@@ -3,7 +3,7 @@ import base from './base'
 
 export default class Author extends base {
   /**
-   * 获取节目信息
+   * 获取作者信息
    * @param userId user_login
    * @returns {Promise.<*>}
    */

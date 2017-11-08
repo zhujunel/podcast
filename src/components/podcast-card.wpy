@@ -33,7 +33,7 @@
         <!--<button class="foldable-card__action foldable-card__expand"></button>-->
       </view>
       <view class="podcast-card__content" wx:if="{{isExpanded}}" @tap="fold({{item}})">
-        <view class="is-fold" wx:if="{{item.content}}">
+        <view class="is-fold" wx:if="{{item.content}}" @tap="headerTapAction({{item}})">
           <text>{{ item.content}}</text>
           <!--<view class="more">-->
           <!--<text class="icon-ios-arrow-{{item.contentFold ? 'down' : 'up'}}"></text>-->
@@ -77,7 +77,7 @@
             <image class="icon" src="../images/icon/icon-like{{item.i_like ? '-active': ''}}.svg"></image>
             <text>{{item.like_count}}</text>
           </view>
-          <view class="podcast-actions__item">
+          <view class="podcast-actions__item" @tap="headerTapAction({{item}})">
             <image class="icon" src="../images/icon/icon-comment.svg"></image>
             <text>{{item.replies_count}}</text>
           </view>

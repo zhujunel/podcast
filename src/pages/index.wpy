@@ -47,6 +47,7 @@
       share: null,
       notices: null,
       currentTab: 'stickys',
+//      currentTab: 'me',
       currentBar: 0,
       curplay: {
         title: '',
