@@ -38,7 +38,7 @@
     border-bottom: $border;
     display: flex;
     flex-direction: column;
-    color: $grey;
+    color: grey;
 
     .item {
       display: flex;

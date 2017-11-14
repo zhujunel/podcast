@@ -1,6 +1,7 @@
 <template>
   <view style="height: 600px">
 
+    <!--<p-label>lalala</p-label>-->
     <scroll-view
       scroll-y style="height: 600px;"
       @scrolltoupper="scrollToTop"
@@ -14,11 +15,18 @@
           <text>正在刷新...</text>
         </view>
       </view>
-      <!--<view wx:if="{{currentTab === 'listen'}}">-->
-      <ad-swiper :config.sync="swiper"></ad-swiper>
       <view class="tab_item">
         <repeat for="{{page.list}}" key="index" index="index" item="item">
-          <podcast-card :item.sync="item" :id="item.id"></podcast-card>
+          <!--<p-box title="item.title" desc="item.content">-->
+            <p-card title="item.title" desc="item.content" :audio="item">
+              <p-label wx:if="{{index === 0 }}">育儿</p-label>
+              <p-label wx:if="{{index === 0}}">学习</p-label>
+              <p-label wx:if="{{index === 1 }}">情绪管理</p-label>
+              <p-label wx:if="{{index === 1}}">胆小</p-label>
+              <image class="" mode="aspectFill" src="{{item.author.avatar}}" slot="author"> </image>
+            </p-card>
+          <!--</p-box>-->
+          <!--<question-card :item.sync="item" :id="item.id"></question-card>-->
         </repeat>
         <!-- 加载提示 -->
         <Loadmore :page.sync="page"></Loadmore>
@@ -29,16 +37,19 @@
   </view>
 </template>
 <script>
-  /* eslint-disable no-trailing-spaces,no-unused-vars */
+  /* eslint-disable no-trailing-spaces */
 
   import wepy from 'wepy'
   import Loadmore from '../components/ui/loadmore'
-  import AdSwiper from '../components/AdSwiper'
-  import PodcastCard from '../components/podcast-card'
+//  import PodcastCard from '../components/podcast-card'
   import base from '../mixins/_base'
   import pagination from '../mixins/pagination'
   import Cache from '../utils/Cache'
+  import pBox from '../components/ui/p-box/index'
+  import pCard from './ui/p-box/card'
+  import pLabel from '../components/ui/p-label/index'
 //  import app from '../api/app'
+
   import podcast from '../api/podcast'
 
   import Tips from '../utils/Tips'
@@ -47,9 +58,11 @@
     mixins = [base, pagination]
 
     components = {
-      'Loadmore': Loadmore,
-      'ad-swiper': AdSwiper,
-      'podcast-card': PodcastCard
+      'p-box': pBox,
+      'p-card': pCard,
+      'p-label': pLabel,
+      'Loadmore': Loadmore
+//      'question-card': PodcastCard
     }
     props = {
       list: {}
@@ -113,8 +126,7 @@
         }, 3000)
       }
     }
-
-    async onLoad () {
+    async onShow () {
       this.$root.$parent.emitter.on('liked', (item) => {
         for (let i of this.page.list) {
           if (i.id === item.id) {
@@ -122,17 +134,22 @@
             i.like_count = item.like_count
           }
         }
+        Tips.success(item.i_like ? '已收藏' : '已取消')
         this.$apply()
-//        Tips.success(item.i_like ? '已收藏' : '已取消')
       })
-    }
-    async onShow () {
+
       this.app = await Cache.app()
       this.swiper = this.app.options.swiper
 
-      this.page = podcast.page('youdao')
+      this.page = podcast.page('youda')
       await this.next()
       this.loaded()
     }
   }
 </script>
+<style lang="scss">
+  .label {
+    margin-right: 20rpx;
+  }
+
+</style>

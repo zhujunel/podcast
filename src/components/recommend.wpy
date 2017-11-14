@@ -128,16 +128,20 @@
         <view class="item" style="width: {{itemWidth}}px;" >
           <view class="itemSelf" style="height: calc(100% - 160rpx);">
             <view class="article" >
-              <view class="cover" style=" box-shadow: 0 4rpx 30rpx 0rpx rgba(0, 0, 0, 0.15);  box-sizing: content-box;  background: url({{item.featured_image}});  background-position: center center; {{item.type === 'book' ? 'border: 1px solid #fafafa; width: 248.41rpx; height: 350rpx; background-size: 248.41rpx 350rpx;' : 'border: 3px solid #fafafa; width:535rpx; height: 380rpx; background-size: 535rpx 380rpx; '}}">
-                <view class="play">
-                  <!-- 有播放状态的专辑 -->
-                  <image class="" src="../images/quick/pause_big.png" @tap="stop({{item}})" hidden="{{!(curplay.id === item.id && curplay.status == 'playing')}}"></image>
-                  <image class="" src="../images/quick/play_big.png" @tap="playList({{item}})" hidden="{{!(curplay.id === item.id && curplay.status == 'stop')}}"></image>
-                  <!-- 没有状态的专辑 -->
-                  <image class="" src="../images/quick/play_big.png" @tap="playList({{item}})" hidden="{{!(curplay.id !== item.id)}}"></image>
-                </view>
+              <view class="cover" @tap="tapAction({{item}})">
+                <image class="plugin-meta__banner-image post-image__image"
+                       mode="{{item._.header_collapsed ? 'aspectFit': 'aspectFill'}}" src="{{item.featured_image}}"></image>
               </view>
-              <view class="info" @tap="tap({{item}})">
+              <!--<view class="cover" style=" box-shadow: 0 4rpx 30rpx 0rpx rgba(0, 0, 0, 0.15);  box-sizing: content-box;  background: url({{item.featured_image}});  background-position: center center; {{item.type === 'book' ? 'border: 1px solid #fafafa; width: 248.41rpx; height: 350rpx; background-size: 248.41rpx 350rpx;' : 'border: 3px solid #fafafa; width:535rpx; height: 380rpx; background-size: 535rpx 380rpx; '}}">-->
+                <!--<view class="play">-->
+                  <!--&lt;!&ndash; 有播放状态的专辑 &ndash;&gt;-->
+                  <!--<image class="" src="../images/quick/pause_big.png" @tap="stop({{item}})" hidden="{{!(curplay.id === item.id && curplay.status == 'playing')}}"></image>-->
+                  <!--<image class="" src="../images/quick/play_big.png" @tap="playList({{item}})" hidden="{{!(curplay.id === item.id && curplay.status == 'stop')}}"></image>-->
+                  <!--&lt;!&ndash; 没有状态的专辑 &ndash;&gt;-->
+                  <!--<image class="" src="../images/quick/play_big.png" @tap="playList({{item}})" hidden="{{!(curplay.id !== item.id)}}"></image>-->
+                <!--</view>-->
+              <!--</view>-->
+              <view class="info" @tap="tapAction({{item}})">
                 <text class="title">
                   {{item.title}}
                 </text>
@@ -148,8 +152,8 @@
               <view class="detail">
                   {{item.except}}
               </view>
-              <view class="anchor" @tap="tap({{item}})">
-                <image class="avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+              <view class="anchor" @tap="showAuthor({{item.author.login}})">
+                <image class="avatar" src="{{item.author.avatar}}" mode="aspectFill"></image>
                 <text class="name">{{item.author.nicename}}</text>
               </view>
             </view>
@@ -240,6 +244,14 @@
     computed = {
     }
     methods = {
+      tapAction (item, $event) {
+        this.$root.$navigate(`/pages/detail/index?id=${item.id}&parent=${item.id}`)
+//        })
+//        this.$emit('header-tap', $event)
+      },
+      showAuthor (userId) {
+        this.$root.$navigate(`/pages/author/index?id=${userId}`)
+      },
       togglePlay (item) {
         if (this.curplay.id === item.id) {
           this.curplay.playing = !this.curplay.playing
@@ -571,10 +583,10 @@
       typeof onInit === 'function' && onInit(this)
     }
 
+//    async onShow() {
+//
+//    }
     async onShow() {
-
-    }
-    async onLoad() {
       this.page = await podcast.stickys()
       await this.next()
       this.loaded()

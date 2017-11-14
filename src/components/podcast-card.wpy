@@ -146,9 +146,13 @@
           item.i_like = false
           item.like_count = data.like_count
         }
+        this.$apply()
+        // 如果 未处理会卡住
+        this.loaded()
         this.$root.$parent.emitter.emit('liked', item)
       },
       playItem (audio) {
+//        console.log(JSON.stringify(audio))
         wx.showToast({
           title: '加载中',
           icon: 'loading',

@@ -4,6 +4,7 @@
     <recommend  wx:if="{{currentTab === 'stickys'}}" />
     <feed wx:if="{{currentTab === 'feed'}}"></feed>
     <me class="tab_item" wx:if="{{currentTab === 'me'}}"></me>
+    <youda class="tab_item" wx:if="{{currentTab === 'qa'}}"></youda>
     <swiper class="tabbar" current="{{currentBar}}" style="height: 100rpx;" @change="tabchange">
         <swiper-item>
           <nav-bar :active.sync="currentTab"></nav-bar>
@@ -34,6 +35,7 @@
   import Me from '../components/profile'
 //  import PodcastCard from '../components/podcast-card'
   import Recommend from '../components/recommend'
+  import Youda from '../components/youda'
 //  import moment from 'moment'
   import Feed from '../components/Feed'
 
@@ -62,27 +64,35 @@
     }
     data = {...this.def}
 
-    async onLoad (params, data) {
+    async onLoad ({sence}) {
+//      const result = await auth.user({block: true, redirect: true})
+//      if (!result) return
+//      this.loaded()
+//      this.$root.$parent.emitter.emit('tab-change', 'feed')
       await auth.login()
+      this.loaded()
+      this.$invoke('recommend', 'onShow')
+//      console.log(JSON.stringify(res))
     }
-
     async onShow () {
       this.$root.$parent.emitter.on('audio_toggle', () => {
         this.currentBar = 1
         this.$apply()
       })
-
 //      this.currentTab = 'special'
       this.$root.$parent.emitter.on('tab-change', async (active) => {
         this.currentTab = active
-        this.$apply()
         if (active === 'me') {
           this.$invoke('me', 'onShow')
         } else if (active === 'feed') {
           this.$invoke('feed', 'onShow')
+        } else if (active === 'qa') {
+          this.$invoke('youda', 'onShow')
         } else {
-          await this.onShow()
+          this.currentTab = 'stickys'
+          this.$invoke('recommend', 'onShow')
         }
+        this.$apply()
       })
     }
 
@@ -114,12 +124,14 @@
       me: Me,
 //      'podcast-card': PodcastCard,
       recommend: Recommend,
-      feed: Feed
+      feed: Feed,
+      youda: Youda
     }
 
-//    mixins = [base, pagination]
+    mixins = [base, pagination]
     config = {
-      'navigationBarTitleText': '育儿柚道'
+      'navigationBarTitleText': '育儿柚道',
+      'disableScroll': true
     }
   }
 </script>

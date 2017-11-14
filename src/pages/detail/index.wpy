@@ -295,14 +295,15 @@
     height: rpx(120);
     /*right: rpx(30);*/
     z-index: 100;
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    vertical-align: middle;
+    /*display: flex;*/
+    /*flex-flow: row;*/
+    /*align-items: flex-end;*/
+    /*vertical-align: middle;*/
     padding-bottom: rpx(20);
     background-image: linear-gradient(-180deg, rgba(238,238,238,0.00) 0%, #FFFFFF 50%);
-    &__form {
-      width: 100%;
+    /*flex: 1;*/
+    /*&__form {*/
+      /*width: 100%;*/
       /*margin-left: rpx(30);*/
       /*flex: 1;*/
       /*flex-flow: row;*/
@@ -311,8 +312,8 @@
         /*color: #808080;*/
         /*width: auto;*/
       /*}*/
-    }
-    &__submit {
+    /*}*/
+    /*&__submit {*/
       /*float: right;*/
       /*width: rpx(150);*/
       /*align-items: center;*/
@@ -321,24 +322,25 @@
       /*align-items: center;*/
       /*margin-right: rpx(20);*/
       /*button {*/
-        border: none;
-        width: auto;
-        font-size: rpx(28);
-        color: $blue-medium;
+        /*border: none;*/
+        /*width: auto;*/
+        /*font-size: rpx(28);*/
       /*}*/
-    }
-    &__input{
-      margin-left: rpx(30);
-      flex: 1;
-      flex-flow: row;
-      align-items: center;
-      textarea {
-        color: #808080;
-        width: auto;
-      }
-    }
+    /*}*/
+    /*&__input{*/
+      /*margin-left: rpx(30);*/
+      /*flex: 1;*/
+      /*flex-flow: row;*/
+      /*align-items: center;*/
+      /*textarea {*/
+        /*color: #808080;*/
+        /*width: auto;*/
+      /*}*/
+    /*}*/
     &__actions {
       /*flex: 1;*/
+      /*align-self: flex-end;*/
+      float: right;
       display: inline-flex;
       align-items: center;
       margin-right: rpx(20);
@@ -495,21 +497,21 @@
       <!--<textarea placeholder="form 中的 textarea" name="textarea"/>-->
       <!--<button form-type="submit"> 提交 </button>-->
     <!--</form>-->
-    <form bindsubmit="bindFormSubmit">
+    <!--<form bindsubmit="bindFormSubmit" style="position: fixed; bottom: 0;">-->
       <view class="quick">
-        <view class="quick__input">
-          <textarea @blur="bindTextAreaBlur" focus="{{focus}}" @focus="bindTextAreaFocus" name="content" value="{{content}}" auto-height placeholder="写下您的想法..." />
-        </view>
-        <view class="quick__actions" wx:if="{{focus}}">
-          <button class="quick__submit" formType="submit" wx:if="{{focus}}">发送</button>
-        </view>
-        <view class="quick__actions" wx:if="{{!focus}}">
+        <!--<view class="quick__input">-->
+          <!--<textarea @blur="bindTextAreaBlur" focus="{{focus}}" @focus="bindTextAreaFocus" name="content" value="{{content}}" auto-height placeholder="写下您的想法..." />-->
+        <!--</view>-->
+        <!--<view class="quick__actions" wx:if="{{focus}}">-->
+          <!--<button class="quick__submit" formType="submit" wx:if="{{focus}}">发送</button>-->
+        <!--</view>-->
+        <view class="quick__actions">
           <image class="quick__actions--share" src="../../images/quick/share.png" @tap="share"></image>
           <image class="quick__actions--player" src="../../images/quick/play_big.png" hidden="{{playing}}" @tap="playAll"></image>
           <image class="quick__actions--player" src="../../images/quick/pause_big.png" hidden="{{!playing}}" @tap="pauseAll"></image>
         </view>
       </view>
-    </form>
+    <!--</form>-->
 
   </view>
 </template>
@@ -562,7 +564,7 @@
       loading: true,
       downloadPercent: 0,
       percent: 50,
-      playing: false,
+//      playing: false,
       curplay: {
         play_status: 'stop'
       },
@@ -575,7 +577,7 @@
     }
     computed = {
       playing () {
-        return $wxapp.globalData.curplay.play_status === 'playing'
+        return this.curplay.play_status === 'playing'
       }
     }
     methods = {
@@ -590,8 +592,9 @@
         this.$apply()
       },
       bindButtonTap: function() {
-        this.focus = true
-        this.$apply()
+        this.$root.$redirect(`/pages/detail/comment?postId=${this.detail.id}`)
+//        this.focus = true
+//        this.$apply()
       },
       bindTextAreaBlur: function(e) {
         this.focus = false
@@ -610,18 +613,23 @@
         })
       },
       pauseAll() {
+//        this.playing = false
+//        console.log(JSON.stringify(this.curplay))
         if (this.curplay.play_status === 'playing') {
           this.curplay.play_status = 'stop'
           $wxapp.pauseMusic()
         }
+//        this.$apply()
       },
       playAll() {
+//        this.playing = true
         $wxapp.globalData.playlist = this.list
         this.curplay.play_status = 'playing'
         $wxapp.globalData.curplay = Object.assign({}, this.list[0], {play_status: 'playing'})
         $wxapp.globalData.playindex = 0
         $wxapp.playing()
         $wxapp.emitter.emit('playing')
+//        this.$apply()
       },
       playItem(song, e) {
         wx.showToast({

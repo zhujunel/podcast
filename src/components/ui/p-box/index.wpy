@@ -1,43 +1,5 @@
-<template>
-  <view class="p-example p-example--wrap">
-    <!-- head -->
-    <view wx:if="{{title || desc}}" class="p-example__head">
-      <view wx:if="{{title}}" class="p-example__head--title">{{title}}</view>
-      <view wx:if="{{title && desc}}" class="p-example__head--line"></view>
-      <view wx:if="{{desc}}" class="p-example__head--desc">{{desc}}</view>
-    </view>
-
-    <slot></slot>
-
-    <!-- foot -->
-    <!--<navigator class="p-example__foot" openType="switchTab" url="/pages/component/index" hover-class="none">-->
-      <!--<image class="p-example__foot&#45;&#45;icon" src="https://s10.mogucdn.com/mlcdn/c45406/170913_0e8g7dl1f2l75a8h6he12436a8024_152x23.png"></image>-->
-    <!--</navigator>-->
-  </view>
-</template>
-
-<script>
-  import wepy from 'wepy'
-
-  export default class Card extends wepy.component {
-    props = {
-      title: {
-        type: String,
-        value: '示例标题'
-      },
-      desc: {
-        type: String,
-        value: '示例描述'
-      },
-      source: {
-        type: String,
-        value: ''
-      }
-    }
-  }
-</script>
 <style lang="scss">
-  .p-example {
+  .p-box {
     &--wrap {
       padding: 0 10rpx;
     }
@@ -72,5 +34,44 @@
         height: 23rpx;
       }
     }
-}
+  }
 </style>
+
+<template>
+  <view class="p-box p-box--wrap">
+    <!-- head -->
+    <view wx:if="{{title || desc}}" class="p-box__head">
+      <view wx:if="{{title}}" class="p-box__head--title">{{title}}</view>
+      <view wx:if="{{title && desc}}" class="p-box__head--line"></view>
+      <view wx:if="{{desc}}" class="p-box__head--desc">{{desc}}</view>
+    </view>
+
+    <slot></slot>
+
+    <!-- foot -->
+    <!--<navigator class="p-box__foot" openType="switchTab" url="/pages/component/index" hover-class="none">-->
+      <!--<image class="p-box__foot&#45;&#45;icon" src="https://s10.mogucdn.com/mlcdn/c45406/170913_0e8g7dl1f2l75a8h6he12436a8024_152x23.png"></image>-->
+    <!--</navigator>-->
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Box extends wepy.component {
+    props = {
+      title: {
+        type: String,
+        default: '示例标题'
+      },
+      desc: {
+        type: String,
+        default: '示例描述'
+      },
+      source: {
+        type: String,
+        default: ''
+      }
+    }
+  }
+</script>

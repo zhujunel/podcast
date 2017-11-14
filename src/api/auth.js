@@ -6,10 +6,19 @@ export default class auth extends base {
    * 一键登录
    */
   static async login() {
-    const _token = this.getConfig('_token')
+    console.log('login.....')
+    const _token = await this.getConfig('_token')
+    console.log('get token' + _token)
+    let res = null
     if (_token !== undefined && _token !== null && _token !== '') {
       try {
-        await this.verifyToken(_token)
+        res = await this.verifyToken(_token)
+        if (res.verify === 'success') {
+          console.log(JSON.stringify(res))
+          return true
+        } else {
+          return false
+        }
       } catch (e) {
         console.warn('check token fail', _token)
         await this.doLogin()
@@ -93,6 +102,7 @@ export default class auth extends base {
     const {code} = await wepy.login()
     const {token} = await this.token(code)
     await this.setConfig('_token', token)
+    console.log(token)
     // await this.setConfig('third_session', third_session);
     await this.login()
   }

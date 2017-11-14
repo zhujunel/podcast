@@ -6,7 +6,7 @@
   /* eslint-disable eol-last,spaced-comment */
 
   // ENV
-  const env = 'development' // 'development' or 'production'
+  const env = 'production' // 'development' or 'production'
 
   // APP VERSION
   const version = 'v1'
@@ -124,6 +124,7 @@
         'pages/index',
         'pages/home/login',
         'pages/detail/index',
+        'pages/detail/comment',
         'pages/feed/index',
         'pages/author/index'
       ],

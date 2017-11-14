@@ -215,7 +215,7 @@
   import podcastApi from '../../api/podcast'
   import Card from '../../components/FoldableCard'
   import Box from '../../components/ui/p-box/index'
-  import BoxDemo from '../../components/ui/p-box/demo'
+  import BoxDemo from '../../components/ui/p-box/card'
   import Elip from '../../components/ui/elip'
 
   const $wxapp = wepy.$instance
