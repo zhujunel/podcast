@@ -10,7 +10,8 @@
           <nav-bar :active.sync="currentTab"></nav-bar>
         </swiper-item>
       <swiper-item>
-        <player-bar :curplay.sync="curplay"></player-bar>
+        <!--<player-bar :curplay.sync="curplay"></player-bar>-->
+        <player-bar></player-bar>
       </swiper-item>
     </swiper>
   </view>
@@ -75,7 +76,7 @@
 //      console.log(JSON.stringify(res))
     }
     async onShow () {
-      this.$root.$parent.emitter.on('audio_toggle', () => {
+      this.$root.$parent.emitter.on('change-audio', () => {
         this.currentBar = 1
         this.$apply()
       })
@@ -416,7 +417,7 @@
     width: rpx(64);
     height: rpx(64);
     display: block;
-    margin-right: 20 rpx;
+    margin-right: rpx(20);
   }
 
   $gray: #A1a1a1;

@@ -47,23 +47,23 @@
         </view>
       </view>
       <view class="podcast {{item.list ? '': 'is-placeholder'}}">
-        <scroll-view scroll-x="true" class="episode">
+        <scroll-view scroll-x="true" class="episode" scroll-into-view="{{toView}}" scroll-with-animation="true">
           <!--{{(curplay.id === item.id && curplay.play_status === 'playing') ? 'is-playing' : ''}}"-->
           <view class="content">
             <view
               class="episode-audio_card is-compact"
-              wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="audio" wx:key="id">
+              wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="audio" wx:key="id" id="audio_{{audio.id}}">
               <!-- 有播放状态的专辑 -->
-              <image class="gridicon player" src="../images/icon/icon-music-pause-mini.svg" @tap="playItem({{audio}})"
-                     wx:if="{{(curplay.id === audio.id && curplay.play_status === 'playing')}}"></image>
-              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{audio}})"
-                     wx:if="{{(curplay.id === audio.id && curplay.play_status === 'stop')}}"></image>
+              <image class="gridicon player" src="../images/icon/icon-music-pause-mini.svg" @tap="playItem({{index}},{{audio}})"
+                     wx:if="{{(curAudio.id === audio.id && curAudio.playStatus === 'playing')}}"></image>
+              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{index}},{{audio}})"
+                     wx:if="{{(curAudio.id === audio.id && (curAudio.playStatus === 'stop' || curAudio.playStatus === 'pause'))}}"></image>
               <!-- 没有状态的专辑 -->
-              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{audio}})"
-                     wx:if="{{(curplay.id !== audio.id)}}"></image>
+              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{index}},{{audio}})"
+                     wx:if="{{(curAudio.id !== audio.id)}}"></image>
 
               <view class="episode-audio_card__info">
-                <view class="episode-audio_card__title">{{audio.title}}</view>
+                <view class="episode-audio_card__title">{{index}} - {{audio.title}}</view>
               </view>
             </view>
           </view>
@@ -95,17 +95,18 @@
 
 </template>
 <script>
-  /* eslint-disable no-undef,no-unused-vars */
+  /* eslint-disable no-undef,no-unused-vars,spaced-comment */
 
   import wepy from 'wepy'
   import base from '../mixins/_base'
+  import audioManager from '../mixins/audioManager'
   import postApi from '../api/podcast'
   import WxUtils from '../utils/WxUtils'
 
   const $wxapp = wepy.$instance
 
   export default class PodcastCard extends wepy.component {
-    mixins = [base]
+    mixins = [base, audioManager]
 
     props = {
       id: String,
@@ -122,8 +123,10 @@
       id: '',
       imageList: [],
       playing: false,
+      scrollLeft: 0,
       isFold: true,
       curItem: {},
+      toView: '',
       curplay: {
         id: ''
       },
@@ -151,28 +154,42 @@
         this.loaded()
         this.$root.$parent.emitter.emit('liked', item)
       },
-      playItem (audio) {
-//        console.log(JSON.stringify(audio))
-        wx.showToast({
-          title: '加载中',
-          icon: 'loading',
-          duration: 1000
-        })
-        if (this.curplay.id === audio.id) {
-          if (this.curplay.play_status === 'playing') {
-            this.curplay.play_status = 'stop'
-            $wxapp.pauseMusic()
+      // 索引 + 音频
+      playItem (index, audio) {
+//        this.curplay = $wxapp.audioStore.getAudio()
+        if (this.curAudio.id === audio.id) {
+          if (this.curAudio.playStatus === 'playing') {
+//            this.curplay.playStatus = 'pause'
+            this.pause()
           } else {
-            this.curplay.play_status = 'playing'
-            $wxapp.playing()
+//            this.curplay.playStatus = 'playing'
+            this.play()
           }
+//          this.pause()
         } else {
-          $wxapp.stopMusic()
-          this.curplay.play_status = 'playing'
-          this.curplay = Object.assign({}, {play_status: 'playing'}, audio)
-          $wxapp.globalData.curplay = this.curplay
-          $wxapp.playing()
+          this.stop()
+//          this.curplay.playStatus = 'stop'
+          this.curAudio = {
+            id: audio.id,
+            albumId: this.item.id,
+            epname: this.item.title,
+            title: audio.title,
+            singer: audio.author.nicename,
+            avatar: audio.author.avatar,
+            coverImgUrl: this.item.featured_image,
+            src: audio.url,
+            playStatus: 'playing'
+          }
+          this.playList = this.item.list
+          $wxapp.audioStore.setAlbum(this.item)
+          $wxapp.audioStore.setAudio(this.curAudio)
+          $wxapp.audioStore.setCurIndex(index)
+          $wxapp.emitter.emit('change-audio')
+          $wxapp.emitter.emit('change-album')
+//          this.curplay = $wxapp.audioStore.getAudio()
+          this.play()
         }
+        this.$apply()
       },
       handleTap () {
         this.item._.header_collapsed = !this.item._.header_collapsed
@@ -213,6 +230,12 @@
     }
 
     onLoad () {
+      $wxapp.emitter.on('audio-play-next', () => {
+        this.curplay = $wxapp.audioStore.getAudio()
+        this.toView = 'audio_' + this.curplay.id
+        this.scrollLeft = 30
+        this.$apply()
+      })
       this.share = WxUtils.canIUse('button.open-type.share')
       $wxapp.emitter.on('audio_toggle', ({playing, curplay}) => {
         this.playing = playing

@@ -6,7 +6,7 @@
   /* eslint-disable eol-last,spaced-comment */
 
   // ENV
-  const env = 'production' // 'development' or 'production'
+  const env = 'development' // 'development' or 'production'
 
   // APP VERSION
   const version = 'v1'
@@ -26,7 +26,7 @@
   import WxUtils from './utils/WxUtils'
   import 'wepy-async-function'
   import {api} from './config'
-
+  import AudioStore from './utils/audioStore'
   export default class extends wepy.app {
     constructor () {
       super()
@@ -62,8 +62,57 @@
       }
       return header
     }
-
+    audioStore = new AudioStore()
     emitter = mitt()
+    globalAudioManager = wx.getBackgroundAudioManager()
+    _audioManager () {
+      this.globalAudioManager.onTimeUpdate(() => {
+//        console.log('播放进度更新')
+//        this.playing = true
+//        Tips.loaded()
+        const currentTime = this.globalAudioManager.currentTime
+        this.globalAudioManager.buffered = currentTime
+        // 当前播放进度
+        const currentProcess = this.formatDuration(currentTime * 1000)
+        const duration = this.formatDuration(this.globalAudioManager.duration * 1000)
+        // 当前播放百分比
+        const percent = currentTime / this.globalAudioManager.duration * 100
+//        const  currentTime = currentTime
+//        this.$emit('change')
+        this.audioStore.setCurrentProcess(currentProcess)
+        this.audioStore.setPercent(percent)
+        this.audioStore.setDuration(duration)
+//        this.$apply()
+        this.emitter.emit('audio-time-update')
+      })
+    }
+    audioControl () {
+      const that = this
+      // 播放列表中下一首
+//      wx.onBackgroundAudioStop(() => {
+//        if (that.globalData.globalStop) {
+//          return
+//        }
+//        that.playNext()
+//      })
+
+      wx.onBackgroundAudioPause(() => {
+//        this.emitter.emit('audio_toggle', {
+//          playing: false,
+//          curplay: this.globalData.curplay || {}
+//        })
+//        that.globalData.playing = false
+//        that.globalData.globalStop = false
+//        that.globalData.curplay.status = false
+//        that.globalData.globalStop = that.globalData.hide ? true : false
+        wx.getBackgroundAudioPlayerState({
+          complete (res) {
+            that.globalData.currentPosition = res.currentPosition ? res.currentPosition : 0
+//            console.log(that.globalData.currentPosition)
+          }
+        })
+      })
+    }
 
     onLaunch (param) {
       // 校验SDK
@@ -79,31 +128,8 @@
         wepy.$instance.globalData.scene = param.scene
         console.info('[auth]onLaunch end')
       }
-      const that = this
-      // 播放列表中下一首
-      wx.onBackgroundAudioStop(() => {
-        if (that.globalData.globalStop) {
-          return
-        }
-        that.playNext()
-      })
-
-      wx.onBackgroundAudioPause(() => {
-        this.emitter.emit('audio_toggle', {
-          playing: false,
-          curplay: this.globalData.curplay || {}
-        })
-//        that.globalData.playing = false
-//        that.globalData.globalStop = false
-//        that.globalData.curplay.status = false
-//        that.globalData.globalStop = that.globalData.hide ? true : false
-        wx.getBackgroundAudioPlayerState({
-          complete (res) {
-            that.globalData.currentPosition = res.currentPosition ? res.currentPosition : 0
-//            console.log(that.globalData.currentPosition)
-          }
-        })
-      })
+      this._audioManager()
+      this.audioControl()
     }
 
     syncStoreConfig (key) {
@@ -201,6 +227,8 @@
       staredList: []
     }
 
+    playAudio (cb, seek) {
+    }
     playing (type, cb, seek) {
       const that = this
       const m = that.globalData.curplay

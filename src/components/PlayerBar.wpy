@@ -234,17 +234,18 @@
   <view class="tab">
 
     <view class="player" wx:if="{{showToolbar}}">
-      <image class="player-pic" src="{{curplay.author.avatar}}" mode="" />
+      <image class="player-pic" src="{{curAudio.avatar}}" mode="" />
       <view class="player-info">
         <view class="player-audio">
-          <view class="player-audio-info_wrap">
-            <text class="title">{{curplay.title}}</text>
-            <text class="author">{{curplay.author.nicename}}</text>
+          <view class="player-audio-info_wrap" @tap="tap">
+            <text class="title">{{curAudio.title}}</text>
+            <text class="author">{{curAudio.singer}}</text>
           </view>
           <view class="player-audio-controller">
             <view class="play">
               <image class="action" src="../images/icon/icon-music-{{playing ? 'pause': 'play'}}-mini.svg" @tap="toggle"></image>
-              <image class="action" src="../images/icon/icon-music-play-next-mini.svg" @tap="playNext"></image>
+              <image class="action" src="../images/icon/icon-music-play-next-mini.svg" @tap="playNext" wx:if="{{playList.length > 1}}"></image>
+              <!--<text>{{currentProcess}} / {{duration}} / {{playing}}</text>-->
             </view>
           </view>
         </view>
@@ -252,17 +253,19 @@
 
     </view>
     <view id="timeline" wx:if="{{playing}}">
-      <progress percent="{{downloadPercent}}" stroke-width="2" activeColor="#aaa" backgroundColor="#fff" active>
+      <progress percent="{{percent}}" stroke-width="2" activeColor="#aaa" backgroundColor="#fff" active>
         <text id="dpstate" style="width:{{percent}}%"></text>
       </progress>
     </view>
   </view>
 </template>
 <script>
-  /* eslint-disable no-undef,no-throw-literal,no-extra-bind,no-extra-parens,no-unused-vars,spaced-comment */
+  /* eslint-disable no-undef,no-throw-literal,no-extra-bind,no-extra-parens,no-unused-vars,spaced-comment,no-trailing-spaces */
 
   import wepy from 'wepy'
-
+  import podcast from '../api/podcast'
+  import base from '../mixins/_base'
+  import audioManager2 from '../mixins/audioManager'
   const $wxapp = wepy.$instance
   const device = wx.getSystemInfoSync()  //  获取设备信息
   const DEFAULT = {
@@ -289,6 +292,8 @@
   let seek = 0
 
   export default class Tab extends wepy.component {
+    mixins = [base, audioManager2]
+
     props = {
       active: {
         twoWay: true,
@@ -307,44 +312,43 @@
       width: device.windowWidth,
       height: device.windowHeight,
       showToolbar: true,
-      playing: false,
+//      playing: false,
       tabAnimationData: null,
       animationViewName: 'tabAnimationData',
       XORY: 'Y',
       downloadPercent: 0,
-      percent: 0,
+//      percent: 0,
+//      currentProcess: '00:00',
       start: 100,
       end: 0
+//      curAudio: {}
     }
     watch = {
 //      curplay (newValue, oldValue) {
 //        console.log(newValue.id + 'new value id')
 //      }
     }
+
+    computed = {
+      playing () {
+        return this.curAudio.playStatus === 'playing'
+      }
+    }
+//    decorateBgAudio ()
     methods = {
       tap () {
         wx.navigateTo({
-          url: `/pages/detail/index?id=${$wxapp.globalData.curplay.id}&parent=${$wxapp.globalData.curplay.parent}`,
+          url: `/pages/detail/index?id=${this.curAudio.id}&parent=${this.curAudio.albumId}`,
           success (res) {
           }
         })
       },
       toggle () {
-        if (this.playing) {
-          $wxapp.pauseMusic()
-        } else {
-          $wxapp.playing()
-        }
-//        if (this.curplay.status === '')
+        console.log('play....')
+        this.play()
       },
       playNext() {
-        $wxapp.playNext()
-      },
-      updatePlayer (curplay) {
-        this.curplay = curplay
-        this.$apply()
-      },
-      showDetail (e) {
+        this.playNext()
       },
       change (idx, e) {
         const {onChange} = this
@@ -377,22 +381,32 @@
     }
 
     onLoad () {
-      const that = this
       // 加载推荐的内容
       $wxapp.emitter.on('stickys-onload', (stikcy) => {
-        this.curplay = stikcy
-        this.$apply()
+        (async () => {
+          const data = await podcast.list(stikcy.id)
+//          this.curplay = data.data[0]
+          const audio = data.data[0]
+          this.playList = data.data
+//          console.log(JSON.stringify(this.playList))
+          this.curAudio = {
+            id: audio.id,
+            albumId: stikcy.id,
+            avatar: audio.author.avatar,
+            epname: stikcy.title,
+            title: audio.title,
+            singer: audio.author.nicename,
+            coverImgUrl: stikcy.featured_image,
+            src: audio.url,
+            playStatus: 'stop'
+//          webUrl
+          }
+          $wxapp.audioStore.setAudio(this.curAudio)
+          this.loaded()
+          this.$apply()
+        })()
       })
-      $wxapp.emitter.on('audio_toggle', ({playing, curplay}) => {
-        clearInterval(seek)
-        $wxapp.playStatus(that)
-        seek = setInterval(() => {
-          $wxapp.playStatus(that)
-        }, 1000)
-        this.playing = playing
-        this.curplay = curplay
-        this.$apply()
-      })
+
       const {option} = this
       const CONFIG = Object.assign(this, DEFAULT, option)
       this.initTab(CONFIG)
