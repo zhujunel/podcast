@@ -16,8 +16,10 @@
 
     onLoad () {
       $wxapp.emitter.on('audio-time-update', () => {
+//        Tips.loaded()
         Tips.loaded()
-        this.percent = audioStore.getPercent()
+        this.percent = $wxapp.audioStore.getPercent()
+//        console.log(this.percent)
         this.$apply()
       })
       $wxapp.emitter.on('change-album', () => {
@@ -28,10 +30,26 @@
         this.curAudio = audioStore.getAudio()
         this.$apply()
       })
+      $wxapp.emitter.on('audio-play', () => {
+        this.curAudio = audioStore.getAudio()
+        this.$apply()
+      })
+//      $wxapp.emitter.on('audio-stop', () => {
+//        this.curAudio = audioStore.getAudio()
+//        this.$apply()
+//      })
+//      $wxapp.emitter.on('audio-stop', () => {
+//        this.curAudio = audioStore.getAudio()
+//        this.$apply()
+//      })
+      this.initBgAudioManager()
+
       globalAudio.onPlay(() => {
 //        this.playing = true
+        Tips.loaded()
         this.curAudio = audioStore.getAudio()
         this.curAudio.playStatus = 'playing'
+
         this.$apply()
       })
       globalAudio.onStop(() => {
@@ -39,59 +57,62 @@
         this.curAudio.playStatus = 'stop'
         this.$apply()
       })
-      globalAudio.onWaiting(() => {
-        Tips.loading()
-//        this.emitter.emit('audio-waiting')
-      })
-      globalAudio.onEnded(() => {
-        console.log('播放自然结束')
-        this.playNext()
-      })
       globalAudio.onPause(() => {
+        console.log('音频系统暂停')
         this.curAudio.playStatus = 'pause'
         this.$apply()
       })
+//      globalAudio.onWaiting(() => {
+//        Tips.loading()
+//        this.emitter.emit('audio-waiting')
+//      })
+      globalAudio.onEnded(() => {
+//        console.log('播放自然结束')
+        this.playNext()
+      })
     }
-
+    playTarget () {
+      globalAudio.changeAudio()
+    }
     play () {
-//      this.playing = true
-      const status = globalAudio.paused
-      if (status === undefined || status) {
-        globalAudio = Object.assign(globalAudio, audioStore.getAudio())
+      let status = globalAudio.paused
+      if (status === undefined || !globalAudio.currentTime) {
+        globalAudio.changeAudio()
+        this.curAudio.playStatus = 'playing'
+      }
+      if (status) {
+        this.curAudio.playStatus = 'playing'
         globalAudio.play()
       } else {
+        this.curAudio.playStatus = 'pause'
         globalAudio.pause()
       }
     }
 
     pause () {
+      this.curAudio.playStatus = 'pause'
       globalAudio.pause()
     }
 
     stop () {
+      this.curAudio.playStatus = 'stop'
       globalAudio.stop()
     }
-
-    playNext (cb, pos) {
-//      this.pause()
+    _playControl (cb, action, pos) {
       this.stop()
-//      globalAudio.pause()
       const album = audioStore.getAlbum()
       this.playList = album.list
-      let index = audioStore.getCurIndex()
-
-//      if (t === 1) {
-      index++
-//      } else {
-//        index--
-//      }
-      index = index > this.playList.length - 1 ? 0 : (index < 0 ? this.playList.length - 1 : index)
-      index = pos !== undefined ? pos : index
-      audioStore.setCurIndex(index)
-//      console.log(this.playIndex)
-
-      let audioItem = this.playList[index]
-      this.curAudio = {
+      this.playIndex = audioStore.getCurIndex()
+      if (action === 'prev') {
+        this.playIndex--
+      } else {
+        this.playIndex++
+      }
+      this.playIndex = this.playIndex > this.playList.length - 1 ? 0 : (this.playIndex < 0 ? this.playList.length - 1 : this.playIndex)
+      this.playIndex = pos !== undefined ? pos : this.playIndex
+      audioStore.setCurIndex(this.playIndex)
+      const audioItem = this.playList[this.playIndex]
+      const audio = {
         id: audioItem.id,
         epname: album.title,
         title: audioItem.title,
@@ -101,21 +122,67 @@
         src: audioItem.url,
         playStatus: 'playing'
       }
-      audioStore.setAudio(this.curAudio)
-      // 发出播放事件
-//      this.seekMuskc()
-//      this.emitter.emit('audio_toggle', {
-//      })
-      console.log('audio-play-next=== ')
-      $wxapp.emitter.emit('audio-play-next')
-      this.$apply()
-      this.play()
+      audioStore.setAudio(audio)
+      this.curAudio = audioStore.getAudio()
+      this.curAudio.playStatus = 'playing'
+      $wxapp.emitter.emit(`audio-play-${action}`)
+      globalAudio.changeAudio()
       typeof cb === 'function' && cb()
     }
-
-    methods = {
+    playPrev (cb, pos) {
+      this._playControl(cb, 'prev', pos)
     }
+    playNext (cb, pos) {
+      this._playControl(cb, 'next', pos)
+    }
+    initBgAudioManager () {
+//      const component = this
+      const self = globalAudio
+      const options = {
+        onWaiting () {
+          Tips.loading('音频加载中...')
+          this.isWaiting = true
+        },
+        onTimeUpdate () {
+          if (this.isWaiting) {
+            this.isWaiting = false
+            Tips.loaded()
+          }
+          const currentTime = self.currentTime
+          // 当前播放进度
+          const currentProcess = $wxapp.formatDuration(currentTime * 1000)
+          const duration = $wxapp.formatDuration(self.duration * 1000)
+          // 当前播放百分比
+          const percent = currentTime / self.duration * 100
+          $wxapp.audioStore.setCurrentProcess(currentProcess)
+          $wxapp.audioStore.setPercent(percent)
+          $wxapp.audioStore.setDuration(duration)
+          $wxapp.emitter.emit('audio-time-update')
+        },
+        changeAudio () {
+          const {id, epname, title, coverImgUrl, singer, src} = audioStore.getAudio()
+          self.title = title
+          self.epname = epname
+          self.audioId = id
+          self.coverImgUrl = coverImgUrl
+          self.singer = singer || '育儿柚道'
+          if (!src) {
+            Tips.toast('音频加载失败', null, 'warning')
+          } else {
+            self.src = src
+          }
+        }
+      }
+      globalAudio.changeAudio = options.changeAudio
+      globalAudio.onWaiting.call(this, options.onWaiting)
+      globalAudio.onTimeUpdate.call(this, options.onTimeUpdate)
+//      globalAudio = decorateBgAudioManager(globalAudio, options)
+    }
+
+    methods = {}
     events = {}
+//    onLoad () {
+//    }
     data = {
       album: {},
       playList: [],

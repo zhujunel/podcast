@@ -6,7 +6,8 @@
         <view class="foldable-card__main">
           <view class="podcast__header">
             <view class="podcast-icon animate__appear">
-              <image class="podcast-icon__img" mode="aspectFill" src="{{item.author.avatar}}" @tap="showAuthor({{item.author.login}})"></image>
+              <image class="podcast-icon__img" mode="aspectFill" src="{{item.author.avatar}}"
+                     @tap="showAuthor({{item.author.login}})"></image>
             </view>
             <view class="podcasts-browser-item__info" @tap="headerTapAction({{item}})">
               <view class="podcasts-browser-item__title">
@@ -54,12 +55,15 @@
               class="episode-audio_card is-compact"
               wx:for-items="{{item.list}}" wx:for-index="index" wx:for-item="audio" wx:key="id" id="audio_{{audio.id}}">
               <!-- 有播放状态的专辑 -->
-              <image class="gridicon player" src="../images/icon/icon-music-pause-mini.svg" @tap="playItem({{index}},{{audio}})"
+              <image class="gridicon player" src="../images/icon/icon-music-pause-mini.svg"
+                     @tap="playItem({{index}},{{audio}})"
                      wx:if="{{(curAudio.id === audio.id && curAudio.playStatus === 'playing')}}"></image>
-              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{index}},{{audio}})"
+              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg"
+                     @tap="playItem({{index}},{{audio}})"
                      wx:if="{{(curAudio.id === audio.id && (curAudio.playStatus === 'stop' || curAudio.playStatus === 'pause'))}}"></image>
               <!-- 没有状态的专辑 -->
-              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg" @tap="playItem({{index}},{{audio}})"
+              <image class="gridicon player" src="../images/icon/icon-music-play-mini.svg"
+                     @tap="playItem({{index}},{{audio}})"
                      wx:if="{{(curAudio.id !== audio.id)}}"></image>
 
               <view class="episode-audio_card__info">
@@ -132,8 +136,7 @@
       },
       share: null
     }
-    components = {
-    }
+    components = {}
     methods = {
       fold (item) {
         this.isFold = !this.isFold
@@ -156,20 +159,11 @@
       },
       // 索引 + 音频
       playItem (index, audio) {
-//        this.curplay = $wxapp.audioStore.getAudio()
+        console.log(this.curAudio.id + '----' + audio.id)
         if (this.curAudio.id === audio.id) {
-          if (this.curAudio.playStatus === 'playing') {
-//            this.curplay.playStatus = 'pause'
-            this.pause()
-          } else {
-//            this.curplay.playStatus = 'playing'
-            this.play()
-          }
-//          this.pause()
+          this.play()
         } else {
-          this.stop()
-//          this.curplay.playStatus = 'stop'
-          this.curAudio = {
+          const curAudio = {
             id: audio.id,
             albumId: this.item.id,
             epname: this.item.title,
@@ -180,16 +174,15 @@
             src: audio.url,
             playStatus: 'playing'
           }
-          this.playList = this.item.list
-          $wxapp.audioStore.setAlbum(this.item)
-          $wxapp.audioStore.setAudio(this.curAudio)
+          if ($wxapp.audioStore.getAlbum() !== this.item) {
+            $wxapp.audioStore.setAlbum(this.item)
+            $wxapp.emitter.emit('change-album')
+          }
+          $wxapp.audioStore.setAudio(curAudio)
           $wxapp.audioStore.setCurIndex(index)
           $wxapp.emitter.emit('change-audio')
-          $wxapp.emitter.emit('change-album')
-//          this.curplay = $wxapp.audioStore.getAudio()
-          this.play()
+          this.playTarget()
         }
-        this.$apply()
       },
       handleTap () {
         this.item._.header_collapsed = !this.item._.header_collapsed

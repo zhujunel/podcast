@@ -301,45 +301,8 @@
     /*vertical-align: middle;*/
     padding-bottom: rpx(20);
     background-image: linear-gradient(-180deg, rgba(238,238,238,0.00) 0%, #FFFFFF 50%);
-    /*flex: 1;*/
-    /*&__form {*/
-      /*width: 100%;*/
-      /*margin-left: rpx(30);*/
-      /*flex: 1;*/
-      /*flex-flow: row;*/
-      /*align-items: center;*/
-      /*textarea {*/
-        /*color: #808080;*/
-        /*width: auto;*/
-      /*}*/
-    /*}*/
-    /*&__submit {*/
-      /*float: right;*/
-      /*width: rpx(150);*/
-      /*align-items: center;*/
-      /*margin-right: rpx(20);*/
-      /*display: inline-flex;*/
-      /*align-items: center;*/
-      /*margin-right: rpx(20);*/
-      /*button {*/
-        /*border: none;*/
-        /*width: auto;*/
-        /*font-size: rpx(28);*/
-      /*}*/
-    /*}*/
-    /*&__input{*/
-      /*margin-left: rpx(30);*/
-      /*flex: 1;*/
-      /*flex-flow: row;*/
-      /*align-items: center;*/
-      /*textarea {*/
-        /*color: #808080;*/
-        /*width: auto;*/
-      /*}*/
-    /*}*/
+
     &__actions {
-      /*flex: 1;*/
-      /*align-self: flex-end;*/
       float: right;
       display: inline-flex;
       align-items: center;
@@ -516,7 +479,7 @@
   </view>
 </template>
 <script>
-  /* eslint-disable no-undef,no-unused-vars */
+  /* eslint-disable no-undef,no-unused-vars,spaced-comment */
   import wepy from 'wepy'
   import base from '../../mixins/_base'
 //  import pagination from '../../mixins/pagination'
@@ -526,6 +489,8 @@
   import Card from '../../components/FoldableCard'
   import Popup from '../../components/ui/p-popup/index'
   const $wxapp = wepy.$instance
+  import audioManager from '../../mixins/audioManager'
+
   let seek = 0
   import auth from '../../api/auth'
 
@@ -534,7 +499,7 @@
       card: Card,
       popup: Popup
     }
-    mixins = [base]
+    mixins = [base, audioManager]
     data = {
       userInfo: {
         nickName: '加载中...',
@@ -631,29 +596,53 @@
         $wxapp.emitter.emit('playing')
 //        this.$apply()
       },
-      playItem(song, e) {
-        wx.showToast({
-          title: '加载中',
-          icon: 'loading',
-          duration: 1000
-        })
-
-        if (this.curplay.id === song.id) {
-//          console.log('当前暂停')
-          if (this.curplay.play_status === 'playing') {
-            this.curplay.play_status = 'stop'
-            $wxapp.stopMusic()
-          } else {
-            this.curplay.play_status = 'playing'
-            $wxapp.playing()
-          }
+      playItem(audio, e) {
+//        console.log(this.curAudio.id + '----' + audio.id)
+        if (this.curAudio.id === audio.id) {
+          this.play()
         } else {
-          this.curplay.play_status = 'playing'
-          this.curplay = Object.assign({}, song, {play_status: 'playing'})
-          $wxapp.globalData.curplay = this.curplay
-          $wxapp.playing()
+          const curAudio = {
+            id: audio.id,
+            albumId: this.detail.id,
+            epname: this.detail.title,
+            title: audio.title,
+            singer: audio.author.nicename,
+            avatar: audio.author.avatar,
+            coverImgUrl: this.detail.featured_image,
+            src: audio.url,
+            playStatus: 'playing'
+          }
+          if ($wxapp.audioStore.getAlbum() !== this.detail) {
+            $wxapp.audioStore.setAlbum(this.detail)
+            $wxapp.emitter.emit('change-album')
+          }
+          $wxapp.audioStore.setAudio(curAudio)
+          $wxapp.audioStore.setCurIndex(index)
+          $wxapp.emitter.emit('change-audio')
+          this.playTarget()
         }
-        $wxapp.emitter.emit('playing')
+//        wx.showToast({
+//          title: '加载中',
+//          icon: 'loading',
+//          duration: 1000
+//        })
+//
+//        if (this.curplay.id === song.id) {
+////          console.log('当前暂停')
+//          if (this.curplay.play_status === 'playing') {
+//            this.curplay.play_status = 'stop'
+//            $wxapp.stopMusic()
+//          } else {
+//            this.curplay.play_status = 'playing'
+//            $wxapp.playing()
+//          }
+//        } else {
+//          this.curplay.play_status = 'playing'
+//          this.curplay = Object.assign({}, song, {play_status: 'playing'})
+//          $wxapp.globalData.curplay = this.curplay
+//          $wxapp.playing()
+//        }
+//        $wxapp.emitter.emit('playing')
       },
       museek (e) {
         let nextime = e.detail.value
@@ -699,6 +688,7 @@
     async getList(id, parent) {
       const data = await podcastApi.list(parent)
       this.list = data.data
+      this.detail.list = data.data
       const cur = this.list.find((item) => {
         if (item.id.toString() === id) {
           return item
@@ -718,20 +708,20 @@
       await this.getReplies(option.id)
       this.loaded()
 
-      const that = this
-      $wxapp.emitter.on('playing', (e) => {
-        that.curplay = $wxapp.globalData.curplay
-        if (that.curplay.play_status === 'playing') {
-          $wxapp.playAlrc(that)
-          seek = setInterval(() => {
-            $wxapp.playAlrc(that)
-          }, 1000)
-        }
-        if (that.curplay.play_status === 'stop') {
-          clearInterval(seek)
-        }
-      })
-      that.$apply()
+//      const that = this
+//      $wxapp.emitter.on('playing', (e) => {
+//        that.curplay = $wxapp.globalData.curplay
+//        if (that.curplay.play_status === 'playing') {
+//          $wxapp.playAlrc(that)
+//          seek = setInterval(() => {
+//            $wxapp.playAlrc(that)
+//          }, 1000)
+//        }
+//        if (that.curplay.play_status === 'stop') {
+//          clearInterval(seek)
+//        }
+//      })
+//      that.$apply()
     }
   }
 </script>

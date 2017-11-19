@@ -344,7 +344,7 @@
         })
       },
       toggle () {
-        console.log('play....')
+//        console.log('play....')
         this.play()
       },
       playNext() {

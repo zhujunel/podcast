@@ -63,14 +63,6 @@ export default class AudioManager {
   setDuration (duration) {
     this.duration = duration
   }
-  // static isLoading = false;
-  // static pause = false;
-  // constructor () {
-  //   this.curAudio = {}
-  // }
-  // static audioList = []
-  // static curIndex = 0
-  // curAudio = {}
 
   getAudio() {
     return this.curAudio
@@ -78,10 +70,6 @@ export default class AudioManager {
   setAudio(audio) {
     this.curAudio = audio
   }
-  // static changeAudio() {}
-  // static changeAudioList() {}
-  // static addAudio() {}
-  // static info = {}
   setAudioList (list) {
     this.list = list
   }
