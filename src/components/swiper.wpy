@@ -599,8 +599,6 @@
        */
       const {onInit} = this
       typeof onInit === 'function' && onInit(this)
-//      console.log(device.windowWidth)
-//      console.log('----')
     }
 
     onLoad() {
