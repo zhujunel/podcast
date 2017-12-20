@@ -1,8 +1,8 @@
 <template>
-  <view style="height: 600px">
+  <view style="height: {{selfHeight}}">
 
     <scroll-view
-      scroll-y style="height: 600px;"
+      scroll-y style="height: {{selfHeight - 20}}px;"
       @scrolltoupper="scrollToTop"
       @scrolltolower="scrollToBottom"
       @scroll="scroll" upper-threshold="0"
@@ -29,7 +29,7 @@
   </view>
 </template>
 <script>
-  /* eslint-disable no-trailing-spaces,no-unused-vars */
+  /* eslint-disable no-trailing-spaces,no-unused-vars,no-undef */
 
   import wepy from 'wepy'
   import Loadmore from '../components/ui/loadmore'
@@ -42,6 +42,7 @@
   import podcast from '../api/podcast'
 
   import Tips from '../utils/Tips'
+  const device = wx.getSystemInfoSync()  //  获取设备信息
 
   export default class List extends wepy.component {
     mixins = [base, pagination]
@@ -55,6 +56,7 @@
       list: {}
     }
     data = {
+      selfHeight: device.windowHeight,
       swiper: {},
       page: {
         added: [],

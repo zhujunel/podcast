@@ -1,14 +1,15 @@
 <template>
 
   <view class="body">
-    <recommend  wx:if="{{currentTab === 'stickys'}}" />
+    <recommend wx:if="{{currentTab === 'stickys'}}"/>
     <feed wx:if="{{currentTab === 'feed'}}"></feed>
     <me class="tab_item" wx:if="{{currentTab === 'me'}}"></me>
     <youda class="tab_item" wx:if="{{currentTab === 'qa'}}"></youda>
-    <swiper class="tabbar" current="{{currentBar}}" style="height: 100rpx;" @change="tabchange">
-        <swiper-item>
-          <nav-bar :active.sync="currentTab"></nav-bar>
-        </swiper-item>
+    <swiper class="tabbar {{isIpx?'fix-iphonex':''}}" current="{{currentBar}}" style="height: 138rpx;"
+            @change="tabchange">
+      <swiper-item>
+        <nav-bar :active.sync="currentTab"></nav-bar>
+      </swiper-item>
       <swiper-item>
         <!--<player-bar :curplay.sync="curplay"></player-bar>-->
         <player-bar></player-bar>
@@ -34,11 +35,13 @@
   import NavBar from '../components/NavBar'
   import PlayerBar from '../components/PlayerBar'
   import Me from '../components/profile'
-//  import PodcastCard from '../components/podcast-card'
+  //  import PodcastCard from '../components/podcast-card'
   import Recommend from '../components/recommend'
   import Youda from '../components/youda'
-//  import moment from 'moment'
+  //  import moment from 'moment'
   import Feed from '../components/Feed'
+  // const device = wx.getSystemInfoSync()  //  获取设备信息
+  const $wxapp = wepy.$instance
 
   export default class AppHome extends wepy.page {
     def = {
@@ -61,7 +64,10 @@
       page: {
         added: [],
         list: []
-      }
+      },
+      isIpx: $wxapp.globalData.isIpx
+      // width: device.windowWidth,
+      // height: device.windowHeight
     }
     data = {...this.def}
 
@@ -70,11 +76,14 @@
 //      if (!result) return
 //      this.loaded()
 //      this.$root.$parent.emitter.emit('tab-change', 'feed')
+//       console.log(device)
+//       console.log(this.isIpx + '---xxx')
       await auth.login()
       this.loaded()
       this.$invoke('recommend', 'onShow')
 //      console.log(JSON.stringify(res))
     }
+
     async onShow () {
       this.$root.$parent.emitter.on('change-audio', () => {
         this.currentBar = 1
@@ -105,6 +114,7 @@
       const desc = '育儿柚道-育儿有道！'
       return Tips.share(title, url, desc)
     }
+
     methods = {
       share () {
         Tips.modal('当前版本过低，请更新微信或点击右上角进行分享')
@@ -139,11 +149,26 @@
 
 <style lang="scss">
   @import '../stylesheets/shared/functions';
+
+  .fix-iphonex {
+    bottom: rpx(40) !important;
+  }
+
+  .fix-iphonex::after {
+    content: ' ';
+    position: fixed;
+    bottom: 0 !important;
+    height: rpx(40) !important;
+    /*width: 100%;*/
+    background: transparent;
+  }
+
   .tabbar {
     position: fixed;
     width: 100%;
     bottom: 0;
   }
+
   .gridicon {
     fill: currentColor;
 
@@ -170,7 +195,7 @@
     /*background-color: #f0eff5;*/
   }
 
-  .we-slide{
+  .we-slide {
     display: flex;
     /*align-items: center;*/
     /*justify-content: center;*/
@@ -178,15 +203,18 @@
     /*font-size: 2rem;*/
   }
 
-  .we-slide:nth-child(1){
+  .we-slide:nth-child(1) {
     /*background-color: #4390EE*/
   }
-  .we-slide:nth-child(2){
+
+  .we-slide:nth-child(2) {
     /*background-color: #CA4040*/
   }
-  .we-slide:nth-child(3){
+
+  .we-slide:nth-child(3) {
     /*background-color: #FF8604*/
   }
+
   .refresh_root {
     background-color: white;
     width: 100%;
@@ -210,29 +238,32 @@
   }
 
   /*.swiper {*/
-    /*height: rpx(100);*/
-    /*bottom: 0;*/
+  /*height: rpx(100);*/
+  /*bottom: 0;*/
   /*}*/
 
   @import "../stylesheets/style";
-  button[plain]{
-    border:none;
+  button[plain] {
+    border: none;
   }
 
-  button.pain-btn[open-type="share"]{
+  button.pain-btn[open-type="share"] {
     background-color: transparent;
     line-height: normal;
     padding: 0;
     margin: 0;
   }
+
   @mixin transform($args) {
     -webkit-transform: $args;
     -ms-transform: $args;
     transform: $args;
   }
+
   @mixin translate($x: 0, $y: 0) {
     @include transform(translate($x, $y));
   }
+
   @keyframes confetti {
     60% {
       opacity: 1;
@@ -263,7 +294,7 @@
     align-items: center;
     align-content: center;
     margin-right: rpx(30);
-    text{
+    text {
       margin-left: rpx(20);
     }
     .icon {

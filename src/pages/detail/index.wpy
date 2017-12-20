@@ -405,7 +405,7 @@
     <view class="playlist" style="margin-bottom: 10px;">
       <block wx:for="{{list}}" wx:for-item="song" wx:key="index">
         <view class="item even {{curplay.id === song.id ? 'current': ''}}"
-              @tap="playItem('{{song}}')">
+              @tap="playItem({{song}}, {{index}})">
           <view class="no" wx:if="{{!(curplay.id === song.id)}}">{{ index + 1 }}.</view>
 
           <view class="playing" wx:if="{{playing && curplay.id === song.id}}">
@@ -529,7 +529,7 @@
       loading: true,
       downloadPercent: 0,
       percent: 50,
-//      playing: false,
+      // playing: false,
       curplay: {
         play_status: 'stop'
       },
@@ -591,16 +591,24 @@
         $wxapp.globalData.playlist = this.list
         this.curplay.play_status = 'playing'
         $wxapp.globalData.curplay = Object.assign({}, this.list[0], {play_status: 'playing'})
+        this.curplay = $wxapp.globalData.curplay
         $wxapp.globalData.playindex = 0
         $wxapp.playing()
         $wxapp.emitter.emit('playing')
 //        this.$apply()
       },
-      playItem(audio, e) {
+      playItem(audio, index) {
 //        console.log(this.curAudio.id + '----' + audio.id)
         if (this.curAudio.id === audio.id) {
           this.play()
+          if (this.playing) {
+            this.curplay.play_status = 'pause'
+          } else {
+            this.curplay.play_status = 'playing'
+          }
+          // this.playing = !this.playing
         } else {
+          this.curplay.play_status = 'playing'
           const curAudio = {
             id: audio.id,
             albumId: this.detail.id,
@@ -612,6 +620,7 @@
             src: audio.url,
             playStatus: 'playing'
           }
+          this.curplay.id = audio.id
           if ($wxapp.audioStore.getAlbum() !== this.detail) {
             $wxapp.audioStore.setAlbum(this.detail)
             $wxapp.emitter.emit('change-album')

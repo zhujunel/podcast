@@ -40,13 +40,21 @@
   $activecolor: #2196F3;
   .tab {
     color: $fontcolor;
-    width: rpx(710);
-    border-top-left-radius: rpx(12);
-    border-top-right-radius: rpx(12);
+    width: rpx(698);
+    /*border-radius: rpx(8);*/
+    /*border-radius: rpx(200);*/
+    border-radius: rpx(20);
+    /*border-bottom-left-radius: rpx(30);*/
+    /*border-bottom-right-radius: rpx(30);*/
+    /*border-top-left-radius: rpx(12);*/
+    /*border-top-right-radius: rpx(12);*/
     margin-left: rpx(20);
     background: #FFFFFF;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.30) inset, /*左边阴影*/
-    0 10px 20px rgba(0, 0, 0, 0.20); /*右边阴影*/
+    /*z-index: 100;*/
+    height: rpx(100);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.10) inset, /*左边阴影*/
+    0 2px 8px rgba(0, 0, 0, 0.20); /*右边阴影*/
+    padding: rpx(6);
     white-space: nowrap;
     .tab_item {
       /*border-left: 1px solid rgba(0, 0, 0, 0.05);*/
@@ -83,8 +91,9 @@
       line-height: initial;
 
       &-pic {
-        margin: rpx(12);
-        border-radius: rpx(12);
+        margin: rpx(6);
+        /*margin-right: rpx(12);*/
+        border-radius: rpx(100);
         /*margin: rpx(1) rpx(20) rpx(2) rpx(1);*/
         /*border-top-left-radius: rpx(12);*/
         /*border-radius: rpx(100);*/
@@ -92,8 +101,8 @@
         /*border-top-left-radius: rpx(12);*/
         position: relative;
         float: left;
-        height: rpx(75);
-        width: rpx(75);
+        height: rpx(88);
+        width: rpx(88);
         box-shadow: 0 rpx(4) rpx(10) 0 rgba(0, 0, 0, 0.05);
         /*background-image: url(data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQAB…KeMAnLCf8ACCCAzE5d8ZHMS64IIA7oy+HDqgggIEpYdUZJnpE84IICeScSJYwQQE8IIIID/9k=);*/
         /*background-size: 100%;*/
@@ -194,12 +203,12 @@
 
     #timeline{
       position: fixed;
-      bottom: 0;
+      /*bottom: 0;*/
       display: flex;
       /*width: rpx(710);*/
       z-index: 10;
       left: rpx(18);
-      right: rpx(20);
+      right: rpx(18);
 
       .time {
         display: block;
@@ -210,7 +219,7 @@
         width: rpx(100);
       }
       progress {
-        width: rpx(706);
+        width: rpx(685);
         /*margin-left: 10rpx;*/
         /*margin-right: 10rpx;*/
         margin: 0 auto;
@@ -219,10 +228,12 @@
       }
       #dpstate {
         position: absolute;
-        height: 4px;
+        height: 3px;
         background: #4385F4;
         overflow: hidden;
         left: 0;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
         /*top: 50%;*/
         margin-top: -1px;
       }
@@ -234,14 +245,14 @@
   <view class="tab">
 
     <view class="player" wx:if="{{showToolbar}}">
-      <image class="player-pic" src="{{curAudio.avatar}}" mode="" />
+      <image class="player-pic " src="{{curAudio.avatar}}" mode="" />
       <view class="player-info">
         <view class="player-audio">
           <view class="player-audio-info_wrap" @tap="tap">
             <text class="title">{{curAudio.title}}</text>
             <text class="author">{{curAudio.singer}}</text>
           </view>
-          <view class="player-audio-controller">
+          <view class="player-audio-controller ">
             <view class="play">
               <image class="action" src="../images/icon/icon-music-{{playing ? 'pause': 'play'}}-mini.svg" @tap="toggle"></image>
               <image class="action" src="../images/icon/icon-music-play-next-mini.svg" @tap="playNext" wx:if="{{playList.length > 1}}"></image>
@@ -253,7 +264,7 @@
 
     </view>
     <view id="timeline" wx:if="{{playing}}">
-      <progress percent="{{percent}}" stroke-width="2" activeColor="#aaa" backgroundColor="#fff" active>
+      <progress percent="{{percent}}" stroke-width="2" activeColor="#aaa" backgroundColor="#fefefe" active>
         <text id="dpstate" style="width:{{percent}}%"></text>
       </progress>
     </view>

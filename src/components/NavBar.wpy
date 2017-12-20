@@ -6,12 +6,16 @@
   .tab {
     color: $fontcolor;
     width: rpx(710);
-    border-top-left-radius: rpx(12);
-    border-top-right-radius: rpx(12);
+    border-radius: rpx(20);
+    /*border-top-left-radius: rpx(12);*/
+    /*border-top-right-radius: rpx(12);*/
+    /*border-bottom-left-radius: rpx(100);*/
+    /*border-bottom-right-radius: rpx(100);*/
     margin-left: rpx(20);
     background: #FFFFFF;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.30) inset, /*左边阴影*/
-    0 10px 20px rgba(0, 0, 0, 0.20); /*右边阴影*/
+    /*z-index: 100;*/
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.10) inset, /*左边阴影*/
+    0 2px 4px rgba(0, 0, 0, 0.20); /*右边阴影*/
     white-space: nowrap;
     .tab_item {
       /*border-left: 1px solid rgba(0, 0, 0, 0.05);*/

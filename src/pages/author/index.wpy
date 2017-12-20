@@ -348,7 +348,7 @@
     }
 
     async onLoad (option) {
-      option.id = 'yeqing'
+//      option.id = 'yeqing'
       this.detail = await authorApi.detail(option.id)
       const data = await podcastApi.findByAuthor(this.detail.id)
       this.list = data.data

@@ -3,7 +3,8 @@
 </style>
 
 <script>
-  /* eslint-disable eol-last,spaced-comment */
+  /* eslint-disable eol-last,spaced-comment,no-undef */
+  /* eslint-disable no-undef,no-useless-return,no-unneeded-ternary,no-unused-vars,no-unused-expressions */
 
   // ENV
   const env = 'production' // 'development' or 'production'
@@ -18,8 +19,6 @@
   }
   const APPID = 'S11SeYT2W'
   const APP_API = `${hosts[env]}/apps/${APPID}`
-
-  /* eslint-disable no-undef,no-useless-return,no-unneeded-ternary,no-unused-vars,no-unused-expressions */
 
   import wepy from 'wepy'
   import mitt from 'mitt'
@@ -110,6 +109,9 @@
         console.info('[auth]onLaunch end')
       }
       this.audioControl()
+      this.device = wx.getSystemInfoSync()  //  获取设备信息
+      console.log(this.device)
+      this.globalData.isIpx = this.device.model.indexOf('iPhone X') >= 0
     }
 
     syncStoreConfig (key) {
@@ -205,6 +207,8 @@
       globalStop: true,
       currentPosition: 0,
       staredList: []
+      // model: this.device.model
+      // isIpx: this.device.model.indexOf('iPhone X')
     }
 
     playAudio (cb, seek) {
