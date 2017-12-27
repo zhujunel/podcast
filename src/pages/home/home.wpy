@@ -1,6 +1,9 @@
 <template>
 
   <view class="body">
+    <view>
+      浏览
+    </view>
     <view wx:if="{{currentTab === 0}}">
       <ad-swiper :config.sync="swiper"></ad-swiper>
     </view>
@@ -74,16 +77,6 @@
       $wxapp.globalData.curplay = this.curplay
       this.page = podcast.page()
       await this.next()
-      // 处理时间格式
-//      for (let item of this.page.list) {
-//        item._ = {
-//          header_collapsed: false,
-//          expanded: true
-//        }
-//        item.modified = moment(item.modified).fromNow()
-//        item.list = await podcast.loadEpisodes(item)
-//        item.loaded = true
-//      }
       this.loaded()
       this.preload()
       $wxapp.emitter.on('tab-change', async (active) => {
