@@ -22,7 +22,7 @@
       display: flex;
       flex-flow: column;
       /*display: inline-block;*/
-      width: 25%;
+      width: 33.33333%;
       text-align: center;
       align-content: center;
       align-items: center;
@@ -187,9 +187,6 @@
         }, {
           name: 'feed',
           title: '柚道'
-        }, {
-          name: 'qa',
-          title: '柚答'
         }, {
           name: 'me',
           title: '我的'

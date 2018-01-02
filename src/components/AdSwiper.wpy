@@ -1,4 +1,12 @@
 <style lang="scss" scoped>
+  .swiper {
+    width: 100%;
+    height: rpx(440) !important;
+    .slide-image {
+      width: 100%;
+      height: rpx(440) !important;
+    }
+  }
 </style>
 <template>
   <swiper
@@ -7,6 +15,7 @@
     autoplay="{{config.autoplay}}" interval="{{config.interval}}" duration="{{config.duration}}">
     <block wx:for="{{config.items}}" wx:key="item">
       <swiper-item>
+        <!--<image src="{{item.image_link}}" class="slide-image"/>-->
         <image src="{{item.image_link}}" class="slide-image"/>
         <!--<image src="../images/swiper.png" class="slide-image"/>-->
       </swiper-item>

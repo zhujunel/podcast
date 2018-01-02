@@ -7,7 +7,7 @@
   /* eslint-disable no-undef,no-useless-return,no-unneeded-ternary,no-unused-vars,no-unused-expressions */
 
   // ENV
-  const env = 'development' // 'development' or 'production'
+  const env = 'production' // 'development' or 'production'
 
   // APP VERSION
   const version = 'v1'

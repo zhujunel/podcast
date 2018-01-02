@@ -1,9 +1,69 @@
 <template>
-  <view class="body">
-    <recommend wx:if="{{currentTab === 'stickys'}}"/>
-    <feed wx:if="{{currentTab === 'feed'}}"></feed>
-    <me class="tab_item" wx:if="{{currentTab === 'me'}}"></me>
-    <youda class="tab_item" wx:if="{{currentTab === 'qa'}}"></youda>
+
+  <view class="o-page">
+
+    <view class="o-page__header">
+      <view class="o-page__header-title">
+        浏览
+      </view>
+    </view>
+
+    <!-- Section 精选 -->
+    <view class="c-section">
+      <swiper class="c-stickys">
+        <block wx:for-items="{{stickys.list}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+
+        <swiper-item class="c-stickys-item" @tap="tap({{item}})">
+          <view class="c-stickys-item__content">
+            <view class="c-stickys-item__tag">精选</view>
+            <view class="c-stickys-item__title">
+              <elip>
+                {{item.title}}
+              </elip>
+            </view>
+            <view class="c-stickys-item__author">{{item.author.nicename}}</view>
+            <image class="c-stickys-item__cover" src="{{item.featured_image}}" mode="aspectFill"></image>
+          </view>
+        </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <!-- end 精选 -->
+    <view wx:for-items="{{categories}}" wx:for-index="index" wx:for-item="item" wx:key="id" id="cate_{{term_id}}">
+      <view class="c-line"></view>
+      <view class="c-category__section">
+
+        <view class="c-category__header">
+          <view class="c-category__header-title">
+            {{item.name}}
+          </view>
+          <view class="c-category__header-action">
+            查看全部
+          </view>
+        </view>
+
+        <scroll-view scroll-x="true" scroll-into-view="{{toView}}" scroll-with-animation="true" class="c-category__section-content">
+          <view class="c-podcast"
+                wx:for-items="{{item.podcastList}}"
+                wx:for-index="index"
+                wx:for-item="podcast"
+                wx:key="id"
+                @tap="tap({{podcast}})">
+            <image class="c-podcast__cover" mode="aspectFill" src="{{podcast.featured_image}}"></image>
+            <view class="c-podcast__title">{{podcast.title}}</view>
+            <view class="c-podcast__autor">{{podcast.author.nicename}}</view>
+          </view>
+
+        </scroll-view>
+      </view>
+
+    </view>
+
+    <!--<recommend wx:if="{{currentTab === 'stickys'}}"/>-->
+    <!--<feed wx:if="{{currentTab === 'feed'}}"></feed>-->
+    <!--<me class="tab_item" wx:if="{{currentTab === 'me'}}"></me>-->
+    <!--<youda class="tab_item" wx:if="{{currentTab === 'qa'}}"></youda>-->
+    <view style="height: 160rpx;"></view>
     <swiper class="tabbar {{isIpx?'fix-iphonex':''}}" current="{{currentBar}}" style="height: 138rpx;"
             @change="tabchange">
       <swiper-item>
@@ -16,31 +76,46 @@
     </swiper>
   </view>
 </template>
+
 <script>
+
   /* eslint-disable no-undef,no-throw-literal,no-unused-expressions,no-unused-vars */
   import wepy from 'wepy'
   import base from '../mixins/_base'
   import pagination from '../mixins/pagination'
+
   import auth from '../api/auth'
-  // import podcast from '../api/podcast'
-  // import Cache from '../utils/Cache'
+  import podcast from '../api/podcast'
+  import category from '../api/category'
+
+  import Cache from '../utils/Cache'
   import Tips from '../utils/Tips'
-  // import Event from '../utils/Event'
-  // import MySwiper from '../components/ui/swiper'
+  import Event from '../utils/Event'
+  import MySwiper from '../components/ui/swiper'
   import Loadmore from '../components/ui/loadmore'
   import NavBar from '../components/NavBar'
   import PlayerBar from '../components/PlayerBar'
   import Me from '../components/profile'
   //  import PodcastCard from '../components/podcast-card'
   import Recommend from '../components/recommend'
-  // import Youda from '../components/youda'
+  import Youda from '../components/youda'
   //  import moment from 'moment'
-  // import Feed from '../components/Feed'
-  import Feed from '../components/Channel'
+  import Feed from '../components/Feed'
+  import Elip from '../components/ui/elip'
   // const device = wx.getSystemInfoSync()  //  获取设备信息
   const $wxapp = wepy.$instance
+
   export default class AppHome extends wepy.page {
     def = {
+      imgUrls: [
+        'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
+        'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
+        'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
+      ],
+      indicatorDots: false,
+      autoplay: false,
+      interval: 5000,
+      duration: 1000,
       init: false,
       app: {},
       status: null,
@@ -61,11 +136,18 @@
         added: [],
         list: []
       },
+      stickys: {
+        added: [],
+        list: []
+      },
+      categories: [],
+      podcastList: [],
       isIpx: $wxapp.globalData.isIpx
       // width: device.windowWidth,
       // height: device.windowHeight
     }
     data = {...this.def}
+
     async onLoad ({sence}) {
 //      const result = await auth.user({block: true, redirect: true})
 //      if (!result) return
@@ -74,10 +156,25 @@
 //       console.log(device)
 //       console.log(this.isIpx + '---xxx')
       await auth.login()
+      // this.loaded()
+      this.stickys = await podcast.stickys()
+      await this.stickys.next()
       this.loaded()
-      this.$invoke('recommend', 'onShow')
+      this.categories = await category.list()
+      // console.log(JSON.stringify(this.categories))
+      for (const cate of this.categories) {
+        const podcastPage = await podcast.page(cate.slug)
+        const podcastList = await podcastPage.next()
+        this.loaded()
+        cate.podcastList = podcastList.list
+      }
+      // this.podcastList.push()
+      // console.log(JSON.stringify(this.categories))
+      // console.log(this.stickys)
+      // this.$invoke('recommend', 'onShow')
 //      console.log(JSON.stringify(res))
     }
+
     async onShow () {
       this.$root.$parent.emitter.on('change-audio', () => {
         this.currentBar = 1
@@ -99,14 +196,20 @@
         this.$apply()
       })
     }
+
     watch = {}
+
     onShareAppMessage () {
       const title = '育儿柚道'
       const url = '/pages/home/index'
       const desc = '育儿柚道-育儿有道！'
       return Tips.share(title, url, desc)
     }
+
     methods = {
+      tap (item) {
+        this.$root.$navigate(`/pages/detail/index?id=${item.id}&parent=${item.id}`)
+      },
       share () {
         Tips.modal('当前版本过低，请更新微信或点击右上角进行分享')
       },
@@ -117,63 +220,31 @@
         }
       }
     }
+
     components = {
 //      'my-swiper': MySwiper,
       'Loadmore': Loadmore,
       'nav-bar': NavBar,
       'player-bar': PlayerBar,
+      'elip': Elip,
       me: Me,
 //      'podcast-card': PodcastCard,
       recommend: Recommend,
-      feed: Feed
-      // youda: Youda
+      feed: Feed,
+      youda: Youda
     }
-    mixins = [base]
+
+    mixins = [base, pagination]
     config = {
-      'navigationBarTitleText': '育儿柚道',
-      'disableScroll': true
+      'navigationBarTitleText': '育儿柚道'
+      // 'disableScroll': true
     }
   }
 </script>
-<style lang="scss">
-  @import '../stylesheets/shared/functions';
-  .fix-iphonex {
-    bottom: rpx(40) !important;
-  }
-  .fix-iphonex::after {
-    content: ' ';
-    position: fixed;
-    bottom: 0 !important;
-    height: rpx(40) !important;
-    /*width: 100%;*/
-    background: transparent;
-  }
-  .tabbar {
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-  }
-  .gridicon {
-    fill: currentColor;
-    &.needs-offset g {
-      transform: translate(1px, 1px); /* translates to .5px because it's in a child element */
-    }
-    &.needs-offset-x g {
-      transform: translate(1px, 0); /* only nudges horizontally */
-    }
-    &.needs-offset-y g {
-      transform: translate(0, 1px); /* only nudges vertically */
-    }
-  }
-  .tab_item {
-    height: 100%;
-  }
-  page, .body {
-    height: 100%;
-    font-family: '\5FAE\8F6F\96C5\9ED1', arial;
-    /*background-color: #f0eff5;*/
-  }
 
+<style lang="scss">
+
+  @import '../stylesheets/shared/functions';
   $spacer: rpx(30px);
   .o-page {
     background: #fff;
@@ -251,6 +322,7 @@
   }
   .c-category__section-content {
     white-space: nowrap;
+    display: flex;
   }
   .c-line{
     display: flex;
@@ -261,9 +333,7 @@
     background: #ededed;
   }
   .c-podcast {
-    &:last-child {
-      margin-right: 4.5%;
-    }
+
     &:first-child {
       margin-left: 4.5%;
     }
@@ -287,25 +357,86 @@
 
   }
 
-  /*swiper {*/
+  swiper {
     /*height: 400rpx;*/
     /*width: 100%;*/
-    /*display: inline;*/
-  /*}*/
+    display: inline;
+  }
   /*swiper {*/
-  /*height: 421.5rpx;*/
+    /*height: 421.5rpx;*/
   /*}*/
   .c-swiper__item{
-    /*wx-swiper-item {*/
+  /*wx-swiper-item {*/
     width: 90% !important;
     margin-left: 5% !important;
   }
+
+  swiper-item image {
+    width: 90%;
+    height: 90%;
+  }
+  .swiper-container{
+    position: relative;
+  }
+  .swiper-container .swiper{
+    height: 300rpx;
+  }
+  .swiper-container .swiper .img{
+    width: 100%;
+    height: 100%;
+  }
+
 
   .c-panel {}
   .c-card {
     position: relative;
     height: 500px;
 
+  }
+
+  .fix-iphonex {
+    bottom: rpx(40) !important;
+  }
+
+  .fix-iphonex::after {
+    content: ' ';
+    position: fixed;
+    bottom: 0 !important;
+    height: rpx(40) !important;
+    /*width: 100%;*/
+    background: transparent;
+  }
+
+  .tabbar {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+  }
+
+  .gridicon {
+    fill: currentColor;
+
+    &.needs-offset g {
+      transform: translate(1px, 1px); /* translates to .5px because it's in a child element */
+    }
+
+    &.needs-offset-x g {
+      transform: translate(1px, 0); /* only nudges horizontally */
+    }
+
+    &.needs-offset-y g {
+      transform: translate(0, 1px); /* only nudges vertically */
+    }
+  }
+
+  .tab_item {
+    height: 100%;
+  }
+
+  page, .body {
+    height: 100%;
+    font-family: '\5FAE\8F6F\96C5\9ED1', arial;
+    background-color: #fff;
   }
 
   .we-slide {
@@ -315,25 +446,31 @@
     /*color: #fff;*/
     /*font-size: 2rem;*/
   }
+
   .we-slide:nth-child(1) {
     /*background-color: #4390EE*/
   }
+
   .we-slide:nth-child(2) {
     /*background-color: #CA4040*/
   }
+
   .we-slide:nth-child(3) {
     /*background-color: #FF8604*/
   }
+
   .refresh_root {
     background-color: white;
     width: 100%;
     text-align: center;
     margin-top: 2px;
   }
+
   .refresh {
     width: 40px;
     height: 40px;
   }
+
   /*@import '../stylesheets/style';*/
   .swiper {
     width: 100%;
@@ -343,28 +480,34 @@
       height: rpx(440);
     }
   }
+
   /*.swiper {*/
   /*height: rpx(100);*/
   /*bottom: 0;*/
   /*}*/
+
   @import "../stylesheets/style";
   button[plain] {
     border: none;
   }
+
   button.pain-btn[open-type="share"] {
     background-color: transparent;
     line-height: normal;
     padding: 0;
     margin: 0;
   }
+
   @mixin transform($args) {
     -webkit-transform: $args;
     -ms-transform: $args;
     transform: $args;
   }
+
   @mixin translate($x: 0, $y: 0) {
     @include transform(translate($x, $y));
   }
+
   @keyframes confetti {
     60% {
       opacity: 1;
@@ -374,6 +517,7 @@
       @include transform(scale(1) translate(-50%, -50%));
     }
   }
+
   .podcast-actions {
     box-sizing: border-box;
     display: -webkit-box;
@@ -386,7 +530,9 @@
     margin: 10px 0;
     font-size: rpx(24);
     color: #D0D0D0;
+
   }
+
   .podcast-actions__item {
     display: inline-flex;
     align-items: center;
@@ -401,12 +547,14 @@
       height: rpx(36);
     }
   }
+
   .post-actions__share {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
     margin-left: 20px;
   }
+
   .podcast-card__header {
     height: rpx(100);
     width: 100%;
@@ -416,12 +564,15 @@
     align-items: center;
     justify-content: space-between;
     position: relative;
+
     .foldable-card.is-expanded & {
       margin-bottom: 0px;
       height: inherit;
       min-height: rpx(100);
     }
+
   }
+
   .podcast-card__content {
     display: none;
     /*.is-expand {*/
@@ -483,6 +634,7 @@
       }
     }
   }
+
   .podcast-card {
     z-index: 0;
     display: block;
@@ -508,45 +660,56 @@
       animation-fill-mode: both;
     }
     @include clear-fix;
+
     // Compact Card
     &.is-compact {
       margin-bottom: 1px;
       padding: 16px 24px;
     }
+
     &.is-card-link {
       padding-right: 48px;
     }
+
     &.is-error {
       box-shadow: inset 3px 0 0 $alert-red;
     }
+
     &.is-info {
       box-shadow: inset 3px 0 0 $blue-wordpress;
     }
+
     &.is-success {
       box-shadow: inset 3px 0 0 $alert-green;
     }
+
     &.is-warning {
       box-shadow: inset 3px 0 0 $alert-yellow;
     }
   }
+
   .player {
     width: rpx(64);
     height: rpx(64);
     display: block;
     margin-right: rpx(20);
   }
+
   $gray: #A1a1a1;
   $gray-light: lighten($gray, 33%); //#f3f6f8
   $gray-dark: darken($gray, 38%); //#2e4453
   $white: rgba(255, 255, 255, 1);
+
   .more {
     width: rpx(32);
     height: rpx(32);
     color: $gray-light;
   }
+
   /*.margin{*/
   /*margin-top: rpx(50)*/
   /*}*/
+
   .plugin-meta__banner {
     position: relative;
     top: 0;
@@ -557,16 +720,20 @@
     /*margin-bottom: 16px;*/
     box-shadow: inset 0 0 2px 2px rgba(lighten($gray, 10), 0.1);
     background: rgba(lighten($gray, 30), 0.3);
+
     image {
       display: block;
       width: auto;
       max-height: rpx(320);
       margin: 0 auto;
     }
+
   }
+
   .is-placeholder .plugin-meta__author {
     color: transparent !important;
   }
+
   .podcasts-browser-item {
     /*box-sizing: border-box;*/
     /*display: block;*/
@@ -576,6 +743,7 @@
     /*overflow: hidden;*/
     /*width: 100%;*/
   }
+
   .is-placeholder {
     color: transparent;
     width: 100%;
@@ -585,10 +753,12 @@
     background-color: lighten($gray, 30%);
     animation: loading-fade 1.6s ease-in-out infinite;
     opacity: 0.3;
+
     &:before {
       content: ' ';
     }
   }
+
   .podcast__header {
     display: flex;
     .podcast-icon__img {
@@ -611,34 +781,40 @@
       }
     }
   }
+
   .podcasts-browser__main-header {
     background: $white;
     box-shadow: 0 0 0 1px transparentize(lighten($gray, 20%), 0.5), 0 1px 2px lighten($gray, 30%);
     flex-direction: column;
     display: flex;
   }
+
   .podcasts-browser-item__title,
   .podcasts-browser-item__author {
     flex: 1;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+
     .is-placeholder & {
       color: transparent;
       background-color: lighten($gray, 30%);
       animation: loading-fade 1.6s ease-in-out infinite;
     }
   }
+
   .podcasts-browser-item__title {
     color: $gray-dark;
     font-weight: 600;
     font-size: rpx(30);
     margin-top: 3px;
   }
+
   .podcasts-browser-item__author {
     color: $gray;
     font-size: 12px;
   }
+
   .podcasts-browser-item .plugin-icon.is-placeholder,
   .podcasts-browser-item .plugin-icon[style*='undefined'] {
     &:before {
@@ -647,15 +823,18 @@
       font: normal 40px/40px Noticons;
     }
   }
+
   .podcasts-browser-item .plugin-icon {
     margin-right: 0;
   }
+
   .podcasts-browser-item .rating {
     padding-top: 10px;
     position: absolute;
     bottom: 16px;
     left: 16px;
   }
+
   .podcasts-browser-item__published {
     display: flex;
     align-items: center;
@@ -667,10 +846,12 @@
     font-weight: 600;
     text-transform: uppercase;
     animation: appear .15s ease-in;
+
     .gridicon {
       margin-right: 3px;
     }
   }
+
   @keyframes comment-detail__author-more-info {
     0% {
       display: none;
@@ -684,6 +865,7 @@
       transform: scaleY(1);
     }
   }
+
   .podcast {
     z-index: 100;
     /*margin-top: rpx(30);*/
@@ -729,6 +911,7 @@
         margin-right: rpx(32);
         padding: rpx(24);
         text-align: left;
+
         /*display: inline-block;*/
         /*vertical-align:top;*/
         display: inline-flex;
@@ -745,15 +928,19 @@
         &.is-error {
           box-shadow: inset 3px 0 0 $alert-red;
         }
+
         &.is-info {
           box-shadow: inset 3px 0 0 $blue-wordpress;
         }
+
         &.is-playing {
           box-shadow: inset 3px 0 0 $blue-medium;
         }
+
         &.is-pause {
           box-shadow: inset 3px 0 0 $alert-yellow;
         }
+
         &.is-placeholder {
           background-color: lighten($gray, 30%);
           animation: loading-fade 1.6s ease-in-out infinite;
@@ -762,35 +949,44 @@
       }
     }
   }
+
   .post-image {
     position: relative;
     width: 100%;
     margin-top: 16px;
     background-color: $gray-light;
     text-align: center;
+
     &:first-child {
       margin-top: 0;
     }
+
     &:hover {
       cursor: zoom-out;
     }
+
     &.is-collapsed,
     &.is-placeholder {
       height: 144px;
     }
+
     &.is-collapsed {
       background-size: cover;
       background-position: center;
+
       &:hover {
         cursor: zoom-in;
       }
     }
+
     &.is-placeholder {
       background-color: lighten($gray, 30%);
       animation: loading-fade 1.6s ease-in-out infinite;
     }
   }
+
   .post-image__image {
     vertical-align: bottom;
   }
+
 </style>

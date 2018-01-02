@@ -395,26 +395,30 @@
       // 加载推荐的内容
       $wxapp.emitter.on('stickys-onload', (stikcy) => {
         (async () => {
-          const data = await podcast.list(stikcy.id)
+          if (!Object.is(stikcy.items, undefined)) {
+            const data = await podcast.detail(stikcy.items[0].id)
+            this.loaded()
 //          this.curplay = data.data[0]
-          const audio = data.data[0]
-          this.playList = data.data
+//           console.log(JSON.stringify(data))
+            const audio = data
+            // this.playList = data
 //          console.log(JSON.stringify(this.playList))
-          this.curAudio = {
-            id: audio.id,
-            albumId: stikcy.id,
-            avatar: audio.author.avatar,
-            epname: stikcy.title,
-            title: audio.title,
-            singer: audio.author.nicename,
-            coverImgUrl: stikcy.featured_image,
-            src: audio.url,
-            playStatus: 'stop'
+            this.curAudio = {
+              id: audio.id,
+              albumId: stikcy.id,
+              avatar: audio.author.avatar,
+              epname: stikcy.title,
+              title: audio.title,
+              singer: audio.author.nicename,
+              coverImgUrl: stikcy.featured_image,
+              src: audio.url,
+              playStatus: 'stop'
 //          webUrl
+            }
+            $wxapp.audioStore.setAudio(this.curAudio)
+            this.loaded()
+            this.$apply()
           }
-          $wxapp.audioStore.setAudio(this.curAudio)
-          this.loaded()
-          this.$apply()
         })()
       })
 

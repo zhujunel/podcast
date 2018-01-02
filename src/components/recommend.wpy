@@ -597,6 +597,7 @@
       await this.next()
       this.loaded()
       $wxapp.emitter.emit('stickys-onload', this.page.list[0])
+      // console.log(JSON.stringify(this.page.list[0]))
 //      console.log('recommend onload')
 //      this.page = await podcast.stickys()
 //      await this.next()

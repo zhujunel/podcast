@@ -694,16 +694,20 @@
     async getDetail(id) {
       this.detail = await podcastApi.detail(id)
     }
-    async getList(id, parent) {
-      const data = await podcastApi.list(parent)
-      this.list = data.data
-      this.detail.list = data.data
-      const cur = this.list.find((item) => {
-        if (item.id.toString() === id) {
-          return item
-        }
-      })
-      this.curplay = Object.assign({}, cur, {play_status: 'stop'})
+    async getList(id, items) {
+      const data = await podcastApi.list(items)
+      // console.log(JSON.stringify(data))
+      this.list = data
+      this.detail.list = data
+      this.$apply()
+      // this.list = data.data
+      // console.log(JSON.stringify(data))
+      // const cur = this.list.find((item) => {
+      //   if (item.id.toString() === id) {
+      //     return item
+      //   }
+      // })
+      // this.curplay = Object.assign({}, cur, {play_status: 'stop'})
     }
     async onLoad(option) {
       // 测试专用数据
@@ -711,8 +715,8 @@
 //        id: 1,
 //        parent: 1
 //      }
-      await this.getDetail(option.parent)
-      await this.getList(option.id, option.parent)
+      await this.getDetail(option.id)
+      await this.getList(option.id, this.detail.items)
       this.loaded()
       await this.getReplies(option.id)
       this.loaded()

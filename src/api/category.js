@@ -7,16 +7,6 @@ moment.locale('zh-cn')
 
 export default class podcast extends base {
   /**
-   * 获取推荐内容列表
-   * @returns {Pagination}
-   */
-  static stickys () {
-    const url = `${this.baseUrl}/posts?sticky=true`
-    // const data = await this.get(url)
-    // return data
-    return new Page(url)
-  }
-  /**
    * 获取节目列表从全部分类中
    */
   static page (category) {
@@ -50,20 +40,10 @@ export default class podcast extends base {
    * @param parent
    * @returns {Promise.<*>}
    */
-  static async list (items) {
-    // console.log(JSON.stringify(items))
-    const list = []
-    for (const item of items) {
-      const url = `${this.baseUrl}/posts/${item.id}`
-      const data = await this.get(url)
-      // console.log(JSON.stringify(data))
-      // list.push(data.data)
-      // return data
-      list.unshift(data)
-    }
-    // console.log(JSON.stringify(list))
-    return list
-    // console.log(JSON.stringify(data))
+  static async list () {
+    const url = `${this.baseUrl}/categories`
+    const data = await this.get(url)
+    return data.categories
   }
 
   static async loadEpisodes (item) {
@@ -122,13 +102,13 @@ export default class podcast extends base {
    * @private
    */
   static async __before (item) {
-    // item.list = await this.loadEpisodes(item)
-    // item.modified = moment(item.modified).fromNow()
-    // item.list.forEach((value) => {
-    //   value.modified = moment(value.modified).fromNow()
-    // })
-    // item.loaded = true
-    // return item
+    item.list = await this.loadEpisodes(item)
+    item.modified = moment(item.modified).fromNow()
+    item.list.forEach((value) => {
+      value.modified = moment(value.modified).fromNow()
+    })
+    item.loaded = true
+    return item
   }
 
   static async __after (item) {
