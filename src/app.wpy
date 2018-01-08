@@ -1,11 +1,12 @@
 <style lang="scss">
   @import "./styles/base";
+  @import "./styles/animate";
 </style>
 
 <script>
   /* eslint-disable no-unused-vars,no-undef */
   // ENV
-  const env = 'production' // 'development' or 'production'
+  const env = 'development' // 'development' or 'production'
   // APP VERSION
   const version = 'v1'
 
@@ -18,8 +19,9 @@
   const APP_API = `${hosts[env]}/apps/${APPID}`
 
   import wepy from 'wepy'
-  import 'wepy-async-function'
+  import mitt from 'mitt'
   import WxUtils from './utils/WxUtils'
+  import 'wepy-async-function'
 
   export default class extends wepy.app {
     constructor () {
@@ -56,18 +58,13 @@
       }
       return header
     }
-
+    emitter = mitt()
     onLaunch (param) {
       // 校验SDK
       WxUtils.checkSDK()
-      // 同步开放平台EXT数据
-      // const ext = wepy.getExtConfigSync()
-      // Object.assign(wepy.$instance.globalData, ext)
-      // console.info(ext)
-
       // 同步权限数据
-      // this.syncStoreConfig('_token')
-      // this.syncStoreConfig('user')
+      this.syncStoreConfig('_token')
+      this.syncStoreConfig('user')
 
       // 获取保存场景值
       if (param && param.scene) {
@@ -80,7 +77,7 @@
       this.globalData.isIpx = this.device.model.indexOf('iPhone X') >= 0
     }
 
-    syncStoreConfig (obj, key) {
+    syncStoreConfig (key) {
       try {
         const value = wepy.getStorageSync(key)
         if (value !== '') {
@@ -88,15 +85,15 @@
           wepy.$instance.globalData.auth[key] = value
         }
       } catch (e) {
-        // console.warn(`[auth]${key} sync fail `)
+        console.warn(`[auth]${key} sync fail `)
       }
     }
 
     config = {
       pages: [
         'pages/index',
-        'pages/me',
         'pages/love',
+        'pages/me',
         'pages/love/new'
       ],
       window: {
@@ -130,8 +127,10 @@
     }
 
     globalData = {
+      baseUrl: APP_API,
       auth: {},
       scene: '',
+      user: null,
       userInfo: null
     }
   }
