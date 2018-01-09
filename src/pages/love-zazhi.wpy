@@ -54,12 +54,14 @@
   }
 
   .c-card {
+    border-bottom-right-radius: 32rpx;
+    border-bottom-left-radius: 32rpx;
+    box-shadow: 0 10px 30px 0 rgba(0,0,0,0.10);
     height: 100%;
-    width: 100%;
-    /*background: #fff;*/
+    background: #fff;
   }
   .c-card__header {
-    padding: 60rpx 30rpx 30rpx 30rpx;
+    padding: 0 30rpx 30rpx 30rpx;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -219,11 +221,11 @@
     align-items: flex-start;
   }
   /*.c-stickys {*/
-  /*height: rpx(550);*/
-  /*display: flex;*/
-  /*justify-content: flex-start;*/
-  /*text-align: left;*/
-  /*align-items: flex-start;*/
+    /*height: rpx(550);*/
+    /*display: flex;*/
+    /*justify-content: flex-start;*/
+    /*text-align: left;*/
+    /*align-items: flex-start;*/
   /*}*/
   .c-stickys-item {
     /*width: 95% !important;*/
@@ -345,11 +347,11 @@
   .c-lovers {
     height: 100%;
     position: relative;
-    margin: rpx(30) 0;
+    margin-bottom: rpx(30);
   }
   .c-lovers__header {
     padding: rpx(30) 0 rpx(30) rpx(30);
-    /*font-size: rpx(36);*/
+    font-size: rpx(32);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -359,7 +361,7 @@
     flex: 1;
     margin-left: rpx(14);
     font-weight: bold;
-    font-size: rpx(32);
+    font-size: rpx(28);
   }
 
   .c-lovers__scroll {
@@ -379,7 +381,7 @@
       width: rpx(80);
       height: rpx(80);
       box-shadow: 0 rpx(2) rpx(8) 0 rgba(0,0,0,0.08);
-      border-radius: rpx(100);
+      border-radius: rpx(20);
       border: 1px solid #ededed;
     }
     &__name {
@@ -451,34 +453,25 @@
     /*justify-content: space-between;*/
   }
   .c-love-special {
-    padding-top: rpx(30);
     width: 100%;
-    /*height: rpx(450);*/
-    height: 100%;
-    /*height: rpx(700);*/
     /*height: rpx(260);*/
     /*background-color:#e6e6e6;*/
-    position: relative;
+    /*position: relative;*/
     display: flex;
-    /*flex-direction: row;*/
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    /*border-bottom-right-radius: 32rpx;*/
+    /*border-bottom-left-radius: 32rpx;*/
     /*box-shadow: 0 10px 30px 0 rgba(0,0,0,0.10);*/
+    height: 100%;
     background: #fff;
-    border-bottom-right-radius: 32rpx;
-    border-bottom-left-radius: 32rpx;
-    box-shadow: 0 10px 30px 0 rgba(0,0,0,0.10);
 
     .photo-btn{
       width: rpx(72);
       height: rpx(72);
-      /*align-self: flex-end;*/
       position: absolute;
-      right: rpx(-20);
-      bottom: rpx(-20);
-      /*top: rpx(450);*/
-      background-color: rgba(255, 255, 255, 0.50);
+      right: rpx(20);
+      top: rpx(450);
+      background-color: white;
       border-radius: rpx(50);
       z-index: 100;
       box-shadow: 0 0 1px 1px rgba(0,0,0,0.05), 0 2px 2px 0 rgba(0,0,0,0.10);
@@ -492,7 +485,6 @@
     flex-direction: row;
     align-items: center;
     /*padding: rpx(30);*/
-    z-index: 3;
     align-content: space-between;
   }
 
@@ -537,6 +529,20 @@
     white-space: nowrap;
     line-height: 1.0769231;
   }
+  .c-love-card__cover{
+    position: absolute;
+    left: rpx(20);
+    right: rpx(20);
+    bottom: rpx(20);
+    border-radius: rpx(8);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+
+    width: auto;
+    height: rpx(180);
+  }
+
   .c-love-meta {
     flex: 1;
     padding-left: rpx(30);
@@ -578,20 +584,16 @@
 
   .c-story-card {
     /*flex: 1;*/
-    margin: rpx(30);
+    margin: rpx(28);
     height: auto;
     width: auto;
     border-radius: rpx(16);
-    /*box-shadow: 0 0 0 rpx(2) rgba(255,255,255,1),0 0 0 rpx(4) rgba(31,31,31,.1);*/
-    /*box-shadow: 0 0 0 rpx(2) rgba(31,31,31,0.03),0 0 0 rpx(6) rgba(31,31,31,0.05);*/
-
-    border: 1px solid #ededed;
-    /*box-shadow: 0 2px 10px 0 rgba(0,0,0,0.16);*/
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.16);
   }
   .c-story__body {
     display: flex;
     align-items: center;
-    /*background: #FFFFFF;*/
+    background: #FFFFFF;
     min-height: rpx(120);
     padding: rpx(28) rpx(40);
     font-size: rpx(28);
@@ -626,47 +628,19 @@
     font-size: rpx(22);
     color: #C2C4CA;
   }
-  .c-love-special__cover {
-    width: rpx(660);
-    height: rpx(400);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .c-love-special__cover-image {
-    border-radius: rpx(24) ;
-    width: rpx(660);
-    height: rpx(400);
-    background-size:100% 100%;
-    position: relative;
-    z-index:2;
-    /* image: */
-  }
-  .c-love-special__cover--blur {
-    width: rpx(660);
-    height: rpx(400);
-    background-size: 100% 100%;
-    position: absolute;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    transform: scaleX(.85) scaleY(.95);
-    transform-origin: 50% 100%;
-    filter: blur(16px);
-    -webkit-filter: blur(16px);
-    border-radius: rpx(24) ;
-    z-index: 1;
-  }
 </style>
 <template>
   <view class="o-love">
     <view class="c-love-special" >
-      <view class="c-love-special__cover">
+      <image  mode="aspectFill"
+              class=""
+              style="width: {{imageWidth}}px;" height="260rpx;filter: blur(10px);"
+              src="{{detail.featured_image}}" @tap="manage">
         <view class="c-love-special__wrapper">
 
           <view class="c-love-meta">
             <text class="c-love-meta__title">
-              {{detail.title}}
+                {{detail.title}}
             </text>
             <view class="c-love-meta__author">
               <image class="c-love-meta__avatar"
@@ -675,74 +649,76 @@
               <Elip>{{detail.author.nicename}}</Elip>
             </view>
           </view>
+          <view class="c-love-card animated fadeIn">
+            <view class="c-love-card__body">
+              <view class="c-love-card__title">
+                <Elip>
+                  {{detail.title}}
+                </Elip>
+              </view>
 
 
-        </view>
-        <image class="photo-btn icon-xl"  @tap.stop="photo" src="/images/icons/camera.png"></image>
-
-        <image  mode="aspectFill"
-                class="c-love-special__cover-image"
-                style=""
-                src="{{detail.featured_image}}" @tap="manage"></image>
-
-
-      </view>
-<!--      <image class="c-love-special__cover&#45;&#45;blur"
-             mode="aspectFill"
-             src="{{detail.featured_image}}"></image>-->
-
-      <view class="c-card">
-        <view class="c-lovers">
-          <view class="c-lovers__header">
-            <!--<image class="icon" src="/images/icons/icon-love&#45;&#45;dark.svg"></image>-->
-            <view class="c-lovers__title">
-              {{lovers.length}} 人最爱
+              <image class="c-love-card__cover"
+                     mode="aspectFill"
+                     src="{{detail.featured_image}}"></image>
             </view>
           </view>
-          <view class="c-lovers__scroll">
-            <scroll-view scroll-x="true" scroll-into-view="{{toView}}" scroll-with-animation="true" class="c-category__section-content">
-              <view class="c-lover"
-                    wx:for-items="{{lovers}}"
-                    wx:for-index="index"
-                    wx:for-item="lover"
-                    wx:key="id">
-                <image class="c-lover__avatar" mode="aspectFill" src="{{lover.picture}}"></image>
-                <view class="c-lover__name">
-                  <Elip>
-                    {{lover.name}}
-                  </Elip>
-                </view>
-              </view>
-            </scroll-view>
-          </view>
+          <image class="photo-btn icon-xl"  @tap.stop="photo" src="/images/icons/camera.png"></image>
+
         </view>
-      </view>
+      </image>
 
     </view>
 
+    <view class="c-card">
+      <view class="c-lovers">
+        <view class="c-lovers__header">
+          <!--<image class="icon" src="/images/icons/icon-love&#45;&#45;dark.svg"></image>-->
+          <view class="c-lovers__title">
+            {{lovers.length}} 人最爱
+          </view>
+        </view>
+        <view class="c-lovers__scroll">
+          <scroll-view scroll-x="true" scroll-into-view="{{toView}}" scroll-with-animation="true" class="c-category__section-content">
+            <view class="c-lover"
+                  wx:for-items="{{lovers}}"
+                  wx:for-index="index"
+                  wx:for-item="lover"
+                  wx:key="id">
+              <image class="c-lover__avatar" mode="aspectFill" src="{{lover.picture}}"></image>
+              <view class="c-lover__name">
+                <Elip>
+                  {{lover.name}}
+                </Elip>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+    </view>
 
     <view class="c-tabbar {{isIpx?'fix-iphonex':''}}">
       <view class="tab">
         <view class="c-toolbar">
           <view class="c-button c-button--loved"  wx:if="{{isLoved}}">
-            <picker mode="date" fields="year" value="{{date}}" start="1918" end="2018" bindchange="listenerDatePickerSelected">
-              <view class="c-love__picker">
-                <image  mode="aspectFit" class="c-love__picker-icon" src="/images/icons/icon-love--active.svg"></image>
-                <view class="c-love__picker-info">
-                  从
-                  <text style="font-weight: bold;">{{date}} </text> <image  mode="aspectFit" class="c-select_arrow" src="/images/icons/arrow--down.png"></image>
-                  开始爱上
+              <picker mode="date" fields="year" value="{{date}}" start="1918" end="2018" bindchange="listenerDatePickerSelected">
+                <view class="c-love__picker">
+                  <image  mode="aspectFit" class="c-love__picker-icon" src="/images/icons/icon-love--active.svg"></image>
+                  <view class="c-love__picker-info">
+                    从
+                    <text style="font-weight: bold;">{{date}} </text> <image  mode="aspectFit" class="c-select_arrow" src="/images/icons/arrow--down.png"></image>
+                    开始爱上
+                  </view>
                 </view>
-              </view>
-            </picker>
+              </picker>
           </view>
           <view class="c-button c-button--loved" wx:else>
-            <view class="c-love__picker">
-              <image  mode="aspectFit" class="c-love__picker-icon" src="/images/icons/icon-love--dark.svg"></image>
-              <view class="c-love__picker-info">
-                添加到我的最爱
+              <view class="c-love__picker">
+                <image  mode="aspectFit" class="c-love__picker-icon" src="/images/icons/icon-love--dark.svg"></image>
+                <view class="c-love__picker-info">
+                  添加到我的最爱
+                </view>
               </view>
-            </view>
           </view>
           <!--<view class="c-button c-button&#45;&#45;love"></view>-->
           <view class="c-button c-button--story" @tap="post">写回忆</view>
@@ -752,54 +728,54 @@
           <!--<view class="tab_item">lala</view>-->
         </view>
         <!--<view class="toolbar" wx:if="{{showToolbar}}">-->
-        <!--<view class="tab_item" wx:for="{{navs}}" wx:key="{{item.name}}" @tap="changeNav({{item.name}})">-->
-        <!--<image class="icon" src="../images/icon/icon-{{item.name}}{{item.name === active ? '-active' : ''}}.svg"></image>-->
-        <!--<text class="icon-title {{item.name === active ? 'icon-active' : ''}}">{{item.title}}</text>-->
-        <!--</view>-->
+          <!--<view class="tab_item" wx:for="{{navs}}" wx:key="{{item.name}}" @tap="changeNav({{item.name}})">-->
+            <!--<image class="icon" src="../images/icon/icon-{{item.name}}{{item.name === active ? '-active' : ''}}.svg"></image>-->
+            <!--<text class="icon-title {{item.name === active ? 'icon-active' : ''}}">{{item.title}}</text>-->
+          <!--</view>-->
         <!--</view>-->
       </view>
     </view>
 
     <view class="c-stories">
       <view class="c-stories__header" wx:if="list.length > 0">
-        <view class="c-stories__icon">
-          <image class="icon-lg" src="/images/icon/icon-story--active.svg"></image>
-        </view>
-        <view class="c-stories__title">{{list.length}} 条回忆</view>
+          <view class="c-stories__icon">
+            <image class="icon-lg" src="/images/icon/icon-story--active.svg"></image>
+          </view>
+          <view class="c-stories__title">{{list.length}} 条回忆</view>
       </view>
       <view class="c-story__header" wx:else>
-        <view class="c-stories__icon" >
-          <image class="icon-lg" src="/images/icon/icon-story.svg"></image>
-        </view>
-        <view class="c-stories__title">0 条回忆</view>
+          <view class="c-stories__icon" >
+            <image class="icon-lg" src="/images/icon/icon-story.svg"></image>
+          </view>
+          <view class="c-stories__title">0 条回忆</view>
       </view>
 
     </view>
-    <block wx:for="{{list}}" wx:key="index" wx:for-item="item">
-      <view class="c-story-card">
+      <block wx:for="{{list}}" wx:key="index" wx:for-item="item">
+        <view class="c-story-card">
 
-        <view class="c-story__body">
-          {{item.title}}
-        </view>
-        <view class="c-story-meta">
-          <view class="c-story-meta__author">
-            <image class="c-story-meta__avatar"
-                   mode="aspectFill"
-                   src="{{item.author.avatar}}"></image>
-            <view>
-              <Elip>{{item.author.nicename}}</Elip>
+          <view class="c-story__body">
+            {{item.title}}
+          </view>
+          <view class="c-story-meta">
+            <view class="c-story-meta__author">
+              <image class="c-story-meta__avatar"
+                     mode="aspectFill"
+                     src="{{item.author.avatar}}"></image>
+              <view>
+                <Elip>{{item.author.nicename}}</Elip>
 
-              <view class="c-story-meta__date">
-                {{item.date}}
+                <view class="c-story-meta__date">
+                  {{item.date}}
+                </view>
               </view>
+
             </view>
 
           </view>
 
         </view>
-
-      </view>
-    </block>
+      </block>
     <!--上传管理器-->
     <SliderPanel :display.sync="isPanelDisplay" >
       <view slot="title">编辑图片</view>

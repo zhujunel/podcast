@@ -253,19 +253,26 @@
 
     events = {
     }
+    async onShow() {
+    }
 
     async onLoad({sence}) {
-      // console.log('onload ...')
-      this.page = posts.page()
-      await this.next()
-      this.loaded()
+      // await auth.login()
+      const result = await auth.user({block: true, redirect: true})
+      if (!result) {
+        // eslint-disable-next-line no-useless-return
+        return
+      } else {
+        this.loaded()
 
-      await auth.login()
-      this.loaded()
-      // const result = await auth.user({block: true, redirect: true})
-      // if (!result) return
+        this.page = posts.page()
+        await this.next()
+        this.loaded()
+      }
+      // console.log('onload ...')
+      // await auth.login()
+
       // this.userInfo = JSON.parse($wxapp.globalData.auth.user)
-      // this.loaded()
     }
   }
 </script>
