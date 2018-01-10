@@ -4,6 +4,7 @@
   .o-home, page{
     height: 100%;
     background-color: #fff;
+    color: #344A5E;
   }
 
   body.c-home {
@@ -48,7 +49,7 @@
   .c-h1 {
     font-size: 30rpx;
   }
-  .c-loves {
+  .c-stories {
     display: flex;
     width: 100%;
     height: 100%;
@@ -56,35 +57,46 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    padding-top: rpx(30);
   }
-  .c-love-card {
+  .c-story-card {
+    position: relative;
     flex: 1;
     padding: rpx(24) rpx(30);
     width: 90%;
+    border-bottom: 1px solid #ededed;
   }
-  .c-love-card__body {
+  .c-story-card__body {
     display: flex;
+    width: rpx(660);
     flex: 1;
-    height: rpx(400);
-    background: #fff;
-    box-shadow: 0 2px 20px 0 rgba(0,0,0,0.1);
-    border-radius: 4px;
-
+    min-height: rpx(200);
+    max-height: rpx(500);
+    width: auto;
+    font-size: rpx(30);
+    line-height: 2;
+    margin-bottom: rpx(28);
+    font-weight: 300;
+    color: #415A6B;
     padding: rpx(28) rpx(20) rpx(14);
-    position: relative;
     align-items: center;
     flex-direction: column;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .c-love-card__title {
-    font-size: rpx(32);
+  .c-story-card__title {
+    width: rpx(600);
     display: block;
-    line-height: 1.615;
-    /*font-weight: 300;*/
-    margin-bottom: rpx(14);
-    width: rpx(660);
-    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+    margin-top: 28px;
+    margin-bottom: 14px;
+    text-align: left;
+    font-weight: 300;
+    font-size: rpx(42);
   }
-  .c-love-card__detail {
+  .c-story-card__detail {
     margin: 0 0 28rpx;
     font-size: 26rpx;
     font-weight: 400;
@@ -94,26 +106,47 @@
     white-space: nowrap;
     line-height: 1.0769231;
   }
-  .c-love-card__cover{
-    position: absolute;
-    left: rpx(20);
-    right: rpx(20);
-    bottom: rpx(20);
-    /*top: 170rpx;*/
-    border-radius: rpx(8);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
+  .c-story-card__cover{
+    /*border-radius: rpx(16) ;*/
+    width: 100%;
+    height: rpx(300);
+    background-size:100% 100%;
+    position: relative;
+    z-index:2;
+    /* Background: */
+    /*background: #FFFFFF;*/
+    /*box-shadow: 0 0 1px 1px rgba(0,0,0,0.05), 0 rpx(32) rpx(84) rpx(20) rgba(74,74,74,0.08);*/
+    border-radius: rpx(16);
     box-shadow: 0 0 1px 1px rgba(0,0,0,0.05), 0 2px 2px 0 rgba(0,0,0,0.10);
-    width: auto;
-    height: rpx(260);
   }
 
+  .c-story-meta {
+    display: flex;
+    padding: rpx(24);
+    flex-direction: row;
+    align-items: center;
+  }
+  .c-story-meta__author {
+    display: flex;
+    align-items: center;
+    font-size: rpx(24);
+    line-height: 1.25;
+  }
+  .c-story-meta__avatar {
+    width: rpx(32);
+    height: rpx(32);
+    margin-right: rpx(20);
+    border-radius: rpx(8);
+    box-shadow: 0 0 0 rpx(2) rgba(255,255,255,1),0 0 0 rpx(4) rgba(31,31,31,.1);
+  }
+  .c-story-meta__date {
+    font-size: rpx(22);
+    color: #C2C4CA;
+  }
 </style>
 <template>
   <view class="o-home">
-
-    <view class="c-loves"
+    <view class="c-stories"
           @touchstart="touchstart"
           @touchmove="touchmove"
           @touchend="touchend">
@@ -121,19 +154,35 @@
              wx:for-index="index"
              wx:for-item="item"
              wx:key="id">
-        <view class="c-love-card animated fadeIn" @tap="tapAction({{item}})">
-          <view class="c-love-card__body">
-            <view class="c-love-card__title">
-              <Elip>
-                {{item.title}}
-              </Elip>
-            </view>
-            <text class="c-love-card__detail">{{item.like_count}} 人最爱</text>
 
-            <image class="c-love-card__cover"
-                   mode="aspectFill"
-                   src="{{item.featured_image}}"></image>
+        <view class="c-story-card animated fadeIn">
+          <image class="c-story-card__cover"
+                 mode="aspectFill"
+                 src="{{item.featured_image}}"  @tap="tapAction({{item}})">
+            <view class="c-story-card__topbg">
+            </view>
+          </image>
+          <view class="c-story-card__title">
+            <Elip>
+              {{item.title}}
+            </Elip>
           </view>
+          <view class="c-story-meta">
+            <view class="c-story-meta__author">
+              <image class="c-story-meta__avatar"
+                     mode="aspectFill"
+                     src="{{item.author.avatar}}"></image>
+              <view>
+                {{item.author.nicename}}:
+              </view>
+            </view>
+          </view>
+          <view class="c-story-card__body">
+            <ElipContent :line="line">
+              {{item.content}}
+            </ElipContent>
+          </view>
+          <!--<Label type="fill" style="align-self: flex-end">展开</Label>-->
         </view>
       </block>
     </view>
@@ -157,6 +206,8 @@
   import Cache from '../utils/Cache'
   import Tips from '../utils/Tips'
   import Elip from '../components/ui/elip'
+  import moment from 'moment'
+  import Label from '../components/ui/p-label/index'
   import Loadmore from '../components/ui/loadmore'
 
   export default class Index extends wepy.page {
@@ -164,6 +215,8 @@
 
     components = {
       Elip: Elip,
+      ElipContent: Elip,
+      Label: Label,
       Loadmore: Loadmore
     }
 
@@ -172,6 +225,7 @@
         added: [],
         list: []
       },
+      line: 3,
       isMove: true,
       items: [
         {
@@ -270,6 +324,10 @@
         this.loaded()
 
         this.page = posts.page()
+        // this.list = data
+        for (let item of this.page.list) {
+          item.date = moment(item.date).fromNow()
+        }
         await this.next()
         this.loaded()
       }

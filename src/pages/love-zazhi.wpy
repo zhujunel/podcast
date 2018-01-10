@@ -491,7 +491,7 @@
   .c-love-card {
     flex: 1;
     margin: rpx(30) rpx(30) rpx(30) rpx(20);
-    width: rpx(300);
+    width: rpx(330);
     padding: rpx(28) rpx(20);
     z-index: 2;
   }

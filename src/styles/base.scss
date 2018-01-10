@@ -134,6 +134,9 @@ view.bg-white{background-color: white}
 .icon {
   @include icon-image(16px);
 }
+.icon-band {
+  @include icon-image(32px);
+}
 .icon-lg {
   @include icon-image(30px);
 }

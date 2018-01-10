@@ -8,7 +8,6 @@
     width: 100%;
     bottom: 0;
     height: rpx(138);
-    /*background: #efefef;*/
   }
   .c-tabbar__tab {
     color: #1F1F1F;
@@ -16,15 +15,12 @@
     border-radius: rpx(20);
     margin-left: rpx(20);
     background: #FFFFFF;
-    /*z-index: 100;*/
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.10) inset, /*左边阴影*/
     0 2px 4px rgba(0, 0, 0, 0.20); /*右边阴影*/
     white-space: nowrap;
     .tab_item {
-      /*border-left: 1px solid rgba(0, 0, 0, 0.05);*/
       display: flex;
       flex-flow: column;
-      /*display: inline-block;*/
       width: 33.33333%;
       text-align: center;
       align-content: center;
@@ -136,11 +132,8 @@
     height: 300rpx;
     background: #fff;
     display: flex;
-    /*align-items: flex-start;*/
-    /*justify-content: space-between;*/
     margin-left: rpx(32);
     margin-bottom: rpx(10);
-    /*flex-direction: column;*/
   }
   .c-h1 {
     font-size: 30rpx;
@@ -149,18 +142,14 @@
     display: flex;
     width: 100%;
     height: 100%;
-    /*align-items: flex-start;*/
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    /*flex-direction: column;*/
     flex-direction: row;
-    /*justify-content: space-between;*/
   }
   .c-loves-item {
 
     width: 300rpx;
-    /*display: flex;*/
     padding: 28rpx 20rpx;
   }
   .c-loves-item__body {
@@ -270,7 +259,7 @@
   .c-button {
     display: flex;
     background: #FFFFFF;
-    font-weight: bold;
+    /*font-weight: bold;*/
     /*font-weight: 500;*/
     font-size: rpx(30);
     height: rpx(80);
@@ -311,8 +300,9 @@
     width: 180rpx;
   }
   .c-button--primary {
+    margin-left: rpx(30);
     color: #FFFFFF;
-    background: #1F1F1F;
+    background: #344A5E;
     flex: 1;
   }
   .c-button--second {
@@ -390,22 +380,17 @@
   }
   .c-button--unlove {
     width: rpx(160);
-    margin-left: rpx(30);
   }
 
   .c-love__picker {
     color: #415A6B;
     display: flex;
-    /*text-align: left;*/
     justify-content: flex-start;
     flex-direction: row;
     justify-items: flex-start;
     align-items: flex-start;
-    /*justify-items: center;*/
-
   }
   .c-love__picker-icon {
-    /*margin-left: 0;*/
     width: rpx(40);
     height: rpx(40);
     padding: 0 rpx(16);
@@ -430,41 +415,30 @@
     align-items: center;
   }
   .c-stories__icon {
-    flex: 1;
   }
   .c-stories__title {
-    margin-top: rpx(14);
     flex: 1;
-    font-size: rpx(36);
+    font-size: rpx(32);
     font-weight: 300;
   }
   .c-love {
     display: flex;
     width: 100%;
     height: 100%;
-    /*align-items: flex-start;*/
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    /*flex-direction: column;*/
     flex-direction: row;
-    /*justify-content: space-between;*/
   }
   .c-love-special {
     padding-top: rpx(30);
     width: 100%;
-    /*height: rpx(450);*/
     height: 100%;
-    /*height: rpx(700);*/
-    /*height: rpx(260);*/
-    /*background-color:#e6e6e6;*/
     position: relative;
     display: flex;
-    /*flex-direction: row;*/
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    /*box-shadow: 0 10px 30px 0 rgba(0,0,0,0.10);*/
     background: #fff;
     border-bottom-right-radius: 32rpx;
     border-bottom-left-radius: 32rpx;
@@ -473,11 +447,9 @@
     .photo-btn{
       width: rpx(72);
       height: rpx(72);
-      /*align-self: flex-end;*/
       position: absolute;
       right: rpx(-20);
       bottom: rpx(-20);
-      /*top: rpx(450);*/
       background-color: rgba(255, 255, 255, 0.50);
       border-radius: rpx(50);
       z-index: 100;
@@ -491,7 +463,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    /*padding: rpx(30);*/
     z-index: 3;
     align-content: space-between;
   }
@@ -518,7 +489,6 @@
     flex: 1;
     height: 360rpx;
     background: #fff;
-    /*background: rgba(255,255,255,0.19);*/
     box-shadow: 0 2px 20px 0 rgba(0,0,0,0.1);
     border-radius: 4px;
 
@@ -548,14 +518,8 @@
     width: rpx(48);
     height: rpx(48);
     margin-right: rpx(20);
-    /*box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);*/
     border-radius: rpx(50);
-    /*border: 1px solid #FFF;*/
-    /*border: 16px solid rgba(31,31,31,0.05);*/
-    /*border: 5px solid rgba(31,31,31,0.05);*/
-    /*box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);*/
     box-shadow: 0 0 0 rpx(4) rgba(31,31,31,0.1),0 0 0 rpx(10) rgba(31,31,31,0.05);
-    /*box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.4);*/
   }
   .c-love-meta__title {
     font-size: rpx(48);
@@ -582,25 +546,19 @@
     height: auto;
     width: auto;
     border-radius: rpx(16);
-    /*box-shadow: 0 0 0 rpx(2) rgba(255,255,255,1),0 0 0 rpx(4) rgba(31,31,31,.1);*/
-    /*box-shadow: 0 0 0 rpx(2) rgba(31,31,31,0.03),0 0 0 rpx(6) rgba(31,31,31,0.05);*/
 
     border: 1px solid #ededed;
-    /*box-shadow: 0 2px 10px 0 rgba(0,0,0,0.16);*/
   }
   .c-story__body {
     display: flex;
     align-items: center;
-    /*background: #FFFFFF;*/
     min-height: rpx(120);
     padding: rpx(28) rpx(40);
     font-size: rpx(28);
-    /*font-weight: 300;*/
   }
 
   .c-story-meta {
     display: flex;
-    /*border-top: 1px solid #F5F5F5;*/
     padding: rpx(24);
     flex-direction: row;
     align-items: center;
@@ -610,10 +568,7 @@
     display: flex;
     align-items: center;
     font-size: rpx(24);
-    /*font-weight: 300;*/
     line-height: 1.25;
-    /*text-shadow: 0 1px 2px rgba(0,0,0,0.10);*/
-    /*flex: 1;*/
   }
   .c-story-meta__avatar {
     width: rpx(60);
@@ -627,7 +582,7 @@
     color: #C2C4CA;
   }
   .c-love-special__cover {
-    width: rpx(660);
+    width: rpx(680);
     height: rpx(400);
     position: relative;
     display: flex;
@@ -635,13 +590,17 @@
     justify-content: center;
   }
   .c-love-special__cover-image {
-    border-radius: rpx(24) ;
-    width: rpx(660);
+    border-radius: rpx(16) ;
+    width: rpx(680);
     height: rpx(400);
     background-size:100% 100%;
     position: relative;
     z-index:2;
-    /* image: */
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.05), 0 2px 2px 0 rgba(0,0,0,0.10);
+    /* Mask: */
+    /*background: #FFFFFF;*/
+    /*border: 0 solid #E7E8EA;*/
+    /*border-radius: 11.49px;*/
   }
   .c-love-special__cover--blur {
     width: rpx(660);
@@ -696,20 +655,23 @@
           <view class="c-lovers__header">
             <!--<image class="icon" src="/images/icons/icon-love&#45;&#45;dark.svg"></image>-->
             <view class="c-lovers__title">
-              {{lovers.length}} 人最爱
+              {{detail.likes.length}} 人最爱
             </view>
           </view>
           <view class="c-lovers__scroll">
-            <scroll-view scroll-x="true" scroll-into-view="{{toView}}" scroll-with-animation="true" class="c-category__section-content">
+            <scroll-view scroll-x="true"
+                         scroll-into-view="{{toView}}"
+                         scroll-with-animation="true"
+                         class="c-category__section-content">
               <view class="c-lover"
-                    wx:for-items="{{lovers}}"
+                    wx:for-items="{{detail.likes}}"
                     wx:for-index="index"
                     wx:for-item="lover"
-                    wx:key="id">
-                <image class="c-lover__avatar" mode="aspectFill" src="{{lover.picture}}"></image>
+                    wx:key="id" @tap="tapLover">
+                <image class="c-lover__avatar" mode="aspectFill" src="{{lover.avatar}}"></image>
                 <view class="c-lover__name">
                   <Elip>
-                    {{lover.name}}
+                    {{lover.user_nicename}}
                   </Elip>
                 </view>
               </view>
@@ -725,18 +687,18 @@
       <view class="tab">
         <view class="c-toolbar">
           <view class="c-button c-button--loved"  wx:if="{{isLoved}}">
-            <picker mode="date" fields="year" value="{{date}}" start="1918" end="2018" bindchange="listenerDatePickerSelected">
+            <!--<picker mode="date" fields="year" value="{{date}}" start="1918" end="2018" bindchange="listenerDatePickerSelected">-->
               <view class="c-love__picker">
                 <image  mode="aspectFit" class="c-love__picker-icon" src="/images/icons/icon-love--active.svg"></image>
-                <view class="c-love__picker-info">
+                <view class="c-love__picker-info" @tap="loveIt">
                   从
-                  <text style="font-weight: bold;">{{date}} </text> <image  mode="aspectFit" class="c-select_arrow" src="/images/icons/arrow--down.png"></image>
+                  <text style="font-weight: bold;">{{year}} </text> <image  mode="aspectFit" class="c-select_arrow" src="/images/icons/arrow--down.png"></image>
                   开始爱上
                 </view>
               </view>
-            </picker>
+            <!--</picker>-->
           </view>
-          <view class="c-button c-button--loved" wx:else>
+          <view class="c-button c-button--loved" @tap="loveIt" wx:else>
             <view class="c-love__picker">
               <image  mode="aspectFit" class="c-love__picker-icon" src="/images/icons/icon-love--dark.svg"></image>
               <view class="c-love__picker-info">
@@ -761,15 +723,15 @@
     </view>
 
     <view class="c-stories">
-      <view class="c-stories__header" wx:if="list.length > 0">
+      <view class="c-stories__header" wx:if="{{list.length > 0}}">
         <view class="c-stories__icon">
-          <image class="icon-lg" src="/images/icon/icon-story--active.svg"></image>
+          <image style="height: 72rpx; width: 72rpx; vertical-align: middle;" src="/images/icons/icon-fish--active.svg"></image>
         </view>
         <view class="c-stories__title">{{list.length}} 条回忆</view>
       </view>
-      <view class="c-story__header" wx:else>
+      <view class="c-stories__header" wx:else>
         <view class="c-stories__icon" >
-          <image class="icon-lg" src="/images/icon/icon-story.svg"></image>
+          <image class="height: 72rpx; width: 72rpx; vertical-align: middle;" src="/images/icons/icon-fish.svg"></image>
         </view>
         <view class="c-stories__title">0 条回忆</view>
       </view>
@@ -816,8 +778,8 @@
 
           <!-- 操作区域 -->
           <view class="item-footer-box">
-            <image class="icon-lg" wx:if="{{index != 0}}" src="/images/icons/up-arrow.png" @tap="up({{index}})"></image>
-            <image class="icon-lg" wx:if="{{index != pictures.length - 1}}" src="/images/icons/down-arrow.png" @tap="down({{index}})"></image>
+            <image class="icon-lg" wx:if="{{index !== 0}}" src="/images/icons/up-arrow.png" @tap="up({{index}})"></image>
+            <image class="icon-lg" wx:if="{{index !== pictures.length - 1}}" src="/images/icons/down-arrow.png" @tap="down({{index}})"></image>
             <image class="icon-lg" src="/images/icons/minus.png" @tap="remove({{index}})"></image>
           </view>
         </view>
@@ -825,18 +787,23 @@
       </view>
     </SliderPanel>
     <SliderLove :display.sync="isDateDisplay">
-      <view slot="title">修改 爱上的 时间</view>
+      <view slot="title">
+        <view wx:if="{{!isLoved}}">我在 <text style="color: #47BAA4;">{{year}}</text>年 <text style="color: #47BAA4;">{{month}}</text>月 爱上</view>
+        <view wx:else>从 <text style="color: #47BAA4;">{{year}}</text>年 <text style="color: #47BAA4;">{{month}}</text>月 开始爱上</view>
+      </view>
       <view slot="content" class="">
-        <view>于 {{year}} 年爱上</view>
         <picker-view
           indicator-style="height: 48px;" style="font-size: 32rpx; width: 100%; height: 200px; text-align: center;" value="{{value}}" bindchange="bindChange">
           <picker-view-column>
-            <view wx:for="{{years}}" wx:key="{{years}}" style="line-height: 50px">{{item}}年</view>
+            <view wx:for="{{years}}" wx:for-item="year" wx:key="{{year}}" style="line-height: 50px">{{year}}年</view>
+          </picker-view-column>
+          <picker-view-column>
+            <view wx:for="{{months}}" wx:for-item="month" wx:key="{{month}}" style="line-height: 50px">{{month}}月</view>
           </picker-view-column>
         </picker-view>
         <view class="c-panel__footer">
+          <view class="c-button c-button--sm c-button--unlove" wx:if="{{isLoved}}">不爱了</view>
           <view class="c-button c-button--sm c-button--primary">确定</view>
-          <view class="c-button c-button--sm c-button--unlove">不爱了</view>
         </view>
 
       </view>
@@ -865,8 +832,8 @@
   const months = []
   const days = []
 
-  for (let i = 1990; i <= date.getFullYear(); i++) {
-    years.push(i)
+  for (let i = 1920; i <= date.getFullYear(); i++) {
+    years.unshift(i)
   }
 
   for (let i = 1; i <= 12; i++) {
@@ -881,10 +848,11 @@
     mixins = [base]
 
     data = {
-      detail: {},
+      detail: {
+        i_like: false
+      },
       list: [],
       line: 2,
-      isLoved: false,
       isDateDisplay: false,
       years: years,
       year: date.getFullYear(),
@@ -892,7 +860,7 @@
       month: 2,
       days: days,
       day: 2,
-      value: [9999, 1, 1],
+      value: [date.getFullYear(), date.getMonth(), date.getDate() - 1],
       time: '',
       date: '1985',
       // otherClass: 'shop-swiper'
@@ -992,6 +960,9 @@
     }
 
     computed = {
+      isLoved () {
+        return this.detail.i_like
+      },
       imageWidth () {
         const device = wx.getSystemInfoSync()  //  获取设备信息
         return device.windowWidth
@@ -1002,15 +973,18 @@
     }
 
     methods = {
+      loveIt () {
+        this.isDateDisplay = 'true'
+        this.$apply()
+      },
+      tapLover () {
+        this.$root.$redirect(`/pages/lover`)
+      },
       bindChange: function(e) {
         const val = e.detail.value
         this.year = this.years[val[0]]
+        this.month = this.data.months[val[1]]
         this.$apply()
-        // this.setData({
-        //   year: this.data.years[val[0]],
-        //   month: this.data.months[val[1]],
-        //   day: this.data.days[val[2]]
-        // })
       },
       /**
        * 监听日期picker选择器
@@ -1022,8 +996,7 @@
         // })
       },
       post() {
-        this.isDateDisplay = 'true'
-        this.$apply()
+
       },
       // 上传图片
       async photo() {
@@ -1097,6 +1070,13 @@
     }
     async getDetail(id) {
       this.detail = await postsApi.detail(id)
+      if (this.detail.i_like) {
+        const likeDate = this.detail.like_date.split('-')
+        this.year = likeDate[0]
+        this.month = likeDate[1]
+        // this.value = [this.year, this.month]
+        this.$apply()
+      }
     }
     async getList(id, items) {
       const data = await postsApi.list(items)
@@ -1104,7 +1084,6 @@
       for (let item of this.list) {
         item.date = moment(item.date).fromNow()
       }
-      // this.detail.list = data
       this.$apply()
     }
     async onShow() {
@@ -1115,7 +1094,9 @@
       if (!result) return
       this.userInfo = JSON.parse($wxapp.globalData.auth.user)
       await this.getDetail(option.id)
-      await this.getList(option.id, this.detail.items)
+      if (this.detail.items) {
+        await this.getList(option.id, this.detail.items)
+      }
       this.loaded()
     }
   }

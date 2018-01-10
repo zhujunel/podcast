@@ -67,6 +67,26 @@ export default class podcast extends base {
     // console.log(JSON.stringify(data))
   }
 
+  /**
+   * 获取喜欢的内容
+   * @param items
+   * @returns {Promise<Array>}
+   */
+  static async loadLikes (items) {
+    const list = []
+    for (const item of items) {
+      const url = `${this.baseUrl}/posts/${item.post_id}`
+      const data = await this.get(url)
+      list.unshift(data)
+    }
+    return list
+  }
+
+  /**
+   * 获取曲目列表
+   * @param item
+   * @returns {Promise<void>}
+   */
   static async loadEpisodes (item) {
     const url = `${this.baseUrl}/posts`
     const data = await this.get(url, {parent: item.id})
